@@ -1,9 +1,9 @@
 import './App.css';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import OAuth2RedirectHandler from "./OAuth2RedirectHandler";
-import Kakao from "./components/Kakao";
-import Google from "./components/Google";
-import Naver from "./components/Naver";
+import Kakao from "./components/social/Kakao";
+import Google from "./components/social/Google";
+import Naver from "./components/social/Naver";
 
 function App() {
 
