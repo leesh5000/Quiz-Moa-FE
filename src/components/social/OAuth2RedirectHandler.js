@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 
-export default function () {
+const OAuth2RedirectHandler = () => {
 
   const baseRedirectUri = "http://localhost:3000/oauth2/callback/";
 
@@ -35,3 +35,5 @@ export default function () {
     </div>
   )
 };
+
+export default OAuth2RedirectHandler;

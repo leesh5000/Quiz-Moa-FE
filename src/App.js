@@ -1,21 +1,22 @@
 import './App.css';
-import {BrowserRouter, Route, Routes} from "react-router-dom";
-import OAuth2RedirectHandler from "./OAuth2RedirectHandler";
-import Kakao from "./components/social/Kakao";
-import Google from "./components/social/Google";
-import Naver from "./components/social/Naver";
+import {Route, Routes} from "react-router-dom";
+import QuizListPage from "./components/pages/QuizListPage";
+import LoginPage from "./components/pages/LoginPage";
+import WritePage from "./components/pages/WritePage";
+import QuizDetailPage from "./components/pages/QuizDetailPage";
+import OAuth2RedirectHandler from "./components/social/OAuth2RedirectHandler";
 
 function App() {
 
   return (
-      <BrowserRouter>
-        <Routes>
-          <Route path={"/"} element={<><Kakao/><Google/><Naver/></>}></Route>
-          <Route path={"/"} element={<Google/>}></Route>
-          <Route path={"/oauth2/callback/*"} element={<OAuth2RedirectHandler/>}></Route>
-        </Routes>
-      </BrowserRouter>
-  );
+    <Routes>
+      <Route path="/" element={<QuizListPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/write" element={<WritePage />} />
+      <Route path="/:quizId" element={<QuizDetailPage />} />
+      <Route path="/oauth2/callback/*" element={<OAuth2RedirectHandler/>}></Route>
+    </Routes>
+  )
 }
 
 export default App;

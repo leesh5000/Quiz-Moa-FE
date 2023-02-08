@@ -1,11 +1,15 @@
-export default function () {
-  const clientId = "628ed7ebd5ae9ca490639c88d1ff40fe";
-  const redirectUri = "http://localhost:3000/oauth2/callback/kakao";
+import kakao from "../../images/kakao.png";
+
+export default function Kakao () {
+  const clientId = process.env.REACT_APP_KAKAO_CLIENT_ID;
+  const redirectUri = process.env.REACT_APP_KAKAO_REDIRECT_URI;
   const kakaoUri = `https://kauth.kakao.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
 
   return (
     <div>
-      <a href={kakaoUri}>카카오</a>
+      <a href={kakaoUri}>
+        <img src={kakao} alt="kakao"/>
+      </a>
     </div>
   )
 };

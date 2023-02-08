@@ -1,11 +1,19 @@
-export default function () {
-  const clientId = "342402058366-uqaknkbu14juso56958312iqoq723n0m.apps.googleusercontent.com";
-  const redirectUri = "http://localhost:3000/oauth2/callback/google";
+import google from "../../images/google.png";
+
+export default function Google () {
+
+  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
   const googleUri = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`;
 
   return (
     <div>
-      <a href={googleUri}>구글</a>
+      <a href={googleUri}>
+        <img style={{
+          width:'308px',
+          height: '75px'
+        }} src={google} alt="google"/>
+      </a>
     </div>
   )
 };
