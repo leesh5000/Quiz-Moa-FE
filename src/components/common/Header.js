@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React, {useEffect, useState} from "react";
-import {Link, useLocation} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {logout} from "../../lib/api/auth";
 import Responsive from "./Responsive";
 import Button from "./Button";
@@ -55,16 +55,17 @@ const Header = () => {
   console.log('Header Rendering...');
 
   const [user, setUser] = useState(null);
-  const state = useLocation().state;
 
   useEffect(() => {
-    if (state && state.success) {
+
+    if (JSON.parse(localStorage.getItem('user')) !== null) {
       setUser(JSON.parse(localStorage.getItem('user')));
     }
+
   }, []);
 
   const onLogout = () => {
-    logout();
+    logout()
     setUser(null);
   }
 

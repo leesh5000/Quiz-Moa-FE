@@ -14,21 +14,14 @@ export const login = ({oauth2Type, authorizationCode}) =>
 
       // 로그인 상태 유지를 위해 유저 정보를 로컬 스토리지에 저장
       localStorage.setItem('user', JSON.stringify(userProfile));
-    })
-    .catch((e) => {
-      throw e;
     });
 
 export const logout = () => {
   client
     .get("/logout")
-    .then(() => {
-      // 인증 헤더 삭제
+    .finally(() => {
+      // 서버에서 로그아웃이 실패하더라도 프론트 단에서는 로그아웃 처리
       delete client.defaults.headers.common['Authorization'];
-    })
-    .catch((e) => {
-      console.log("logout failed : " + e);
-      // 유저 정보 삭제
       localStorage.removeItem('user');
     });
 }

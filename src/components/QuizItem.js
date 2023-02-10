@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import React from "react";
 
 const QuizItemBlock = styled.div`
   
@@ -79,4 +80,5 @@ const QuizItem = ({title, answerCount, votes, author, modifiedAt}) => {
   );
 }
 
-export default QuizItem;
+// 퀴즈 하나가 바뀔 때마다 전부 리렌더링 되는 것을 방지
+export default React.memo(QuizItem);

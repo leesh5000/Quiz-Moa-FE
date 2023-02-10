@@ -21,25 +21,27 @@ const OAuth2RedirectHandler = () => {
         const response = await login({oauth2Type, authorizationCode});
         console.log("소셜 로그인 성공", response);
         navigate('/', {
-          replace: true,
-          state: {
-            success: true,
-          }
+          replace: true
         });
       } catch (e) {
         console.log("소셜 로그인 실패", e);
         navigate('/login', {
           replace: true,
           state: {
-            success: false,
+            error: e.response.data.errorMessage
           }
         });
       }
+      setLoading(false);
     };
 
     socialLogin({oauth2Type, authorizationCode}).then();
-
   }, []);
+
+  if (loading) {
+    return <div>로딩중...</div>
+  }
+
 };
 
 export default OAuth2RedirectHandler;
