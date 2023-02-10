@@ -9,10 +9,7 @@ export default function Google () {
   return (
     <div>
       <a href={googleUri}>
-        <img style={{
-          width:'308px',
-          height: '75px'
-        }} src={google} alt="google"/>
+        <img src={google} alt="google"/>
       </a>
     </div>
   )

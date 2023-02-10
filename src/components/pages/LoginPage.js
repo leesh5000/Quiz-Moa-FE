@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import palette from "../../lib/styles/palette";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import Google from "../social/Google";
 import Naver from "../social/Naver";
 import Kakao from "../social/Kakao";
+import {useEffect, useState} from "react";
 
-/* 화면 전체를 채움 */
 const LoginPageBlock = styled.div`
   position: absolute;
   left: 0;
@@ -13,7 +13,6 @@ const LoginPageBlock = styled.div`
   bottom: 0;
   right: 0;
   background: ${palette.gray[2]};
-  /* flex로 내부 내용 중앙 정렬 */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,7 +24,6 @@ const LoginPageBlock = styled.div`
     color: ${palette.gray[8]};
     margin: 0 0 1rem;
   }
-
 `;
 
 /* 흰색 박스 */
@@ -55,21 +53,38 @@ const WhiteBox = styled.div`
     
     img {
       margin-top: 1.3rem;
-      width: 300px;
-      height: 70px;
+      width: 236px;
+      height: 72px;
     }
   }
-  
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  text-align: center;
+  font-size: 0.875rem;
+  margin-top: 1rem;
 `;
 
 const LoginPage = () => {
+
+  const [isLoginSuccess, setIsLoginSuccess] = useState(false);
+  const state = useLocation().state;
+
+  useEffect(() => {
+    if (state && !state.success) {
+      setIsLoginSuccess(true);
+    }
+  }, []);
+
   return (
     <LoginPageBlock>
       <WhiteBox>
         <div className="logo-area">
           <Link to="/"><h2>QUIZ APP</h2></Link>
         </div>
-        <h3>다음 계정으로 로그인</h3>
+        <h3>소셜 계정으로 로그인</h3>
+        {isLoginSuccess && <ErrorMessage>로그인 실패</ErrorMessage>}
         <div className="img-area">
           <Google/>
           <Naver/>
