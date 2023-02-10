@@ -4,7 +4,8 @@ export const createQuiz = ({title, contents}) => {
   client
     .post("/api/quizzes", {title, contents})
     .then((response) => {
-      console.log(response.data.createQuizId);
+      console.log("post success, created post id = " + response.data.createQuizId);
+      return response.data.createQuizId;
     })
     .catch((error) => {
       console.log(error);

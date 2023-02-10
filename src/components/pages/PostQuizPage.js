@@ -2,7 +2,9 @@ import Responsive from "../common/Responsive";
 import Editor from "../Editor";
 import Button from "../common/Button";
 import styled from "styled-components";
-import {useRef} from "react";
+import {useRef, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {createQuiz} from "../../lib/api/quiz";
 
 const ButtonBlock = styled.div`
 
@@ -43,6 +45,9 @@ const PostQuizPage = () => {
 
   console.log("PostQuizPage Rendering...");
 
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
   const quillElement = useRef(null);
   const quillInstance = useRef(null);
   // 타이틀이 바뀌어도 Re-rendering 되지 않도록 useRef 사용
@@ -55,13 +60,28 @@ const PostQuizPage = () => {
   }
 
   const onPost = () => {
-    const quill = quillInstance.current;
-    const body = quill.root.innerHTML;
-    
+    const body = quillInstance.current.root.innerHTML;
+
+    const postQuiz = async () => {
+      try {
+        setLoading(true);
+        const response = await createQuiz({title, body});
+        console.log("response = " + response);
+      } catch (e) {
+        console.log(e);
+      }
+      setLoading(false);
+    };
+
+    postQuiz().then();
   }
 
   const onCancel = () => {
+    navigate(-1);
+  }
 
+  if (loading) {
+    return <div>로딩 중...</div>
   }
 
   return (
