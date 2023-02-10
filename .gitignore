@@ -3,6 +3,7 @@
 # secret
 .env
 .env/*
+./.env
 
 # dependencies
 /node_modules
@@ -16,7 +17,7 @@
 /build
 
 # misc
-.DS_Store
+.DS_Store록
 .env.local
 .env.development.local
 .env.test.local
