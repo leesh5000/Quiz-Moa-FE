@@ -18,18 +18,20 @@ const QuizListBlock = styled(Responsive)`
 `;
 
 const PageBlock = styled(Responsive)`
+  
   height: 3rem;
   background-color: coral;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   
   .page {
-    
+    margin-top: 1rem;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
   }
   
   .post {
-    
+    margin-top: 1rem;
+    float: right;
   }
 `;
 
@@ -84,9 +86,7 @@ const QuizListPage = () => {
         ))}
       </QuizListBlock>
       <PageBlock>
-        {/*FLEX 3등분을 위해 넣음*/}
-        <div></div>
-        <div>페이지 정보</div>
+        <div className="page">페이지 정보</div>
         <div className="post">
           <Button cyan to="/post">
             퀴즈 작성

@@ -2,6 +2,7 @@ import Responsive from "../common/Responsive";
 import Editor from "../Editor";
 import Button from "../common/Button";
 import styled from "styled-components";
+import {useRef} from "react";
 
 const ButtonBlock = styled.div`
 
@@ -40,8 +41,23 @@ const StyledButton = styled(Button)`
 
 const PostQuizPage = () => {
 
-  const onPost = () => {
+  console.log("PostQuizPage Rendering...");
 
+  const quillElement = useRef(null);
+  const quillInstance = useRef(null);
+  // 타이틀이 바뀌어도 Re-rendering 되지 않도록 useRef 사용
+  let title = useRef(null);
+
+  const onChangeField = ({key, value}) => {
+    if (key === 'title') {
+      title = value;
+    }
+  }
+
+  const onPost = () => {
+    const quill = quillInstance.current;
+    const body = quill.root.innerHTML;
+    
   }
 
   const onCancel = () => {
@@ -51,7 +67,10 @@ const PostQuizPage = () => {
   return (
     <>
       <Responsive>
-        <Editor/>
+        <Editor onChangeField={onChangeField}
+                quillInstance={quillInstance}
+                quillElement={quillElement}
+        />
         <ButtonBlock>
           <StyledButton onClick={onPost}>작성하기</StyledButton>
           <StyledButton onClick={onCancel}>취소</StyledButton>
