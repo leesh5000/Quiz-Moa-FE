@@ -86,7 +86,7 @@ const LoginPage = () => {
           <Link to="/"><h2>QUIZ APP</h2></Link>
         </div>
         <h3>소셜 계정으로 로그인</h3>
-        {error && <ErrorMessage>로그인 실패</ErrorMessage>}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         <div className="img-area">
           <Google/>
           <Naver/>

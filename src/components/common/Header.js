@@ -9,12 +9,12 @@ const HeaderBlock = styled(Responsive)`
 
   position: fixed;
   top: 0;
-  height: 4rem;
+  height: 6rem;
   
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: white;
+  background-color: brown;
   
   .logo {
     font-size: 1.5rem;
@@ -40,7 +40,8 @@ const UserBlock = styled.div`
 `;
 
 const Spacer = styled.div`
-  height: 4rem;
+  height: 6rem;
+  background-color: coral;
 `;
 
 const StyledButton = styled(Button)`

@@ -60,12 +60,13 @@ const PostQuizPage = () => {
   }
 
   const onPost = () => {
-    const body = quillInstance.current.root.innerHTML;
+
+    const contents = quillInstance.current.root.innerHTML;
 
     const postQuiz = async () => {
       try {
         setLoading(true);
-        const response = await createQuiz({title, body});
+        const response = await createQuiz({title, contents});
         console.log("response = " + response);
       } catch (e) {
         console.log(e);
@@ -73,7 +74,10 @@ const PostQuizPage = () => {
       setLoading(false);
     };
 
-    postQuiz().then();
+    postQuiz()
+      .then(() => {
+        navigate('/');
+      });
   }
 
   const onCancel = () => {

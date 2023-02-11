@@ -5,11 +5,12 @@ import {getQuizzes} from "../../lib/api/quiz";
 import QuizItem from "../QuizItem";
 import Responsive from "../common/Responsive";
 import Button from "../common/Button";
+import {useNavigate} from "react-router-dom";
 
 const QuizListBlock = styled(Responsive)`
   
   box-sizing: border-box;
-  margin: 1.5rem auto;
+  //margin: 1.5rem auto;
   background: aqua;
   
   display: flex;
@@ -43,6 +44,7 @@ const QuizListPage = () => {
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -70,6 +72,15 @@ const QuizListPage = () => {
     return null;
   }
 
+  const goPost = () => {
+    // 로그인 한 유저인지 검증
+    if (!localStorage.getItem('user')) {
+      navigate('/login');
+    } else {
+      navigate('/post');
+    }
+  }
+
   return (
     <>
       <Header>
@@ -88,7 +99,7 @@ const QuizListPage = () => {
       <PageBlock>
         <div className="page">페이지 정보</div>
         <div className="post">
-          <Button cyan to="/post">
+          <Button cyan onClick={goPost}>
             퀴즈 작성
           </Button>
         </div>

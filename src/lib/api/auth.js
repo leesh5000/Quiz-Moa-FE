@@ -1,4 +1,5 @@
 import client from "./client";
+import {setCookie} from "../cookie/CookieUtils";
 
 // 소셜 로그인
 export const login = ({oauth2Type, authorizationCode}) =>
@@ -9,8 +10,20 @@ export const login = ({oauth2Type, authorizationCode}) =>
       const accessToken = response.data.accessToken;
       const userProfile = response.data.userProfile;
 
-      // 인증 헤더 설정
+      // 인증 헤더 저장
       client.defaults.headers.common['Authorization'] = `${grantType} ${accessToken}`;
+
+      setCookie('accessToken', accessToken,
+        {
+          maxAge: response.data.accessTokenExpiresIn,
+          path: '/'
+        });
+
+      setCookie('refreshToken', response.data.refreshToken,
+        {
+          maxAge: response.data.refreshTokenExpiresIn,
+          path: '/'
+        });
 
       // 로그인 상태 유지를 위해 유저 정보를 로컬 스토리지에 저장
       localStorage.setItem('user', JSON.stringify(userProfile));
