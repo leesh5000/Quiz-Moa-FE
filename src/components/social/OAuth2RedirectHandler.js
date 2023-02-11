@@ -1,9 +1,10 @@
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {login} from "../../lib/api/auth";
 
 const OAuth2RedirectHandler = () => {
 
+  const [loading, setLoading] = useState(false);
   const baseRedirectUri = "http://localhost:3000/oauth2/callback/";
 
   const string = window.location.href.split("?")[0];
@@ -13,24 +14,34 @@ const OAuth2RedirectHandler = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    login({oauth2Type, authorizationCode})
-      .then(() => {
+
+    const socialLogin = async ({oauth2Type, authorizationCode}) => {
+      try {
+        setLoading(true);
+        const response = await login({oauth2Type, authorizationCode});
+        console.log("소셜 로그인 성공", response);
         navigate('/', {
-          replace: true,
-          state: {
-            success: true,
-          }
+          replace: true
         });
-      }).catch((e) => {
+      } catch (e) {
         console.log("소셜 로그인 실패", e);
         navigate('/login', {
           replace: true,
           state: {
-            success: false,
+            error: e.response.data.errorMessage
           }
         });
-      });
+      }
+      setLoading(false);
+    };
+
+    socialLogin({oauth2Type, authorizationCode}).then();
   }, []);
+
+  if (loading) {
+    return <div>로딩중...</div>
+  }
+
 };
 
 export default OAuth2RedirectHandler;

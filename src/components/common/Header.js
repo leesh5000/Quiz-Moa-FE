@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React, {useEffect, useState} from "react";
-import {Link, useLocation} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {logout} from "../../lib/api/auth";
 import Responsive from "./Responsive";
 import Button from "./Button";
@@ -9,12 +9,12 @@ const HeaderBlock = styled(Responsive)`
 
   position: fixed;
   top: 0;
-  height: 4rem;
+  height: 6rem;
   
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: white;
+  background-color: brown;
   
   .logo {
     font-size: 1.5rem;
@@ -40,7 +40,8 @@ const UserBlock = styled.div`
 `;
 
 const Spacer = styled.div`
-  height: 4rem;
+  height: 6rem;
+  background-color: coral;
 `;
 
 const StyledButton = styled(Button)`
@@ -55,16 +56,17 @@ const Header = () => {
   console.log('Header Rendering...');
 
   const [user, setUser] = useState(null);
-  const state = useLocation().state;
 
   useEffect(() => {
-    if (state && state.success) {
+
+    if (JSON.parse(localStorage.getItem('user')) !== null) {
       setUser(JSON.parse(localStorage.getItem('user')));
     }
+
   }, []);
 
   const onLogout = () => {
-    logout();
+    logout()
     setUser(null);
   }
 

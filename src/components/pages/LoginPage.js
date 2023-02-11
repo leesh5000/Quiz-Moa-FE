@@ -4,7 +4,6 @@ import {Link, useLocation} from "react-router-dom";
 import Google from "../social/Google";
 import Naver from "../social/Naver";
 import Kakao from "../social/Kakao";
-import {useEffect, useState} from "react";
 
 const LoginPageBlock = styled.div`
   position: absolute;
@@ -68,14 +67,17 @@ const ErrorMessage = styled.div`
 
 const LoginPage = () => {
 
-  const [isLoginSuccess, setIsLoginSuccess] = useState(false);
-  const state = useLocation().state;
+  console.log("LoginPage Rendering...");
 
-  useEffect(() => {
-    if (state && !state.success) {
-      setIsLoginSuccess(true);
-    }
-  }, []);
+
+  let error = undefined;
+  const location = useLocation();
+
+  if (location.state && location.state.error) {
+    error = location.state.error;
+    // 페이지 새로고침 시, state 값 제거
+    window.history.replaceState({}, document.title)
+  }
 
   return (
     <LoginPageBlock>
@@ -84,7 +86,7 @@ const LoginPage = () => {
           <Link to="/"><h2>QUIZ APP</h2></Link>
         </div>
         <h3>소셜 계정으로 로그인</h3>
-        {isLoginSuccess && <ErrorMessage>로그인 실패</ErrorMessage>}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
         <div className="img-area">
           <Google/>
           <Naver/>
