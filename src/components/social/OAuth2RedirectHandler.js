@@ -28,7 +28,7 @@ const OAuth2RedirectHandler = () => {
         navigate('/login', {
           replace: true,
           state: {
-            error: e.response.data.errorMessage
+            error: e.response.errorMessage
           }
         });
       }

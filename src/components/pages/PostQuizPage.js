@@ -56,10 +56,10 @@ const PostQuizPage = () => {
     const postQuiz = async () => {
       try {
         setLoading(true);
-        const response = await createQuiz({title, contents});
-        console.log("response = " + response);
+        await createQuiz({title, contents});
       } catch (e) {
-        console.log(e);
+        console.log("Create Quiz Failed... = " + e);
+        alert('퀴즈 작성에 실패했습니다. 잠시 후 다시 시도해주세요.');
       }
       setLoading(false);
     };
@@ -68,6 +68,7 @@ const PostQuizPage = () => {
       .then(() => {
         navigate('/');
       });
+
   }
 
   const onCancel = () => {
