@@ -5,7 +5,6 @@ import styled from "styled-components";
 import {useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {createQuiz} from "../../lib/api/quiz";
-import swal from "sweetalert";
 import Spinner from "../common/Spinner";
 
 const ButtonBlock = styled.div`
@@ -61,7 +60,7 @@ const PostQuizPage = () => {
         await createQuiz({title, contents});
       } catch (e) {
         console.log("Create Quiz Failed... = " + e);
-        await swal('퀴즈 작성에 실패했습니다. 잠시 후 다시 시도해주세요.');
+        // await swal('퀴즈 작성에 실패했습니다. 잠시 후 다시 시도해주세요.');
       }
       setLoading(false);
     };

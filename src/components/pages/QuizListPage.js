@@ -82,7 +82,7 @@ const QuizListPage = () => {
   const contentsCountPerPage = 5;
 
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const getCurrentPage = () => {
     const page = searchParams.get('page');
