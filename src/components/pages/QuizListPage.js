@@ -5,12 +5,11 @@ import {getQuizzes} from "../../lib/api/quiz";
 import QuizItem from "../QuizItem";
 import Responsive from "../common/Responsive";
 import Button from "../common/Button";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate, useSearchParams} from "react-router-dom";
 
 const QuizListBlock = styled(Responsive)`
   
   box-sizing: border-box;
-  //margin: 1.5rem auto;
   background: aqua;
   
   display: flex;
@@ -19,21 +18,52 @@ const QuizListBlock = styled(Responsive)`
 `;
 
 const PageBlock = styled(Responsive)`
-  
-  height: 3rem;
+
+  position: fixed;
+  bottom: 23.5%;
+  height: 2rem;
   background-color: coral;
-  
+
+  @media (max-height: 1024px) {
+    bottom: 0;
+  }
+
+  @media (max-height: 768px) {
+    width: 100%;
+    bottom: 0;
+  }
+
   .page {
-    margin-top: 1rem;
     position: absolute;
     left: 50%;
-    transform: translate(-50%);
+    bottom: 50%;
+    transform: translate(-50%, 50%);
+    
+    display: flex;
+    justify-content: space-between;
+    
+    .child {
+      color: blueviolet;
+      font-size: 1.125rem;
+      font-weight: 700;
+      padding-left: 1rem;
+    }
   }
-  
-  .post {
-    margin-top: 1rem;
-    float: right;
+
+  .post-button {
+    
+    position: absolute;
+    bottom: 50%;
+    right: 0;
+    transform: translate(0%, 50%);
   }
+`;
+
+const StyledButton = styled(Button)`
+  height: 2rem;
+  font-size: 1.15rem;
+  font-weight: bold;
+  padding: 0.35rem 0.65rem;
 `;
 
 const QuizListPage = () => {
@@ -41,28 +71,96 @@ const QuizListPage = () => {
   console.log('QuizListPage Rendering...');
 
   const [quizzes, setQuizzes] = useState(null);
-  const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  // 한 화면에 보여지는 페이지 개수
+  const pageSize = 5;
+
+  // 한 페이지당 컨텐츠 사이즈
+  const contentsCountPerPage = 5;
+
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const getCurrentPage = () => {
+    const page = searchParams.get('page');
+    return (page === undefined || page === null) ? 1 : page;
+  }
 
   useEffect(() => {
     const fetchQuizzes = async () => {
       try {
         setLoading(true);
-        const response = await getQuizzes({page: 0, size: 7});
+
+        // 서버 스펙 상, page 0부터 시작
+        const curPage = getCurrentPage() - 1;
+
+        const response = await getQuizzes({page: curPage, size: contentsCountPerPage});
         setQuizzes(response.content);
-        setTotalElements(response.totalElements);
         setTotalPages(response.totalPages);
+
       } catch (e) {
         console.log(e);
       }
+
       setLoading(false);
     };
 
     fetchQuizzes().then();
 
-  }, []);
+  }, [searchParams]);
+
+  const calculatePageNumber = () => {
+    const arr = [];
+    const curPage = Number(getCurrentPage());
+
+    // 한 화면에 보여지는 페이지 개수가 전체 페이지 수보다 클 경우에는 1부터 마지막 페이지까지 보여주고 리턴한다.
+    if (totalPages <= pageSize) {
+      for (let i = 1; i <= totalPages; i++) {
+        arr.push(i);
+      }
+    } else {
+      // 현재 페이지가 전체 페이지 수의 반 이하일 경우에는 1부터 pageSize까지의 페이지를 보여준다.
+      if (curPage <= Math.round(pageSize / 2)) {
+        for (let i = 1; i <= pageSize; i++) {
+          arr.push(i);
+        }
+      } else {
+        // 현재 페이지가 전체 페이지 수의 반을 넘을 경우에는 현재 페이지가 가운데가 오도록 보여져야 한다.
+        // 즉, 현재 페이지가 6이고, 페이지 사이즈가 5일 경우에는 4 5 6 7 8 이런 식으로 보여져야 한다.
+        const halfOfPageSize = Math.round(pageSize / 2) - 1;
+        let temp = halfOfPageSize;
+        while (temp > 0) {
+          arr.push(curPage - temp);
+          temp--;
+        }
+        arr.push(curPage);
+        temp = 1;
+        while (temp <= halfOfPageSize) {
+          let nextPage = curPage + temp;
+
+          // 마지막 페이지라면, 더 이상 진행하지 않고 종료한다.
+          if (nextPage === totalPages) {
+            break;
+          }
+          arr.push(nextPage);
+          temp++;
+        }
+      }
+    }
+
+    return (
+      arr.map((value, index) => (
+        <Link className="child"
+              style={value === curPage ? {color: 'red'} : {color: 'blueviolet'}}
+              key={index}
+              to={'?page=' + value}>
+          {value}
+        </Link>
+      ))
+    );
+  };
 
   if (loading) {
     return <QuizListBlock>로딩중...</QuizListBlock>
@@ -95,15 +193,18 @@ const QuizListPage = () => {
                     modifiedAt={quiz.modifiedAt}
           />
         ))}
+        <PageBlock>
+          <div className="spacer"></div>
+          <div className="page">
+            {calculatePageNumber()}
+          </div>
+          <div className="post-button">
+            <StyledButton cyan onClick={goPost}>
+              퀴즈 작성
+            </StyledButton>
+          </div>
+        </PageBlock>
       </QuizListBlock>
-      <PageBlock>
-        <div className="page">페이지 정보</div>
-        <div className="post">
-          <Button cyan onClick={goPost}>
-            퀴즈 작성
-          </Button>
-        </div>
-      </PageBlock>
     </>
   );
 }
