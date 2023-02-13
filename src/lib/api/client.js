@@ -2,6 +2,7 @@ import axios from 'axios';
 import {tokenRefresh} from "./token";
 import {getCookie} from "../cookie/CookieUtils";
 import {useNavigate} from "react-router-dom";
+import swal from "sweetalert";
 
 const client = axios.create();
 
@@ -42,7 +43,7 @@ client.interceptors.response.use(
       await tokenRefresh()
         .catch(e => {
           console.log("token refresh failed = " + e);
-          alert('로그인이 만료되었습니다. 다시 로그인해주세요.');
+          swal('로그인이 만료되었습니다. 다시 로그인해주세요.');
           // 토큰 갱신 요청도 실패하면, 로그아웃 처리
           delete client.defaults.headers.common['Authorization'];
           localStorage.removeItem('user');

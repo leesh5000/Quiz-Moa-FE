@@ -6,6 +6,7 @@ import QuizItem from "../QuizItem";
 import Responsive from "../common/Responsive";
 import Button from "../common/Button";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
+import Spinner from "../common/Spinner";
 
 const QuizListBlock = styled(Responsive)`
   
@@ -163,7 +164,7 @@ const QuizListPage = () => {
   };
 
   if (loading) {
-    return <QuizListBlock>로딩중...</QuizListBlock>
+    return <Spinner/>
   }
 
   if (!quizzes) {

@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {login} from "../../lib/api/auth";
+import Spinner from "../common/Spinner";
 
 const OAuth2RedirectHandler = () => {
 
@@ -39,7 +40,7 @@ const OAuth2RedirectHandler = () => {
   }, []);
 
   if (loading) {
-    return <div>로딩중...</div>
+    return <Spinner/>;
   }
 
 };
