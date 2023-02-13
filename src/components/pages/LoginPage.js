@@ -4,6 +4,7 @@ import {Link, useLocation} from "react-router-dom";
 import Google from "../social/Google";
 import Naver from "../social/Naver";
 import Kakao from "../social/Kakao";
+import swal from "sweetalert";
 
 const LoginPageBlock = styled.div`
   position: absolute;
@@ -69,7 +70,6 @@ const LoginPage = () => {
 
   console.log("LoginPage Rendering...");
 
-
   let error = undefined;
   const location = useLocation();
 
@@ -77,6 +77,7 @@ const LoginPage = () => {
     error = location.state.error;
     // 페이지 새로고침 시, state 값 제거
     window.history.replaceState({}, document.title)
+    swal(error);
   }
 
   return (
@@ -86,7 +87,6 @@ const LoginPage = () => {
           <Link to="/"><h2>QUIZ APP</h2></Link>
         </div>
         <h3>소셜 계정으로 로그인</h3>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
         <div className="img-area">
           <Google/>
           <Naver/>

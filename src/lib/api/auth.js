@@ -3,7 +3,7 @@ import {setCookie} from "../cookie/CookieUtils";
 
 // 소셜 로그인
 export const login = ({oauth2Type, authorizationCode}) => {
-  client
+  return client
     .post("/oauth2/login", {oauth2Type, authorizationCode})
     .then(response => {
       const accessToken = response.accessToken;
@@ -21,7 +21,7 @@ export const login = ({oauth2Type, authorizationCode}) => {
       // 로그인 상태 유지를 위해 유저 정보를 로컬 스토리지에 저장
       localStorage.setItem('user', JSON.stringify(userProfile));
     });
-}
+};
 
 export const logout = () => {
   client

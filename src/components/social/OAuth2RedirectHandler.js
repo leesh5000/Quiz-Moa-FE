@@ -19,17 +19,15 @@ const OAuth2RedirectHandler = () => {
     const socialLogin = async ({oauth2Type, authorizationCode}) => {
       try {
         setLoading(true);
-        const response = await login({oauth2Type, authorizationCode});
-        console.log("소셜 로그인 성공", response);
+        await login({oauth2Type, authorizationCode});
         navigate('/', {
           replace: true
         });
       } catch (e) {
-        console.log("소셜 로그인 실패", e);
         navigate('/login', {
           replace: true,
           state: {
-            error: e.response.errorMessage
+            error: e.response.data.errorMessage
           }
         });
       }
