@@ -25,18 +25,8 @@ const ButtonBlock = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-  
-  height: 2rem;
-  border: none;
-  border-radius: 6px;
   font-size: 1.15rem;
-  font-weight: bold;
   padding: 0.35rem 0.85rem;
-  color: white;
-  outline: none;
-  cursor: pointer;
-  
-  // & 는 현재 요소
   margin-left: 0.75rem;
   margin-right: 0.75rem;
 `;

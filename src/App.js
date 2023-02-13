@@ -10,6 +10,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<QuizListPage />} />
+      <Route path="/?page=:page" element={<PostQuizPage/>} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/oauth2/callback/*" element={<OAuth2RedirectHandler/>}></Route>
       <Route path="/post" element={<PostQuizPage/>} />
