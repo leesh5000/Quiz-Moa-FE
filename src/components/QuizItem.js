@@ -78,7 +78,7 @@ const QuizItem = ({title, answerCount, votes, author, modifiedAt}) => {
           {author}
         </div>
         <div className="date">
-            수정일: {modifiedAt}
+            {modifiedAt}
         </div>
       </InfoBlock>
     </QuizItemBlock>

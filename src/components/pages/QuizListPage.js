@@ -191,7 +191,9 @@ const QuizListPage = () => {
                     answerCount={quiz.answerCount}
                     author={quiz.author}
                     votes={quiz.votes}
-                    modifiedAt={quiz.modifiedAt}
+                    modifiedAt={new Date(quiz.modifiedAt).toLocaleString('ko-KR', {
+                      hour12: false,
+                    }).slice(0, -3)}
           />
         ))}
         <PageBlock>
