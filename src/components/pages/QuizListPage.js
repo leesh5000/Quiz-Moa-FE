@@ -6,6 +6,7 @@ import QuizItem from "../QuizItem";
 import Responsive from "../common/Responsive";
 import Button from "../common/Button";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
+import Spinner from "../common/Spinner";
 
 const QuizListBlock = styled(Responsive)`
   
@@ -81,7 +82,7 @@ const QuizListPage = () => {
   const contentsCountPerPage = 5;
 
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const getCurrentPage = () => {
     const page = searchParams.get('page');
@@ -163,7 +164,7 @@ const QuizListPage = () => {
   };
 
   if (loading) {
-    return <QuizListBlock>로딩중...</QuizListBlock>
+    return <Spinner/>
   }
 
   if (!quizzes) {
@@ -190,7 +191,9 @@ const QuizListPage = () => {
                     answerCount={quiz.answerCount}
                     author={quiz.author}
                     votes={quiz.votes}
-                    modifiedAt={quiz.modifiedAt}
+                    modifiedAt={new Date(quiz.modifiedAt).toLocaleString('ko-KR', {
+                      hour12: false,
+                    }).slice(0, -3)}
           />
         ))}
         <PageBlock>

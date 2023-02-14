@@ -8,11 +8,6 @@ const QuizItemBlock = styled.div`
   flex-direction: column;
   margin-top: 1rem;
   padding-bottom: 1rem;
-
-  /* 텍스트 넘침 방지 */
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
   
 `;
 
@@ -28,12 +23,20 @@ const TitleBlock = styled.div`
   display: flex;
   justify-content: left;
   align-items: center;
-
+  
+  /* 텍스트 넘침 방지 */
+  .title {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  
   .left {
     display: flex;
     flex-direction: column;
     font-size: 0.825rem;
     margin-right: 1rem;
+    white-space: nowrap;
 
     .count {
       margin-bottom: 0.25rem;
@@ -66,14 +69,16 @@ const QuizItem = ({title, answerCount, votes, author, modifiedAt}) => {
             답변 {answerCount}
           </div>
         </div>
-        {title}
+        <div className="title">
+          {title}
+        </div>
       </TitleBlock>
       <InfoBlock>
         <div>
           {author}
         </div>
         <div className="date">
-            수정일: {modifiedAt}
+            {modifiedAt}
         </div>
       </InfoBlock>
     </QuizItemBlock>

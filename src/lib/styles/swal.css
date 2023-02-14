@@ -1,0 +1,17 @@
+.swal2-popup {
+  width: 420px;
+}
+
+.swal2-title {
+  font-size: 1.215rem;
+}
+
+@media (max-width: 720px) {
+  .swal2-popup {
+    width: 320px;
+  }
+
+  .swal2-title {
+    font-size: 1.125rem;
+  }
+}

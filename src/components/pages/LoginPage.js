@@ -4,6 +4,8 @@ import {Link, useLocation} from "react-router-dom";
 import Google from "../social/Google";
 import Naver from "../social/Naver";
 import Kakao from "../social/Kakao";
+import Swal from "sweetalert2";
+import '../../lib/styles/swal.css';
 
 const LoginPageBlock = styled.div`
   position: absolute;
@@ -30,9 +32,13 @@ const WhiteBox = styled.div`
 
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.025);
   padding: 2rem;
-  width: 530px;
+  width: 480px;
   background: white;
   border-radius: 2px;
+
+  @media (max-width: 420px) {
+    width: 100%;
+  }
   
   .logo-area {
     display: block;
@@ -58,17 +64,9 @@ const WhiteBox = styled.div`
   }
 `;
 
-const ErrorMessage = styled.div`
-  color: red;
-  text-align: center;
-  font-size: 0.875rem;
-  margin-top: 1rem;
-`;
-
 const LoginPage = () => {
 
   console.log("LoginPage Rendering...");
-
 
   let error = undefined;
   const location = useLocation();
@@ -77,6 +75,11 @@ const LoginPage = () => {
     error = location.state.error;
     // 페이지 새로고침 시, state 값 제거
     window.history.replaceState({}, document.title)
+    Swal.fire({
+      icon: 'warning',
+      position: 'center',
+      title: error
+    })
   }
 
   return (
@@ -86,7 +89,6 @@ const LoginPage = () => {
           <Link to="/"><h2>QUIZ APP</h2></Link>
         </div>
         <h3>소셜 계정으로 로그인</h3>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
         <div className="img-area">
           <Google/>
           <Naver/>

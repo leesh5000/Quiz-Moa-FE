@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {login} from "../../lib/api/auth";
+import Spinner from "../common/Spinner";
 
 const OAuth2RedirectHandler = () => {
 
@@ -18,13 +19,11 @@ const OAuth2RedirectHandler = () => {
     const socialLogin = async ({oauth2Type, authorizationCode}) => {
       try {
         setLoading(true);
-        const response = await login({oauth2Type, authorizationCode});
-        console.log("소셜 로그인 성공", response);
+        await login({oauth2Type, authorizationCode});
         navigate('/', {
           replace: true
         });
       } catch (e) {
-        console.log("소셜 로그인 실패", e);
         navigate('/login', {
           replace: true,
           state: {
@@ -39,7 +38,7 @@ const OAuth2RedirectHandler = () => {
   }, []);
 
   if (loading) {
-    return <div>로딩중...</div>
+    return <Spinner/>;
   }
 
 };
