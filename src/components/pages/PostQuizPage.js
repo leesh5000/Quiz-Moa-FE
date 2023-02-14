@@ -8,12 +8,14 @@ import {createQuiz} from "../../lib/api/quiz";
 import Spinner from "../common/Spinner";
 import Swal from "sweetalert2";
 import '../../lib/styles/swal.css';
+import Header from "../common/Header";
 
-const ButtonBlock = styled.div`
+const ButtonBlock = styled(Responsive)`
 
+  position: fixed;
+  bottom: 0;
+  
   @media (max-width: 1024px) {
-    position: fixed;
-    bottom: 0;
     width: 768px;
   }
   @media (max-width: 768px) {
@@ -142,6 +144,7 @@ const PostQuizPage = () => {
 
   return (
     <>
+      <Header/>
       <Responsive>
         <Editor onChangeField={onChangeField}
                 quillInstance={quillInstance}

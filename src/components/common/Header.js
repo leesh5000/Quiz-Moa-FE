@@ -9,7 +9,16 @@ const HeaderBlock = styled(Responsive)`
 
   position: fixed;
   top: 0;
-  height: 6rem;
+  height: 112px;
+
+  @media (max-height: 1024px) {
+    height: 92px;
+  }
+
+  @media (max-height: 768px) {
+    height: 92px;
+    width: 100%;
+  }
   
   display: flex;
   align-items: center;
@@ -17,12 +26,15 @@ const HeaderBlock = styled(Responsive)`
   background-color: brown;
   
   .logo {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 800;
     letter-spacing: 2px;
+    
     @media (max-width: 1024px) {
+      font-size: 1.5rem;
       margin-left: 0.25rem;
     }
+    
   }
   
   .right {
@@ -40,7 +52,7 @@ const UserBlock = styled.div`
 `;
 
 const Spacer = styled.div`
-  height: 6rem;
+  height: 7rem;
   background-color: coral;
 `;
 

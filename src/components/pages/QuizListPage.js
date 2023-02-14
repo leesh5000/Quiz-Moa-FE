@@ -7,6 +7,7 @@ import Responsive from "../common/Responsive";
 import Button from "../common/Button";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
 import Spinner from "../common/Spinner";
+import Footer from "../common/Footer";
 
 const QuizListBlock = styled(Responsive)`
   
@@ -15,23 +16,25 @@ const QuizListBlock = styled(Responsive)`
   
   display: flex;
   flex-direction: column;
+  
+  padding-bottom: 4rem;
 
 `;
 
 const PageBlock = styled(Responsive)`
 
   position: fixed;
-  bottom: 23.5%;
-  height: 2rem;
+  bottom: 0;
+  height: 3rem;
   background-color: coral;
 
   @media (max-height: 1024px) {
-    bottom: 0;
+    height: 2.5rem;
   }
 
   @media (max-height: 768px) {
+    height: 2.5rem;
     width: 100%;
-    bottom: 0;
   }
 
   .page {
@@ -45,14 +48,17 @@ const PageBlock = styled(Responsive)`
     
     .child {
       color: blueviolet;
-      font-size: 1.125rem;
+      font-size: 1.325rem;
       font-weight: 700;
       padding-left: 1rem;
+
+      @media (max-width: 420px) {
+        font-size: 1.125rem;
+      }
     }
   }
 
   .post-button {
-    
     position: absolute;
     bottom: 50%;
     right: 0;
@@ -61,10 +67,17 @@ const PageBlock = styled(Responsive)`
 `;
 
 const StyledButton = styled(Button)`
-  height: 2rem;
+  height: 2.5rem;
   font-size: 1.15rem;
   font-weight: bold;
   padding: 0.35rem 0.65rem;
+
+  @media (max-width: 420px) {
+    height: 2rem;
+    font-size: 1.15rem;
+    font-weight: bold;
+    padding: 0.35rem 0.65rem;
+  }
 `;
 
 const QuizListPage = () => {
@@ -79,7 +92,7 @@ const QuizListPage = () => {
   const pageSize = 5;
 
   // 한 페이지당 컨텐츠 사이즈
-  const contentsCountPerPage = 5;
+  const contentsCountPerPage = 10;
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -196,6 +209,8 @@ const QuizListPage = () => {
                     }).slice(0, -3)}
           />
         ))}
+      </QuizListBlock>
+      <Footer>
         <PageBlock>
           <div className="spacer"></div>
           <div className="page">
@@ -207,7 +222,7 @@ const QuizListPage = () => {
             </StyledButton>
           </div>
         </PageBlock>
-      </QuizListBlock>
+      </Footer>
     </>
   );
 }

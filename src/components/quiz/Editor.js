@@ -8,12 +8,12 @@ import Responsive from "../common/Responsive";
 
 
 const EditorBlock = styled(Responsive)` /* 페이지 위아래 여백 지정 */
-  height: 960px;
-  padding-top: 5rem;
+  height: 400px;
+  padding-top: 1.25rem;
   padding-bottom: 5rem;
 
   @media (max-height: 1024px) {
-    height: 768px;
+    height: 400px;
   }
 
 `;
@@ -32,13 +32,14 @@ const TitleInput = styled.input`
 const QuillWrapper = styled.div`
 
   .ql-editor {
-    min-height: 680px;
-    max-height: 680px;
+    min-height: 620px;
+    max-height: 620px;
     font-size: 1.125rem;
     line-height: 1.5;
 
     @media (max-height: 1024px) {
-      min-height: 608px;
+      min-height: 482px;
+      max-height: 482px;
     }
     
   }
