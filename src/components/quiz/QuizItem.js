@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import React from "react";
+import {Link} from "react-router-dom";
 
 const QuizItemBlock = styled.div`
   
@@ -57,7 +58,7 @@ const InfoBlock = styled.div`
   }
 `;
 
-const QuizItem = ({title, answerCount, votes, author, modifiedAt}) => {
+const QuizItem = ({id, title, answerCount, votes, author, modifiedAt}) => {
   return (
     <QuizItemBlock>
       <TitleBlock>
@@ -70,7 +71,9 @@ const QuizItem = ({title, answerCount, votes, author, modifiedAt}) => {
           </div>
         </div>
         <div className="title">
-          {title}
+          <Link to={`/quizzes/${id}`}>
+            {title}
+          </Link>
         </div>
       </TitleBlock>
       <InfoBlock>

@@ -15,3 +15,10 @@ export const getQuizzes = ({page, size}) => {
       return response;
     });
 }
+
+export const getQuizDetails = (id) => {
+  return client.get(`/quizzes/${id}`)
+    .then((response) => {
+      return response;
+    });
+}

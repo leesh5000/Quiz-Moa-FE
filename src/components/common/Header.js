@@ -9,15 +9,10 @@ const HeaderBlock = styled(Responsive)`
 
   position: fixed;
   top: 0;
-  height: 112px;
+  height: 7rem;
 
   @media (max-height: 1024px) {
-    height: 92px;
-  }
-
-  @media (max-height: 768px) {
-    height: 92px;
-    width: 100%;
+    height: 5.75rem;
   }
   
   display: flex;
@@ -52,7 +47,12 @@ const UserBlock = styled.div`
 `;
 
 const Spacer = styled.div`
-  height: 7rem;
+  height: 8.75rem;
+
+  @media (max-height: 1080px) {
+    height: 6.25rem;
+  }
+
   background-color: coral;
 `;
 

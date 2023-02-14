@@ -11,11 +11,6 @@ const EditorBlock = styled(Responsive)` /* 페이지 위아래 여백 지정 */
   height: 400px;
   padding-top: 1.25rem;
   padding-bottom: 5rem;
-
-  @media (max-height: 1024px) {
-    height: 400px;
-  }
-
 `;
 
 const TitleInput = styled.input`
@@ -23,15 +18,16 @@ const TitleInput = styled.input`
   outline: none;
   padding-bottom: 0.5rem;
   padding-left: 0.5rem;
-  padding-top: 4rem;
+  padding-top: 1.5rem;
+
+  @media (max-height: 1024px) {
+    padding-top: 1rem;
+  }
+  
   border: none;
   border-bottom: 1px solid ${palette.gray[4]};
   margin-bottom: 2rem;
   width: 100%;
-
-  @media (max-height: 1024px) {
-    padding-top: 0;
-  }
 `;
 
 const QuillWrapper = styled.div`

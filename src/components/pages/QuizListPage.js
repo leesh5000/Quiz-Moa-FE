@@ -8,6 +8,7 @@ import Button from "../common/Button";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
 import Spinner from "../common/Spinner";
 import Footer from "../common/Footer";
+import Swal from "sweetalert2";
 
 const QuizListBlock = styled(Responsive)`
   
@@ -16,9 +17,16 @@ const QuizListBlock = styled(Responsive)`
   
   display: flex;
   flex-direction: column;
+  padding-bottom: 3rem;
   
-  padding-bottom: 4rem;
+  height: 1096px;
 
+  @media (max-height: 1080px) {
+    height: 720px;
+  }
+  
+  overflow: scroll;
+  
 `;
 
 const PageBlock = styled(Responsive)`
@@ -34,7 +42,6 @@ const PageBlock = styled(Responsive)`
 
   @media (max-height: 768px) {
     height: 2.5rem;
-    width: 100%;
   }
 
   .page {
@@ -115,13 +122,16 @@ const QuizListPage = () => {
         setTotalPages(response.totalPages);
 
       } catch (e) {
-        console.log(e);
+        console.log('get quizzes error', e);
+        await Swal.fire({
+          icon: 'warning',
+          title: '퀴즈 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.',
+        })
       }
-
       setLoading(false);
     };
 
-    fetchQuizzes().then();
+    fetchQuizzes();
 
   }, [searchParams]);
 
@@ -200,6 +210,7 @@ const QuizListPage = () => {
       <QuizListBlock>
         {quizzes.map((quiz, index) => (
           <QuizItem key={index}
+                    id={quiz.id}
                     title={quiz.title}
                     answerCount={quiz.answerCount}
                     author={quiz.author}

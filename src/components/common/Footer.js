@@ -14,7 +14,6 @@ const FooterBlock = styled(Responsive)`
 
   @media (max-height: 768px) {
     height: 2.5rem;
-    width: 100%;
   }
 `;
 
