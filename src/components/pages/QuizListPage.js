@@ -2,7 +2,7 @@ import Header from "../common/Header";
 import styled from "styled-components";
 import {useEffect, useState} from "react";
 import {getQuizzes} from "../../lib/api/quiz";
-import QuizItem from "../QuizItem";
+import QuizItem from "../quiz/QuizItem";
 import Responsive from "../common/Responsive";
 import Button from "../common/Button";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";

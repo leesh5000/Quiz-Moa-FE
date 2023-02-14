@@ -1,5 +1,5 @@
 import Responsive from "../common/Responsive";
-import Editor from "../Editor";
+import Editor from "../quiz/Editor";
 import Button from "../common/Button";
 import styled from "styled-components";
 import {useRef, useState} from "react";

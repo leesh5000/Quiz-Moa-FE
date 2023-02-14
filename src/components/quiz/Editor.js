@@ -3,8 +3,8 @@ import Quill from 'quill';
 import 'quill/dist/quill.bubble.css';
 import 'quill/dist/quill.snow.css';
 import styled from 'styled-components';
-import palette from "../lib/styles/palette";
-import Responsive from "./common/Responsive";
+import palette from "../../lib/styles/palette";
+import Responsive from "../common/Responsive";
 
 
 const EditorBlock = styled(Responsive)` /* 페이지 위아래 여백 지정 */
@@ -46,9 +46,6 @@ const QuillWrapper = styled.div`
 
 const Editor = ({onChangeField, quillElement, quillInstance}) => {
 
-  // const quillElement = useRef(null); // Quill을 적용할 DivElement를 설정
-  // const quillInstance = useRef(null); // Quill 인스턴스를 설정
-
   console.log("Editor Rendering...");
 
   const onChangeTitle = e => {
@@ -60,7 +57,6 @@ const Editor = ({onChangeField, quillElement, quillInstance}) => {
       theme: 'snow',
       placeholder: '내용을 작성하세요...',
       modules: {
-        // 더 많은 옵션
         // https://quilljs.com/docs/modules/toolbar/ 참고
         toolbar: [
           [{header: '1'}, {header: '2'}],
@@ -71,7 +67,6 @@ const Editor = ({onChangeField, quillElement, quillInstance}) => {
       },
     });
 
-    // quill에 text-change 이벤트 핸들러 등록
     // 참고: https://quilljs.com/docs/api/#events
     const quill = quillInstance.current;
     quill.on('text-change', (delta, oldDelta, source) => {
