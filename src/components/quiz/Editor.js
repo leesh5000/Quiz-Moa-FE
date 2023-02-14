@@ -23,23 +23,33 @@ const TitleInput = styled.input`
   outline: none;
   padding-bottom: 0.5rem;
   padding-left: 0.5rem;
+  padding-top: 4rem;
   border: none;
   border-bottom: 1px solid ${palette.gray[4]};
   margin-bottom: 2rem;
   width: 100%;
+
+  @media (max-height: 1024px) {
+    padding-top: 0;
+  }
 `;
 
 const QuillWrapper = styled.div`
 
   .ql-editor {
-    min-height: 620px;
-    max-height: 620px;
+    min-height: 812px;
+    max-height: 812px;
     font-size: 1.125rem;
     line-height: 1.5;
 
     @media (max-height: 1024px) {
-      min-height: 482px;
-      max-height: 482px;
+      min-height: 486px;
+      max-height: 486px;
+    }
+
+    @media (max-height: 720px) {
+      min-height: 312px;
+      max-height: 312px;
     }
     
   }
@@ -56,7 +66,7 @@ const Editor = ({onChangeField, quillElement, quillInstance}) => {
   useEffect(() => {
     quillInstance.current = new Quill(quillElement.current, {
       theme: 'snow',
-      placeholder: '내용을 작성하세요...',
+      placeholder: '내용을 작성하세요',
       modules: {
         // https://quilljs.com/docs/modules/toolbar/ 참고
         toolbar: [
