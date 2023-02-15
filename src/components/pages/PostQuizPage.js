@@ -93,9 +93,8 @@ const PostQuizPage = () => {
         icon: 'warning',
         position: 'center',
         title: '제목을 입력해주세요.'
-      }).then(() => {
-          return false;
       });
+      return false;
     }
 
     if (title.length < 10 || title.length > 255) {
@@ -103,9 +102,8 @@ const PostQuizPage = () => {
         icon: 'warning',
         position: 'center',
         title: '제목은 10자 이상 255자 이하로 작성해주세요.'
-      }).then(() => {
-        return false;
       });
+      return false;
     }
 
     // 본문에 태그가 들어가지 않도록 처리
@@ -116,9 +114,8 @@ const PostQuizPage = () => {
         icon: 'warning',
         position: 'center',
         title: '본문은 최소 10자 이상으로 작성해주세요.'
-      }).then(() => {
-        return false;
       });
+      return false;
     }
 
     if (contents.length > 65000) {
@@ -126,9 +123,8 @@ const PostQuizPage = () => {
         icon: 'warning',
         position: 'center',
         title: '본문 내용은 65000자 이하로 작성해주세요.'
-      }).then(() => {
-        return false;
       });
+      return false;
     }
 
     return true;

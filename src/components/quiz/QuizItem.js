@@ -50,6 +50,21 @@ const InfoBlock = styled.div`
   display: flex;
   justify-content: space-between;
   background-color: aliceblue;
+  
+  .author {
+    display: flex;
+    align-items: center;
+    background-color: aquamarine;
+    
+    .profile {
+      margin-right: 0.5rem;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      object-fit: cover;
+      outline: gray solid 1px;
+    }
+  }
 
   .date {
     display: flex;
@@ -77,11 +92,13 @@ const QuizItem = ({id, title, answerCount, votes, author, modifiedAt}) => {
         </div>
       </TitleBlock>
       <InfoBlock>
-        <div>
+        <div className='author'>
+          <img className='profile'
+               src="http://k.kakaocdn.net/dn/JbKdS/btrnpoxSHe4/brpiY0hsleYg0Bb3dSkmMk/img_110x110.jpg" alt="profile"/>
           {author}
         </div>
         <div className="date">
-            {modifiedAt}
+          {modifiedAt}
         </div>
       </InfoBlock>
     </QuizItemBlock>
