@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import palette from "../../lib/styles/palette";
+import palette from "../lib/styles/palette";
 import {Link, useLocation} from "react-router-dom";
-import Google from "../social/Google";
-import Naver from "../social/Naver";
-import Kakao from "../social/Kakao";
+import Google from "../components/social/Google";
+import Naver from "../components/social/Naver";
+import Kakao from "../components/social/Kakao";
 import Swal from "sweetalert2";
-import '../../lib/styles/swal.css';
+import '../lib/styles/swal.css';
 
 const LoginPageBlock = styled.div`
   position: absolute;

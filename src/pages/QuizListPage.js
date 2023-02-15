@@ -1,13 +1,13 @@
-import Header from "../common/Header";
+import Header from "../components/common/Header";
 import styled from "styled-components";
 import {useEffect, useState} from "react";
-import {getQuizzes} from "../../lib/api/quiz";
-import QuizItem from "../quiz/QuizItem";
-import Responsive from "../common/Responsive";
-import Button from "../common/Button";
+import {getQuizzes} from "../lib/api/quiz";
+import QuizItem from "../components/quiz/QuizItem";
+import Responsive from "../components/common/Responsive";
+import Button from "../components/common/Button";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
-import Spinner from "../common/Spinner";
-import Footer from "../common/Footer";
+import Spinner from "../components/common/Spinner";
+import Footer from "../components/common/Footer";
 import Swal from "sweetalert2";
 
 const QuizListBlock = styled(Responsive)`
@@ -24,6 +24,10 @@ const QuizListBlock = styled(Responsive)`
   @media (max-height: 1080px) {
     height: 720px;
   }
+
+  @media (max-height: 720px) {
+    height: 486px;
+  }
   
   overflow: scroll;
   
@@ -31,7 +35,7 @@ const QuizListBlock = styled(Responsive)`
 
 const PageBlock = styled(Responsive)`
 
-  position: fixed;
+  position: absolute;
   bottom: 0;
   height: 3rem;
   background-color: coral;
@@ -214,10 +218,10 @@ const QuizListPage = () => {
                     title={quiz.title}
                     answerCount={quiz.answerCount}
                     author={quiz.author}
-                    votes={quiz.votes}
+                    votes={quiz.totalVotes}
                     modifiedAt={new Date(quiz.modifiedAt).toLocaleString('ko-KR', {
                       hour12: false,
-                    }).slice(0, -3)}
+                    }).slice(0, -13)}
           />
         ))}
       </QuizListBlock>

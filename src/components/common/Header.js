@@ -10,28 +10,30 @@ const HeaderBlock = styled(Responsive)`
   position: fixed;
   top: 0;
   height: 7rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  z-index: 10;
 
   @media (max-height: 1024px) {
     height: 5.75rem;
   }
-  
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   background-color: brown;
-  
+
   .logo {
     font-size: 2rem;
     font-weight: 800;
     letter-spacing: 2px;
-    
+
     @media (max-width: 1024px) {
       font-size: 1.5rem;
-      margin-left: 0.25rem;
+      margin-left: 0.5rem;
     }
-    
+
   }
-  
+
   .right {
     display: flex;
     align-items: center;
@@ -40,8 +42,8 @@ const HeaderBlock = styled(Responsive)`
 
 const UserBlock = styled.div`
   font-weight: 800;
-  margin-right: 0.25rem;
-  @media (max-width: 1024px) {
+  margin-right: 0.75rem;
+  @media (max-width: 760px) {
     display: none;
   }
 `;
@@ -57,10 +59,7 @@ const Spacer = styled.div`
 `;
 
 const StyledButton = styled(Button)`
-  margin-left: 0.5rem;
-  @media (max-width: 1024px) {
-    margin-right: 0.25rem;
-  }
+  margin-right: 0.75rem;
 `
 
 const Header = () => {

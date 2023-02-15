@@ -1,11 +1,11 @@
 import './App.css';
 import {Route, Routes} from "react-router-dom";
-import QuizListPage from "./components/pages/QuizListPage";
-import LoginPage from "./components/pages/LoginPage";
+import QuizListPage from "./pages/QuizListPage";
+import LoginPage from "./pages/LoginPage";
 import OAuth2RedirectHandler from "./components/social/OAuth2RedirectHandler";
-import PostQuizPage from "./components/pages/PostQuizPage";
-import Home from "./components/pages/Home";
-import QuizDetailPage from "./components/pages/QuizDetailPage";
+import PostQuizPage from "./pages/PostQuizPage";
+import Home from "./pages/Home";
+import QuizDetailPage from "./pages/QuizDetailPage";
 
 function App() {
 

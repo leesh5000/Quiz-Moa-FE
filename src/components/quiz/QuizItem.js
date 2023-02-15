@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import React from "react";
 import {Link} from "react-router-dom";
+import palette from "../../lib/styles/palette";
 
 const QuizItemBlock = styled.div`
   
@@ -9,6 +10,10 @@ const QuizItemBlock = styled.div`
   flex-direction: column;
   margin-top: 1rem;
   padding-bottom: 1rem;
+  
+  @media (max-width: 1030px) {
+    padding-left: 0.5rem;
+  }
   
 `;
 
@@ -48,25 +53,27 @@ const TitleBlock = styled.div`
 const InfoBlock = styled.div`
   
   display: flex;
-  justify-content: space-between;
+  justify-content: left;
   background-color: aliceblue;
+  font-size: 1.125rem;
+  letter-spacing: 0.75px;
   
   .author {
+    font-weight: 700;
     display: flex;
     align-items: center;
     background-color: aquamarine;
-    
-    .profile {
-      margin-right: 0.5rem;
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      object-fit: cover;
-      outline: gray solid 1px;
-    }
+    color: ${palette.gray[7]};
+  }
+  
+  .spacer {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
   }
 
   .date {
+    font-size: 1rem;
+    font-weight: 600;
     display: flex;
     align-items: center;
     background-color: aquamarine;
@@ -93,9 +100,10 @@ const QuizItem = ({id, title, answerCount, votes, author, modifiedAt}) => {
       </TitleBlock>
       <InfoBlock>
         <div className='author'>
-          <img className='profile'
-               src="http://k.kakaocdn.net/dn/JbKdS/btrnpoxSHe4/brpiY0hsleYg0Bb3dSkmMk/img_110x110.jpg" alt="profile"/>
-          {author}
+          {author.username}
+        </div>
+        <div className='spacer'>
+          •
         </div>
         <div className="date">
           {modifiedAt}

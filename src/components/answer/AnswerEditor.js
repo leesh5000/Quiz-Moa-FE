@@ -8,31 +8,18 @@ import Responsive from "../common/Responsive";
 
 
 const EditorBlock = styled(Responsive)` /* 페이지 위아래 여백 지정 */
-  height: 400px;
+  height: 682px;
+  background-color: aquamarine;
   padding-top: 1.25rem;
   padding-bottom: 5rem;
 
   @media (max-width: 1024px) {
     padding: 0 0.5rem;
   }
-`;
-
-const TitleInput = styled.input`
-  font-size: 1.75rem;
-  outline: none;
-  padding-bottom: 0.5rem;
-  padding-left: 0.5rem;
-  padding-top: 1.5rem;
 
   @media (max-height: 1024px) {
-    padding-top: 1rem;
-    padding-bottom: 0;
+    height: 512px;
   }
-  
-  border: none;
-  border-bottom: 1px solid ${palette.gray[4]};
-  margin-bottom: 2rem;
-  width: 100%;
 `;
 
 const QuillWrapper = styled.div`
@@ -40,31 +27,22 @@ const QuillWrapper = styled.div`
   padding-top: 0;
   
   .ql-editor {
-    min-height: 812px;
-    max-height: 812px;
+    min-height: 486px;
+    max-height: 486px;
     font-size: 1.125rem;
     line-height: 1.5;
 
     @media (max-height: 1024px) {
-      min-height: 486px;
-      max-height: 486px;
-    }
-
-    @media (max-height: 720px) {
-      min-height: 312px;
-      max-height: 312px;
+      min-height: 360px;
+      max-height: 360px;
     }
 
   }
 `;
 
-const Editor = ({type, onChangeField, quillElement, quillInstance}) => {
+const AnswerEditor = ({type, onChangeField, quillElement, quillInstance}) => {
 
   console.log("Editor Rendering...");
-
-  const onChangeTitle = e => {
-    onChangeField({ key: 'title', value: e.target.value });
-  };
 
   useEffect(() => {
     quillInstance.current = new Quill(quillElement.current, {
@@ -92,11 +70,6 @@ const Editor = ({type, onChangeField, quillElement, quillInstance}) => {
 
   return (
     <EditorBlock>
-      {type === 'quiz' &&
-        <TitleInput placeholder="제목을 입력하세요"
-                    onChange={onChangeTitle}
-        />
-      }
       <QuillWrapper>
         <div ref={quillElement}/>
       </QuillWrapper>
@@ -104,4 +77,4 @@ const Editor = ({type, onChangeField, quillElement, quillInstance}) => {
   );
 };
 
-export default Editor;
+export default AnswerEditor;

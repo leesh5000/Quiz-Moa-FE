@@ -1,14 +1,14 @@
-import Responsive from "../common/Responsive";
-import Editor from "../quiz/Editor";
-import Button from "../common/Button";
+import Responsive from "../components/common/Responsive";
+import Editor from "../components/quiz/Editor";
+import Button from "../components/common/Button";
 import styled from "styled-components";
 import {useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {createQuiz} from "../../lib/api/quiz";
-import Spinner from "../common/Spinner";
+import {createQuiz} from "../lib/api/quiz";
+import Spinner from "../components/common/Spinner";
 import Swal from "sweetalert2";
-import '../../lib/styles/swal.css';
-import Header from "../common/Header";
+import '../lib/styles/swal.css';
+import Header from "../components/common/Header";
 
 const ButtonBlock = styled(Responsive)`
 
@@ -142,7 +142,8 @@ const PostQuizPage = () => {
     <>
       <Header/>
       <Responsive>
-        <Editor onChangeField={onChangeField}
+        <Editor type={'quiz'}
+                onChangeField={onChangeField}
                 quillInstance={quillInstance}
                 quillElement={quillElement}
         />

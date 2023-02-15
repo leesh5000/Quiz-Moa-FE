@@ -1,4 +1,4 @@
-import {BeatLoader} from "react-spinners";
+import {ClipLoader} from "react-spinners";
 import styled from "styled-components";
 import palette from "../../lib/styles/palette";
 
@@ -12,8 +12,7 @@ const SpinnerBlock =  styled.div`
 const Spinner = () => {
   return (
     <SpinnerBlock>
-      <BeatLoader size={55}
-                  margin={20}
+      <ClipLoader size={120}
                   color={palette.cyan[3]}
       />
     </SpinnerBlock>
