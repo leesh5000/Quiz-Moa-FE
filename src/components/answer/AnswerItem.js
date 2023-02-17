@@ -72,6 +72,10 @@ const AnswerBodyBlock = styled.div`
   @media (max-width: 780px) {
     margin-right: 0.5rem;
   }
+  
+  p {
+    margin: 0;
+  }
 `;
 
 const Spacer = styled.div`
@@ -120,11 +124,7 @@ const AnswerItem = ({id, contents, author, votes, createdAt, modifiedAt}) => {
           </div>
         </div>
       </AnswerTitleBlock>
-      <AnswerBodyBlock>
-        <div>
-          {contents}
-        </div>
-      </AnswerBodyBlock>
+      <AnswerBodyBlock dangerouslySetInnerHTML={{__html: contents}}/>
       <Spacer/>
     </Responsive>
   )

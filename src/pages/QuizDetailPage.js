@@ -97,12 +97,15 @@ const QuizContentsBlock = styled.div`
   min-height: 280px;
   background-color: gray;
   font-size: 1.125rem;
-  padding: 0;
-  margin: 0;
+  letter-spacing: 1px;
   overflow-wrap: break-word;
 
   @media (max-width: 780px) {
     padding: 0.5rem;
+  }
+
+  p {
+    margin: 0;
   }
 `;
 
@@ -145,6 +148,10 @@ const Spacer = styled.div`
 `;
 
 const ButtonBlock = styled.div`
+  
+  display: flex;
+  justify-content: space-between;
+  
   @media (max-width: 1024px) {
     padding-left: 0.5rem;
   }
@@ -181,37 +188,62 @@ const QuizDetailPage = () => {
     setUser(null);
   }
 
-  useEffect(() => {
-    const fetchQuizDetails = async () => {
+  const fetchQuizDetails = async () => {
 
-      try {
-        setLoading(true);
-        const response = await getQuizDetails(quizId);
-        setQuiz(response);
-        console.log(response);
-      } catch (e) {
-        console.log(e);
+    try {
+      setLoading(true);
+      const response = await getQuizDetails(quizId);
+      setQuiz(response);
+
+    } catch (e) {
+
+      console.log(e);
+
+      if (e.response.status === 404) {
         await Swal.fire({
           icon: 'warning',
-          title: '퀴즈 데이터를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.',
-        })
-        navigate('/quizzes');
+          title: '삭제된 퀴즈입니다.',
+        });
+        navigate(-1);
+        return false;
       }
 
-      setLoading(false);
+      await Swal.fire({
+        icon: 'warning',
+        title: '퀴즈 데이터를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.',
+      });
+      navigate('/quizzes');
     }
 
-    fetchQuizDetails();
+    setLoading(false);
+  }
 
+  useEffect(() => {
+    fetchQuizDetails();
   }, []);
 
   const onPost = () => {
-    const contents = quillInstance.current.root.innerHTML;
-    const postQuiz = async () => {
 
-      if (!validate(contents)) {
-        return false;
-      }
+    // 로그인 유저인지 검증
+    if (!user) {
+      Swal.fire({
+        icon: 'warning',
+        title: '로그인 후 이용 가능합니다.',
+      })
+      return false;
+    }
+
+    const contents = quillInstance.current.root.innerHTML;
+
+    if (contents.replace(/<[^>]*>/g, '').length < 10) {
+      Swal.fire({
+        icon: 'warning',
+        title: '본문은 최소 10자 이상으로 작성해주세요.'
+      });
+      return false;
+    }
+
+    const postAnswer = async () => {
 
       try {
         setLoading(true);
@@ -227,29 +259,15 @@ const QuizDetailPage = () => {
       return true;
     };
 
-    postQuiz()
-      .then((result) => {
-        if (result) {
-          navigate('/');
-        }
+    // 답변 작성에 성공하면, 퀴즈 상세 데이터를 다시 가져오기
+    postAnswer()
+      .then(() => {
+        fetchQuizDetails();
       });
   }
 
-  const validate = (contents) => {
-
-    // 본문에 태그가 들어가지 않도록 처리
-    contents = contents.replace(/<[^>]*>/g, '');
-
-    if (contents.length < 10) {
-      Swal.fire({
-        icon: 'warning',
-        position: 'center',
-        title: '본문은 최소 10자 이상으로 작성해주세요.'
-      });
-      return false;
-    }
-
-    return true;
+  const onCancel = () => {
+    navigate(-1);
   }
 
   if (loading) {
@@ -305,9 +323,7 @@ const QuizDetailPage = () => {
             }).slice(0, -13)}
           </div>
         </QuizInfoBlock>
-        <QuizContentsBlock>
-          {quiz.contents}
-        </QuizContentsBlock>
+        <QuizContentsBlock dangerouslySetInnerHTML={{__html: quiz.contents}}/>
         <AnswerBlock>
           <div className='count'>
             {quiz.answers.length} 답변
@@ -331,6 +347,7 @@ const QuizDetailPage = () => {
                       user={user}
         />
         <ButtonBlock>
+          <ButtonStyle onClick={onCancel}>돌아가기</ButtonStyle>
           <ButtonStyle onClick={onPost}>제출하기</ButtonStyle>
         </ButtonBlock>
         <Spacer></Spacer>

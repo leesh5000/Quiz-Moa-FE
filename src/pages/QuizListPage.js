@@ -223,6 +223,13 @@ const QuizListPage = () => {
 
   const goPost = () => {
     // HOC에서 로그인 유저 검증
+    if (!user) {
+      Swal.fire({
+        icon: 'warning',
+        title: '로그인 후 이용 가능합니다.',
+      });
+      return;
+    }
     navigate('/post');
   }
 

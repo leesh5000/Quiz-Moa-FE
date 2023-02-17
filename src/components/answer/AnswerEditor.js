@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react';
+import {useEffect} from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.bubble.css';
 import 'quill/dist/quill.snow.css';
@@ -42,8 +42,6 @@ const AnswerEditor = ({quillElement, quillInstance, user}) => {
 
   console.log("Editor Rendering...");
 
-  const ref = useRef(null);
-
   useEffect(() => {
     quillInstance.current = new Quill(quillElement.current, {
       theme: 'snow',
@@ -68,7 +66,7 @@ const AnswerEditor = ({quillElement, quillInstance, user}) => {
 
   return (
     <EditorBlock>
-      <QuillWrapper ref={ref}>
+      <QuillWrapper>
         <div ref={quillElement}/>
       </QuillWrapper>
     </EditorBlock>

@@ -6,7 +6,7 @@ import PostQuizPage from "./pages/PostQuizPage";
 import Home from "./pages/Home";
 import QuizDetailPage from "./pages/QuizDetailPage";
 import LoginPage from "./pages/LoginPage";
-import Auth from "./components/auth/Auth";
+import Auth from "./lib/hoc/Auth";
 
 function App() {
 

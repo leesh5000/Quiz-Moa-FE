@@ -147,8 +147,8 @@ const PostQuizPage = ({user, onLogout}) => {
                 quillElement={quillElement}
         />
         <ButtonBlock>
+          <StyledButton onClick={onCancel}>돌아가기</StyledButton>
           <StyledButton onClick={onPost}>작성하기</StyledButton>
-          <StyledButton onClick={onCancel}>취소</StyledButton>
         </ButtonBlock>
       </Responsive>
     </>
