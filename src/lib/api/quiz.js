@@ -8,10 +8,10 @@ export const createQuiz = ({title, contents}) => {
     });
 };
 
-export const getQuizzes = ({page, size}) => {
+export const getQuizzes = ({page, size, sort}) => {
 
   return client
-    .get("/quizzes", {params: {page, size}})
+    .get("/quizzes", {params: {page, size, sort}})
     .then((response) => {
       return response;
     });
