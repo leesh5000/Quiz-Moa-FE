@@ -19,9 +19,9 @@ body {
 html {
 
   /*!* 스크롤 바가 헤더를 밀어내는 것 방지 *!*/
-  overflow: scroll;
-  overflow-x: hidden;
-  overflow-y: overlay;
+  /*overflow: scroll;*/
+  /*overflow-x: hidden;*/
+  /*overflow-y: overlay;*/
 
   /*height: 100%;*/
 

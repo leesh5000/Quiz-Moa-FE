@@ -7,7 +7,6 @@ import Responsive from "../components/common/Responsive";
 import Button from "../components/common/Button";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
 import Spinner from "../components/common/Spinner";
-import Footer from "../components/common/Footer";
 import Swal from "sweetalert2";
 
 const QuizListBlock = styled(Responsive)`
@@ -18,25 +17,11 @@ const QuizListBlock = styled(Responsive)`
   display: flex;
   flex-direction: column;
   padding-bottom: 3rem;
-  
-  height: 1096px;
 
-  @media (max-height: 1080px) {
-    height: 720px;
-  }
-
-  @media (max-height: 720px) {
-    height: 486px;
-  }
-  
-  overflow: scroll;
-  
 `;
 
 const PageBlock = styled(Responsive)`
 
-  position: absolute;
-  bottom: 0;
   height: 3rem;
   background-color: coral;
 
@@ -46,6 +31,11 @@ const PageBlock = styled(Responsive)`
 
   @media (max-height: 768px) {
     height: 2.5rem;
+  }
+  
+  .spacer {
+    height: 12rem;
+    background-color: darkblue;
   }
 
   .page {
@@ -91,6 +81,32 @@ const StyledButton = styled(Button)`
   }
 `;
 
+const Footer = styled(Responsive)`
+  height: 12rem;
+  background-color: gray;
+  
+  .page {
+    font-size: 1.325rem;
+    font-weight: 700;
+    background-color: dodgerblue;
+    text-align: center;
+    
+    .child {
+      color: blueviolet;
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+    }
+  }
+  
+  .post {
+    text-align: right;
+    
+    @media (max-width: 1024px) {
+      margin-right: 0.5rem;
+    }
+  }
+`;
+
 const QuizListPage = () => {
 
   console.log('QuizListPage Rendering...');
@@ -98,12 +114,13 @@ const QuizListPage = () => {
   const [quizzes, setQuizzes] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
   // 한 화면에 보여지는 페이지 개수
   const pageSize = 5;
 
   // 한 페이지당 컨텐츠 사이즈
-  const contentsCountPerPage = 10;
+  const contentsCountPerPage = 5;
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -112,6 +129,12 @@ const QuizListPage = () => {
     const page = searchParams.get('page');
     return (page === undefined || page === null) ? 1 : page;
   }
+
+  useEffect(() => {
+    if (JSON.parse(localStorage.getItem('user')) !== null) {
+      setUser(JSON.parse(localStorage.getItem('user')));
+    }
+  }, [])
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -199,18 +222,17 @@ const QuizListPage = () => {
   }
 
   const goPost = () => {
-    // 로그인 한 유저인지 검증
-    if (!localStorage.getItem('user')) {
-      navigate('/login');
-    } else {
-      navigate('/post');
-    }
+    // HOC에서 로그인 유저 검증
+    navigate('/post');
+  }
+
+  const onLogout = () => {
+    setUser(null);
   }
 
   return (
     <>
-      <Header>
-      </Header>
+      <Header user={user} onLogout={onLogout}/>
       <QuizListBlock>
         {quizzes.map((quiz, index) => (
           <QuizItem key={index}
@@ -226,17 +248,14 @@ const QuizListPage = () => {
         ))}
       </QuizListBlock>
       <Footer>
-        <PageBlock>
-          <div className="spacer"></div>
-          <div className="page">
-            {calculatePageNumber()}
-          </div>
-          <div className="post-button">
-            <StyledButton cyan onClick={goPost}>
-              퀴즈 작성
-            </StyledButton>
-          </div>
-        </PageBlock>
+        <div className='page'>
+          {calculatePageNumber()}
+        </div>
+        <div className='post'>
+          <StyledButton cyan onClick={goPost}>
+            퀴즈 작성
+          </StyledButton>
+        </div>
       </Footer>
     </>
   );

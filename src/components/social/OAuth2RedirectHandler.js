@@ -19,10 +19,23 @@ const OAuth2RedirectHandler = () => {
     const socialLogin = async ({oauth2Type, authorizationCode}) => {
       try {
         setLoading(true);
+
         await login({oauth2Type, authorizationCode});
+
+        // 만약, 이전페이지가 있다면, 그곳으로 이동한다.
+        if (localStorage.getItem('from')) {
+          const from = localStorage.getItem('from');
+          navigate(from, {
+            replace: true
+          });
+          localStorage.removeItem('from');
+          return;
+        }
+
         navigate('/', {
           replace: true
         });
+
       } catch (e) {
         navigate('/login', {
           replace: true,
@@ -34,7 +47,8 @@ const OAuth2RedirectHandler = () => {
       setLoading(false);
     };
 
-    socialLogin({oauth2Type, authorizationCode}).then();
+    socialLogin({oauth2Type, authorizationCode});
+
   }, []);
 
   if (loading) {

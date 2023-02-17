@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import React, {useEffect, useState} from "react";
-import {Link} from "react-router-dom";
+import React from "react";
+import {Link, useLocation} from "react-router-dom";
 import {logout} from "../../lib/api/auth";
 import Responsive from "./Responsive";
 import Button from "./Button";
@@ -62,23 +62,15 @@ const StyledButton = styled(Button)`
   margin-right: 0.75rem;
 `
 
-const Header = () => {
+const Header = ({user, onLogout}) => {
 
   console.log('Header Rendering...');
 
-  const [user, setUser] = useState(null);
+  const location = useLocation();
 
-  useEffect(() => {
-
-    if (JSON.parse(localStorage.getItem('user')) !== null) {
-      setUser(JSON.parse(localStorage.getItem('user')));
-    }
-
-  }, []);
-
-  const onLogout = () => {
+  const onLogoutWrapper = () => {
     logout()
-    setUser(null);
+    onLogout();
   }
 
   return (
@@ -92,17 +84,20 @@ const Header = () => {
               <StyledButton>
                 내 정보
               </StyledButton>
-              <StyledButton onClick={onLogout}>
+              <StyledButton onClick={onLogoutWrapper}>
                 로그아웃
               </StyledButton>
             </div>
-            ) : (
-              <div className="right">
-                <StyledButton to="/login">
-                  로그인
-                </StyledButton>
-              </div>
-            )
+          ) : (
+            <div className="right">
+              <StyledButton to='/login'
+                            state={{
+                              from: location.pathname
+                            }}>
+                로그인
+              </StyledButton>
+            </div>
+          )
           }
         </HeaderBlock>
       </Responsive>
