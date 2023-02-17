@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {login} from "../../lib/api/auth";
 import Spinner from "../common/Spinner";
 
@@ -13,6 +13,7 @@ const OAuth2RedirectHandler = () => {
   const oauth2Type = string.substring(baseRedirectUri.length);
   const authorizationCode = new URL(window.location.href).searchParams.get("code");
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
 
