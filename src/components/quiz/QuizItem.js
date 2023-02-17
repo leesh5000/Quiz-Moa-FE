@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import React from "react";
+import {Link} from "react-router-dom";
+import palette from "../../lib/styles/palette";
 
 const QuizItemBlock = styled.div`
   
@@ -8,6 +10,10 @@ const QuizItemBlock = styled.div`
   flex-direction: column;
   margin-top: 1rem;
   padding-bottom: 1rem;
+  
+  @media (max-width: 1030px) {
+    padding-left: 0.5rem;
+  }
   
 `;
 
@@ -47,17 +53,34 @@ const TitleBlock = styled.div`
 const InfoBlock = styled.div`
   
   display: flex;
-  justify-content: space-between;
+  justify-content: left;
   background-color: aliceblue;
+  font-size: 1.125rem;
+  letter-spacing: 0.75px;
+  
+  .author {
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    background-color: aquamarine;
+    color: ${palette.gray[7]};
+  }
+  
+  .spacer {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+  }
 
   .date {
+    font-size: 1rem;
+    font-weight: 600;
     display: flex;
     align-items: center;
     background-color: aquamarine;
   }
 `;
 
-const QuizItem = ({title, answerCount, votes, author, modifiedAt}) => {
+const QuizItem = ({id, title, answerCount, votes, author, modifiedAt}) => {
   return (
     <QuizItemBlock>
       <TitleBlock>
@@ -70,15 +93,20 @@ const QuizItem = ({title, answerCount, votes, author, modifiedAt}) => {
           </div>
         </div>
         <div className="title">
-          {title}
+          <Link to={`/quizzes/${id}`}>
+            {title}
+          </Link>
         </div>
       </TitleBlock>
       <InfoBlock>
-        <div>
-          {author}
+        <div className='author'>
+          {author.username}
+        </div>
+        <div className='spacer'>
+          •
         </div>
         <div className="date">
-            {modifiedAt}
+          {modifiedAt}
         </div>
       </InfoBlock>
     </QuizItemBlock>

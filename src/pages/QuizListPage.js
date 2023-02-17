@@ -1,12 +1,13 @@
-import Header from "../common/Header";
+import Header from "../components/common/Header";
 import styled from "styled-components";
 import {useEffect, useState} from "react";
-import {getQuizzes} from "../../lib/api/quiz";
-import QuizItem from "../QuizItem";
-import Responsive from "../common/Responsive";
-import Button from "../common/Button";
+import {getQuizzes} from "../lib/api/quiz";
+import QuizItem from "../components/quiz/QuizItem";
+import Responsive from "../components/common/Responsive";
+import Button from "../components/common/Button";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
-import Spinner from "../common/Spinner";
+import Spinner from "../components/common/Spinner";
+import Swal from "sweetalert2";
 
 const QuizListBlock = styled(Responsive)`
   
@@ -15,23 +16,26 @@ const QuizListBlock = styled(Responsive)`
   
   display: flex;
   flex-direction: column;
+  padding-bottom: 3rem;
 
 `;
 
 const PageBlock = styled(Responsive)`
 
-  position: fixed;
-  bottom: 23.5%;
-  height: 2rem;
+  height: 3rem;
   background-color: coral;
 
   @media (max-height: 1024px) {
-    bottom: 0;
+    height: 2.5rem;
   }
 
   @media (max-height: 768px) {
-    width: 100%;
-    bottom: 0;
+    height: 2.5rem;
+  }
+  
+  .spacer {
+    height: 12rem;
+    background-color: darkblue;
   }
 
   .page {
@@ -45,14 +49,17 @@ const PageBlock = styled(Responsive)`
     
     .child {
       color: blueviolet;
-      font-size: 1.125rem;
+      font-size: 1.325rem;
       font-weight: 700;
       padding-left: 1rem;
+
+      @media (max-width: 420px) {
+        font-size: 1.125rem;
+      }
     }
   }
 
   .post-button {
-    
     position: absolute;
     bottom: 50%;
     right: 0;
@@ -61,10 +68,43 @@ const PageBlock = styled(Responsive)`
 `;
 
 const StyledButton = styled(Button)`
-  height: 2rem;
+  height: 2.5rem;
   font-size: 1.15rem;
   font-weight: bold;
   padding: 0.35rem 0.65rem;
+
+  @media (max-width: 420px) {
+    height: 2rem;
+    font-size: 1.15rem;
+    font-weight: bold;
+    padding: 0.35rem 0.65rem;
+  }
+`;
+
+const Footer = styled(Responsive)`
+  height: 12rem;
+  background-color: gray;
+  
+  .page {
+    font-size: 1.325rem;
+    font-weight: 700;
+    background-color: dodgerblue;
+    text-align: center;
+    
+    .child {
+      color: blueviolet;
+      margin-left: 0.5rem;
+      margin-right: 0.5rem;
+    }
+  }
+  
+  .post {
+    text-align: right;
+    
+    @media (max-width: 1024px) {
+      margin-right: 0.5rem;
+    }
+  }
 `;
 
 const QuizListPage = () => {
@@ -74,6 +114,7 @@ const QuizListPage = () => {
   const [quizzes, setQuizzes] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
 
   // 한 화면에 보여지는 페이지 개수
   const pageSize = 5;
@@ -90,6 +131,12 @@ const QuizListPage = () => {
   }
 
   useEffect(() => {
+    if (JSON.parse(localStorage.getItem('user')) !== null) {
+      setUser(JSON.parse(localStorage.getItem('user')));
+    }
+  }, [])
+
+  useEffect(() => {
     const fetchQuizzes = async () => {
       try {
         setLoading(true);
@@ -102,13 +149,16 @@ const QuizListPage = () => {
         setTotalPages(response.totalPages);
 
       } catch (e) {
-        console.log(e);
+        console.log('get quizzes error', e);
+        await Swal.fire({
+          icon: 'warning',
+          title: '퀴즈 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.',
+        })
       }
-
       setLoading(false);
     };
 
-    fetchQuizzes().then();
+    fetchQuizzes();
 
   }, [searchParams]);
 
@@ -172,42 +222,48 @@ const QuizListPage = () => {
   }
 
   const goPost = () => {
-    // 로그인 한 유저인지 검증
-    if (!localStorage.getItem('user')) {
-      navigate('/login');
-    } else {
-      navigate('/post');
+    // HOC에서 로그인 유저 검증
+    if (!user) {
+      Swal.fire({
+        icon: 'warning',
+        title: '로그인 후 이용 가능합니다.',
+      });
+      return;
     }
+    navigate('/post');
+  }
+
+  const onLogout = () => {
+    setUser(null);
   }
 
   return (
     <>
-      <Header>
-      </Header>
+      <Header user={user} onLogout={onLogout}/>
       <QuizListBlock>
         {quizzes.map((quiz, index) => (
           <QuizItem key={index}
+                    id={quiz.id}
                     title={quiz.title}
                     answerCount={quiz.answerCount}
                     author={quiz.author}
-                    votes={quiz.votes}
+                    votes={quiz.totalVotes}
                     modifiedAt={new Date(quiz.modifiedAt).toLocaleString('ko-KR', {
                       hour12: false,
-                    }).slice(0, -3)}
+                    }).slice(0, -13)}
           />
         ))}
-        <PageBlock>
-          <div className="spacer"></div>
-          <div className="page">
-            {calculatePageNumber()}
-          </div>
-          <div className="post-button">
-            <StyledButton cyan onClick={goPost}>
-              퀴즈 작성
-            </StyledButton>
-          </div>
-        </PageBlock>
       </QuizListBlock>
+      <Footer>
+        <div className='page'>
+          {calculatePageNumber()}
+        </div>
+        <div className='post'>
+          <StyledButton cyan onClick={goPost}>
+            퀴즈 작성
+          </StyledButton>
+        </div>
+      </Footer>
     </>
   );
 }

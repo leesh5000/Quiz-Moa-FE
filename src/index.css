@@ -16,9 +16,18 @@ body {
   min-height: 100%;
 }
 
-/* 추후 회원 인증 페이지에서 배경 화면을 페이지의 전체 영역에 채우기 위한 용도 */
 html {
-  height: 100%;
+
+  /*!* 스크롤 바가 헤더를 밀어내는 것 방지 *!*/
+  /*overflow: scroll;*/
+  /*overflow-x: hidden;*/
+  /*overflow-y: overlay;*/
+
+  /*height: 100%;*/
+
+  /*-ms-overflow-style: none; !* 인터넷 익스플로러 *!*/
+  /*scrollbar-width: none; !* 파이어폭스 *!*/
+
 }
 
 /* 링크의 색상 및 밑줄 없애기 */
@@ -35,3 +44,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
   monospace;
 }
+
+/*html::-webkit-scrollbar {*/
+/*  display: none;*/
+/*  width: 16px;*/
+/*  background-color: hsla(0, 5%, 77%, 0.29);*/
+/*  !*border-radius: 100px;*!*/
+/*}*/

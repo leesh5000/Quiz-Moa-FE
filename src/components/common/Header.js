@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import React, {useEffect, useState} from "react";
-import {Link} from "react-router-dom";
+import React from "react";
+import {Link, useLocation} from "react-router-dom";
 import {logout} from "../../lib/api/auth";
 import Responsive from "./Responsive";
 import Button from "./Button";
@@ -9,22 +9,31 @@ const HeaderBlock = styled(Responsive)`
 
   position: fixed;
   top: 0;
-  height: 6rem;
-  
+  height: 7rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+
+  @media (max-height: 1024px) {
+    height: 5.75rem;
+  }
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   background-color: brown;
-  
+
   .logo {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: 800;
     letter-spacing: 2px;
+
     @media (max-width: 1024px) {
-      margin-left: 0.25rem;
+      font-size: 1.5rem;
+      margin-left: 0.5rem;
     }
+
   }
-  
+
   .right {
     display: flex;
     align-items: center;
@@ -33,41 +42,35 @@ const HeaderBlock = styled(Responsive)`
 
 const UserBlock = styled.div`
   font-weight: 800;
-  margin-right: 0.25rem;
-  @media (max-width: 1024px) {
+  margin-right: 0.75rem;
+  @media (max-width: 760px) {
     display: none;
   }
 `;
 
 const Spacer = styled.div`
-  height: 6rem;
+  height: 8.75rem;
+
+  @media (max-height: 1080px) {
+    height: 6.25rem;
+  }
+
   background-color: coral;
 `;
 
 const StyledButton = styled(Button)`
-  margin-left: 0.5rem;
-  @media (max-width: 1024px) {
-    margin-right: 0.25rem;
-  }
+  margin-right: 0.75rem;
 `
 
-const Header = () => {
+const Header = ({user, onLogout}) => {
 
   console.log('Header Rendering...');
 
-  const [user, setUser] = useState(null);
+  const location = useLocation();
 
-  useEffect(() => {
-
-    if (JSON.parse(localStorage.getItem('user')) !== null) {
-      setUser(JSON.parse(localStorage.getItem('user')));
-    }
-
-  }, []);
-
-  const onLogout = () => {
+  const onLogoutWrapper = () => {
     logout()
-    setUser(null);
+    onLogout();
   }
 
   return (
@@ -81,17 +84,20 @@ const Header = () => {
               <StyledButton>
                 내 정보
               </StyledButton>
-              <StyledButton onClick={onLogout}>
+              <StyledButton onClick={onLogoutWrapper}>
                 로그아웃
               </StyledButton>
             </div>
-            ) : (
-              <div className="right">
-                <StyledButton to="/login">
-                  로그인
-                </StyledButton>
-              </div>
-            )
+          ) : (
+            <div className="right">
+              <StyledButton to='/login'
+                            state={{
+                              from: location.pathname
+                            }}>
+                로그인
+              </StyledButton>
+            </div>
+          )
           }
         </HeaderBlock>
       </Responsive>
