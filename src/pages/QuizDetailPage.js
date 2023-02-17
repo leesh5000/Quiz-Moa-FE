@@ -183,6 +183,7 @@ const QuizDetailPage = () => {
   }, []);
 
   const onLogout = () => {
+    // 로그아웃 시, Quill Editor 비활성화
     quillInstance.current.root.innerHTML = '';
     quillInstance.current.root.dataset.placeholder = '로그인 후 답변을 입력할 수 있습니다.';
     quillInstance.current.disable();

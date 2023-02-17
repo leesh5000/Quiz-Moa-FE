@@ -8,6 +8,7 @@ import Button from "../components/common/Button";
 import {Link, useNavigate, useSearchParams} from "react-router-dom";
 import Spinner from "../components/common/Spinner";
 import Swal from "sweetalert2";
+import palette from "../lib/styles/palette";
 
 const QuizListBlock = styled(Responsive)`
   
@@ -81,6 +82,9 @@ const QuizListPage = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
 
+  // Default: 최신순
+  const [sort, setSort] = useState('createdAt,desc');
+
   // 한 화면에 보여지는 페이지 개수
   const pageSize = 5;
 
@@ -109,7 +113,11 @@ const QuizListPage = () => {
         // 서버 스펙 상, page 0부터 시작
         const curPage = getCurrentPage() - 1 < 0 ? 0 : getCurrentPage() - 1
 
-        const response = await getQuizzes({page: curPage, size: contentsCountPerPage});
+        const response = await getQuizzes({
+          page: curPage,
+          size: contentsCountPerPage,
+          sort: sort
+        });
         setQuizzes(response.content);
         setTotalPages(response.totalPages);
 
@@ -125,7 +133,7 @@ const QuizListPage = () => {
 
     fetchQuizzes();
 
-  }, [searchParams]);
+  }, [searchParams, sort]);
 
   const calculatePageNumber = () => {
     const arr = [];
@@ -207,9 +215,18 @@ const QuizListPage = () => {
       <Header user={user} onLogout={onLogout}/>
       <QuizListBlock>
         <div className='buttons'>
-          <SortingButton>최신 순</SortingButton>
-          <SortingButton>추천 순</SortingButton>
-          <SortingButton>답변 순</SortingButton>
+          <SortingButton onClick={() => setSort('createdAt,desc')}
+                         style={sort === 'createdAt,desc' ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
+            최신 순
+          </SortingButton>
+          <SortingButton onClick={() => setSort('totalVotes,desc')}
+                         style={sort === 'totalVotes,desc' ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
+            추천 순
+          </SortingButton>
+          <SortingButton onClick={() => setSort('answerCount,desc')}
+                         style={sort === 'answerCount,desc' ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
+            답변 순
+          </SortingButton>
         </div>
         {quizzes.map((quiz, index) => (
           <QuizItem key={index}
