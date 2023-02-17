@@ -17,54 +17,19 @@ const QuizListBlock = styled(Responsive)`
   display: flex;
   flex-direction: column;
   padding-bottom: 3rem;
+  
+  .buttons {
+    display: flex;
+    justify-content: right;
+    background-color: dodgerblue;
+  }
 
 `;
 
-const PageBlock = styled(Responsive)`
-
-  height: 3rem;
-  background-color: coral;
-
-  @media (max-height: 1024px) {
-    height: 2.5rem;
-  }
-
-  @media (max-height: 768px) {
-    height: 2.5rem;
-  }
-  
-  .spacer {
-    height: 12rem;
-    background-color: darkblue;
-  }
-
-  .page {
-    position: absolute;
-    left: 50%;
-    bottom: 50%;
-    transform: translate(-50%, 50%);
-    
-    display: flex;
-    justify-content: space-between;
-    
-    .child {
-      color: blueviolet;
-      font-size: 1.325rem;
-      font-weight: 700;
-      padding-left: 1rem;
-
-      @media (max-width: 420px) {
-        font-size: 1.125rem;
-      }
-    }
-  }
-
-  .post-button {
-    position: absolute;
-    bottom: 50%;
-    right: 0;
-    transform: translate(0%, 50%);
-  }
+const SortingButton = styled(Button)`
+  margin-left: 0.75rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 `;
 
 const StyledButton = styled(Button)`
@@ -142,7 +107,7 @@ const QuizListPage = () => {
         setLoading(true);
 
         // 서버 스펙 상, page 0부터 시작
-        const curPage = getCurrentPage() - 1;
+        const curPage = getCurrentPage() - 1 < 0 ? 0 : getCurrentPage() - 1
 
         const response = await getQuizzes({page: curPage, size: contentsCountPerPage});
         setQuizzes(response.content);
@@ -164,7 +129,7 @@ const QuizListPage = () => {
 
   const calculatePageNumber = () => {
     const arr = [];
-    const curPage = Number(getCurrentPage());
+    const curPage = Number(getCurrentPage()) < 0 ? 1 : Number(getCurrentPage());
 
     // 한 화면에 보여지는 페이지 개수가 전체 페이지 수보다 클 경우에는 1부터 마지막 페이지까지 보여주고 리턴한다.
     if (totalPages <= pageSize) {
@@ -241,6 +206,11 @@ const QuizListPage = () => {
     <>
       <Header user={user} onLogout={onLogout}/>
       <QuizListBlock>
+        <div className='buttons'>
+          <SortingButton>최신 순</SortingButton>
+          <SortingButton>추천 순</SortingButton>
+          <SortingButton>답변 순</SortingButton>
+        </div>
         {quizzes.map((quiz, index) => (
           <QuizItem key={index}
                     id={quiz.id}
@@ -248,9 +218,7 @@ const QuizListPage = () => {
                     answerCount={quiz.answerCount}
                     author={quiz.author}
                     votes={quiz.totalVotes}
-                    modifiedAt={new Date(quiz.modifiedAt).toLocaleString('ko-KR', {
-                      hour12: false,
-                    }).slice(0, -13)}
+                    modifiedAt={new Date(quiz.modifiedAt).toLocaleString().slice(0, -3)}
           />
         ))}
       </QuizListBlock>

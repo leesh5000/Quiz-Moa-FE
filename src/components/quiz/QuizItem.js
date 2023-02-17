@@ -72,11 +72,11 @@ const InfoBlock = styled.div`
   }
 
   .date {
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0;
+    font-weight: 550;
     display: flex;
     align-items: center;
-    background-color: aquamarine;
   }
 `;
 
