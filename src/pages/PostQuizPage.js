@@ -3,8 +3,8 @@ import Editor from "../components/quiz/Editor";
 import Button from "../components/common/Button";
 import styled from "styled-components";
 import {useRef, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {createQuiz} from "../lib/api/quiz";
+import {useLocation, useNavigate} from "react-router-dom";
+import {createQuiz, editQuiz} from "../lib/api/quiz";
 import Spinner from "../components/common/Spinner";
 import Swal from "sweetalert2";
 import '../lib/styles/swal.css';
@@ -41,12 +41,21 @@ const PostQuizPage = ({user, onLogout}) => {
   console.log("PostQuizPage Rendering...");
 
   const navigate = useNavigate();
-
   const [loading, setLoading] = useState(false);
   const quillElement = useRef(null);
   const quillInstance = useRef(null);
-  // 타이틀이 바뀌어도 Re-rendering 되지 않도록 useRef 사용
+  const location = useLocation();
+
+  let quizId = null;
   let title = '';
+  let contents = '';
+
+  // 수정하기를 통해 들어온 경우에는 이전 데이터들을 불러온다.
+  if (location.state) {
+    quizId = location.state.quizId;
+    title = location.state.title;
+    contents = location.state.contents;
+  }
 
   const onChangeField = ({key, value}) => {
     if (key === 'title') {
@@ -84,6 +93,67 @@ const PostQuizPage = ({user, onLogout}) => {
           navigate('/');
         }
       });
+  }
+
+  const onEdit = () => {
+
+    const contents = quillInstance.current.root.innerHTML;
+
+    const edit = async () => {
+
+      if (!validate({title, contents})) {
+        return false;
+      }
+
+      try {
+        setLoading(true);
+        const user = JSON.parse(localStorage.getItem('user'));
+        // 로그인 정보가 없는 경우
+        if (!user) {
+          await Swal.fire({
+            icon: 'warning',
+            position: 'center',
+            title: '로그인 정보가 올바르지 않습니다. 다시 로그인 해주세요.'
+          })
+          return;
+        }
+
+        const userId = user.id;
+        await editQuiz({userId, quizId, title, contents});
+      } catch (e) {
+
+        // 403 에러인 경우는, 유저가 악의적으로 LocalStorage의 유저 정보를 변경한 것이므로 로그아웃 처리한다.
+        if (e.response.status === 403) {
+          await Swal.fire({
+            icon: 'warning',
+            position: 'center',
+            title: '해당 리소스에 접근할 수 없는 유저입니다. <br> 재 로그인 후 다시 시도 해주세요.'
+          })
+          onLogout();
+          setLoading(false);
+          return;
+        }
+
+        await Swal.fire({
+          icon: 'warning',
+          position: 'center',
+          title: '퀴즈 수정에 실패했습니다. 잠시 후 다시 시도해주세요.'
+        });
+      }
+      setLoading(false);
+      return true;
+    };
+
+    edit()
+      .then((result) => {
+        if (result) {
+          navigate(-1);
+        }
+      });
+  }
+
+  const onCancel = () => {
+    navigate(-1);
   }
 
   const validate = ({title, contents}) => {
@@ -130,10 +200,6 @@ const PostQuizPage = ({user, onLogout}) => {
     return true;
   }
 
-  const onCancel = () => {
-    navigate(-1);
-  }
-
   if (loading) {
     return <Spinner/>
   }
@@ -145,10 +211,14 @@ const PostQuizPage = ({user, onLogout}) => {
         <Editor onChangeField={onChangeField}
                 quillInstance={quillInstance}
                 quillElement={quillElement}
+                title={title}
+                contents={contents}
         />
         <ButtonBlock>
           <StyledButton onClick={onCancel}>돌아가기</StyledButton>
-          <StyledButton onClick={onPost}>작성하기</StyledButton>
+          {quizId ?
+            (<StyledButton onClick={onEdit}>수정하기</StyledButton>)
+            : (<StyledButton onClick={onPost}>작성하기</StyledButton>)}
         </ButtonBlock>
       </Responsive>
     </>

@@ -8,6 +8,14 @@ export const createQuiz = ({title, contents}) => {
     });
 };
 
+export const editQuiz = ({userId, quizId, title, contents}) => {
+  return client
+    .put(`/users/${userId}/quizzes/${quizId}`, {title, contents})
+    .then((response) => {
+      return response;
+    });
+}
+
 export const getQuizzes = ({page, size, sort}) => {
 
   return client

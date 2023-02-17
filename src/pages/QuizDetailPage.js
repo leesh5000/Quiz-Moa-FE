@@ -13,7 +13,6 @@ import arrow from "../images/arrow.png";
 import AnswerEditor from "../components/answer/AnswerEditor";
 import Button from "../components/common/Button";
 import {createAnswer} from "../lib/api/answer";
-import Dompurify from "dompurify";
 
 const QuizTitleBlock = styled.div`
   
@@ -90,6 +89,15 @@ const QuizInfoBlock = styled.div`
   
   .date {
     font-weight: 600;
+  }
+  
+  .buttons {
+    background-color: coral;
+    margin-left: auto;
+    
+    button {
+      margin-right: 1rem;
+    }
   }
 `;
 
@@ -272,6 +280,20 @@ const QuizDetailPage = () => {
     navigate(-1);
   }
 
+  const onEdit = () => {
+    navigate('/post', {
+      state: {
+        quizId: quizId,
+        title: quiz.title,
+        contents: quiz.contents,
+      },
+    });
+  }
+
+  const onDelete = () => {
+
+  }
+
   if (loading) {
     return <Spinner/>
   }
@@ -324,8 +346,14 @@ const QuizDetailPage = () => {
               hour12: false,
             }).slice(0, -13)}
           </div>
+          {quiz.author.id === user.id &&
+            <div className='buttons'>
+              <Button onClick={onEdit}>수정</Button>
+              <Button onClick={onDelete}>삭제</Button>
+            </div>
+          }
         </QuizInfoBlock>
-        <QuizContentsBlock dangerouslySetInnerHTML={{__html: Dompurify.sanitize(quiz.contents)}}/>
+        <QuizContentsBlock dangerouslySetInnerHTML={{__html: quiz.contents}}/>
         <AnswerBlock>
           <div className='count'>
             {quiz.answers.length} 답변
