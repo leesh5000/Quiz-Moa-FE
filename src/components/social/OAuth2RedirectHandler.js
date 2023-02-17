@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {login} from "../../lib/api/auth";
 import Spinner from "../common/Spinner";
 
@@ -13,16 +13,30 @@ const OAuth2RedirectHandler = () => {
   const oauth2Type = string.substring(baseRedirectUri.length);
   const authorizationCode = new URL(window.location.href).searchParams.get("code");
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
 
     const socialLogin = async ({oauth2Type, authorizationCode}) => {
       try {
         setLoading(true);
+
         await login({oauth2Type, authorizationCode});
+
+        // 만약, 이전페이지가 있다면, 그곳으로 이동한다.
+        if (localStorage.getItem('from')) {
+          const from = localStorage.getItem('from');
+          navigate(from, {
+            replace: true
+          });
+          localStorage.removeItem('from');
+          return;
+        }
+
         navigate('/', {
           replace: true
         });
+
       } catch (e) {
         navigate('/login', {
           replace: true,
@@ -34,7 +48,8 @@ const OAuth2RedirectHandler = () => {
       setLoading(false);
     };
 
-    socialLogin({oauth2Type, authorizationCode}).then();
+    socialLogin({oauth2Type, authorizationCode});
+
   }, []);
 
   if (loading) {

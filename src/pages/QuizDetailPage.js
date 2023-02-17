@@ -12,6 +12,7 @@ import AnswerItem from "../components/answer/AnswerItem";
 import arrow from "../images/arrow.png";
 import AnswerEditor from "../components/answer/AnswerEditor";
 import Button from "../components/common/Button";
+import {createAnswer} from "../lib/api/answer";
 
 const QuizTitleBlock = styled.div`
   
@@ -95,7 +96,7 @@ const QuizContentsBlock = styled.div`
   width: 100%;
   min-height: 280px;
   background-color: gray;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   padding: 0;
   margin: 0;
   overflow-wrap: break-word;
@@ -162,18 +163,30 @@ const QuizDetailPage = () => {
   const quillInstance = useRef(null);
   const [loading, setLoading] = useState(false);
   const [quiz, setQuiz] = useState(null);
-  const [answers, setAnswers] = useState([]);
-  const id = useParams().id;
-
+  const quizId = useParams().id;
   const navigate = useNavigate();
   const [onModal, setOnModal] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (JSON.parse(localStorage.getItem('user')) !== null) {
+      setUser(JSON.parse(localStorage.getItem('user')));
+    }
+  }, []);
+
+  const onLogout = () => {
+    quillInstance.current.root.innerHTML = '';
+    quillInstance.current.root.dataset.placeholder = '로그인 후 답변을 입력할 수 있습니다.';
+    quillInstance.current.disable();
+    setUser(null);
+  }
 
   useEffect(() => {
     const fetchQuizDetails = async () => {
 
       try {
         setLoading(true);
-        const response = await getQuizDetails(id);
+        const response = await getQuizDetails(quizId);
         setQuiz(response);
         console.log(response);
       } catch (e) {
@@ -192,6 +205,53 @@ const QuizDetailPage = () => {
 
   }, []);
 
+  const onPost = () => {
+    const contents = quillInstance.current.root.innerHTML;
+    const postQuiz = async () => {
+
+      if (!validate(contents)) {
+        return false;
+      }
+
+      try {
+        setLoading(true);
+        await createAnswer(quizId, contents);
+      } catch (e) {
+        await Swal.fire({
+          icon: 'warning',
+          position: 'center',
+          title: '퀴즈 작성에 실패했습니다. 잠시 후 다시 시도해주세요.'
+        })
+      }
+      setLoading(false);
+      return true;
+    };
+
+    postQuiz()
+      .then((result) => {
+        if (result) {
+          navigate('/');
+        }
+      });
+  }
+
+  const validate = (contents) => {
+
+    // 본문에 태그가 들어가지 않도록 처리
+    contents = contents.replace(/<[^>]*>/g, '');
+
+    if (contents.length < 10) {
+      Swal.fire({
+        icon: 'warning',
+        position: 'center',
+        title: '본문은 최소 10자 이상으로 작성해주세요.'
+      });
+      return false;
+    }
+
+    return true;
+  }
+
   if (loading) {
     return <Spinner/>
   }
@@ -202,33 +262,31 @@ const QuizDetailPage = () => {
 
   return (
     <>
-      <Header/>
+      <Header user={user} onLogout={onLogout}/>
       <Responsive>
         <QuizTitleBlock>
           <div className='vote'>
             <img className='button'
                  onClick={() => console.log('upvote')}
                  src={arrow}
-                 style={{width: '26px', transform: 'rotate(180deg)'}}
-            >
-            </img>
+                 style={{width: '26px', transform: 'rotate(180deg)'}}/>
             <button className='count-button'
-                    onClick={() => setOnModal(!onModal)}
-                    style={{color: onModal ? palette.gray[6] : palette.gray[8]}}
-            >
+                    onClick={(e) => {
+                      setOnModal(!onModal)
+                      // 이벤트 버블링 방지
+                      e.stopPropagation();
+                      return false;
+                    }}
+                    style={{color: onModal ? palette.gray[6] : palette.gray[8]}}>
               {quiz.votes.length}
             </button>
             {onModal &&
               <VoteModal setOnModal={() => setOnModal(false)}
-                         votes={quiz.votes}
-              />
-            }
+                         votes={quiz.votes}/>}
             <img className='button'
                  onClick={() => console.log('downvote')}
                  src={arrow}
-                 style={{width: '26px', transform: 'rotate(360deg)'}}
-            >
-            </img>
+                 style={{width: '26px', transform: 'rotate(360deg)'}}/>
           </div>
           <div className='title'>
             {quiz.title}
@@ -252,7 +310,7 @@ const QuizDetailPage = () => {
         </QuizContentsBlock>
         <AnswerBlock>
           <div className='count'>
-            16 답변
+            {quiz.answers.length} 답변
           </div>
           {quiz.answers.map((answer, index) => (
             <AnswerItem key={index}
@@ -268,12 +326,12 @@ const QuizDetailPage = () => {
         <EditorTitle>
           답변하기
         </EditorTitle>
-        <AnswerEditor type='answer'
-                      quillInstance={quillInstance}
+        <AnswerEditor quillInstance={quillInstance}
                       quillElement={quillElement}
+                      user={user}
         />
         <ButtonBlock>
-          <ButtonStyle>제출하기</ButtonStyle>
+          <ButtonStyle onClick={onPost}>제출하기</ButtonStyle>
         </ButtonBlock>
         <Spacer></Spacer>
       </Responsive>

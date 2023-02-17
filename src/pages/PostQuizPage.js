@@ -36,7 +36,7 @@ const StyledButton = styled(Button)`
   margin-right: 0.75rem;
 `;
 
-const PostQuizPage = () => {
+const PostQuizPage = ({user, onLogout}) => {
 
   console.log("PostQuizPage Rendering...");
 
@@ -140,10 +140,9 @@ const PostQuizPage = () => {
 
   return (
     <>
-      <Header/>
+      <Header user={user} onLogout={onLogout}/>
       <Responsive>
-        <Editor type={'quiz'}
-                onChangeField={onChangeField}
+        <Editor onChangeField={onChangeField}
                 quillInstance={quillInstance}
                 quillElement={quillElement}
         />

@@ -7,7 +7,6 @@ import Swal from "sweetalert2";
 const client = axios.create();
 
 client.defaults.baseURL = 'http://localhost:8081/dev/api';
-// client.defaults.headers.common['Authorization'] = 'Bearer ';
 
 client.interceptors.request.use(
   config => {

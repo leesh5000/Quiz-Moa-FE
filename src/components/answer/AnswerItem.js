@@ -36,8 +36,6 @@ const AnswerTitleBlock = styled.div`
       outline: none;
       font-size: 1rem;
       font-weight: bold;
-      padding: 0;
-      margin: 0;
       background-color: brown;
     }
 
@@ -95,7 +93,12 @@ const AnswerItem = ({id, contents, author, votes, createdAt, modifiedAt}) => {
                style={{width: '22px', transform: 'rotate(180deg)'}}
           />
           <button className='count-button'
-                  onClick={() => setOnModal(!onModal)}
+                  onClick={(e) => {
+                    setOnModal(!onModal)
+                    // 이벤트 버블링 방지
+                    e.stopPropagation();
+                    return false;
+                  }}
                   style={{color: onModal ? palette.gray[6] : palette.gray[8]}}
           >
             {votes.length}

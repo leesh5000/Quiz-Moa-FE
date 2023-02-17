@@ -58,7 +58,7 @@ const QuillWrapper = styled.div`
   }
 `;
 
-const Editor = ({type, onChangeField, quillElement, quillInstance}) => {
+const Editor = ({onChangeField, quillElement, quillInstance}) => {
 
   console.log("Editor Rendering...");
 
@@ -92,11 +92,8 @@ const Editor = ({type, onChangeField, quillElement, quillInstance}) => {
 
   return (
     <EditorBlock>
-      {type === 'quiz' &&
-        <TitleInput placeholder="제목을 입력하세요"
-                    onChange={onChangeTitle}
-        />
-      }
+      <TitleInput placeholder="제목을 입력하세요"
+                  onChange={onChangeTitle}/>
       <QuillWrapper>
         <div ref={quillElement}/>
       </QuillWrapper>

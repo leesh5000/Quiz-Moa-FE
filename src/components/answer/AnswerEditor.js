@@ -1,9 +1,8 @@
-import {useEffect} from 'react';
+import {useEffect, useRef} from 'react';
 import Quill from 'quill';
 import 'quill/dist/quill.bubble.css';
 import 'quill/dist/quill.snow.css';
 import styled from 'styled-components';
-import palette from "../../lib/styles/palette";
 import Responsive from "../common/Responsive";
 
 
@@ -36,18 +35,20 @@ const QuillWrapper = styled.div`
       min-height: 360px;
       max-height: 360px;
     }
-
   }
 `;
 
-const AnswerEditor = ({type, onChangeField, quillElement, quillInstance}) => {
+const AnswerEditor = ({quillElement, quillInstance, user}) => {
 
   console.log("Editor Rendering...");
+
+  const ref = useRef(null);
 
   useEffect(() => {
     quillInstance.current = new Quill(quillElement.current, {
       theme: 'snow',
-      placeholder: '내용을 작성하세요',
+      // 로그인 여부 체크
+      placeholder: user ? '답변을 입력하세요.' : '로그인 후 답변을 입력할 수 있습니다.',
       modules: {
         // https://quilljs.com/docs/modules/toolbar/ 참고
         toolbar: [
@@ -59,18 +60,15 @@ const AnswerEditor = ({type, onChangeField, quillElement, quillInstance}) => {
       },
     });
 
-    // 참고: https://quilljs.com/docs/api/#events
-    const quill = quillInstance.current;
-    quill.on('text-change', (delta, oldDelta, source) => {
-      if (source === 'user') {
-        onChangeField({key: 'body', value: quill.root.innerHTML});
-      }
-    });
-  }, [onChangeField]);
+    if (!user) {
+      quillInstance.current.disable();
+    }
+
+  }, []);
 
   return (
     <EditorBlock>
-      <QuillWrapper>
+      <QuillWrapper ref={ref}>
         <div ref={quillElement}/>
       </QuillWrapper>
     </EditorBlock>

@@ -10,14 +10,16 @@ export const createQuiz = ({title, contents}) => {
 
 export const getQuizzes = ({page, size}) => {
 
-  return client.get("/quizzes", {params: {page, size}})
+  return client
+    .get("/quizzes", {params: {page, size}})
     .then((response) => {
       return response;
     });
 }
 
-export const getQuizDetails = (id) => {
-  return client.get(`/quizzes/${id}`)
+export const getQuizDetails = (quizId) => {
+  return client
+    .get(`/quizzes/${quizId}`)
     .then((response) => {
       return response;
     });

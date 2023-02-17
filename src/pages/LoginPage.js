@@ -71,15 +71,21 @@ const LoginPage = () => {
   let error = undefined;
   const location = useLocation();
 
+  // 이전 페이지가 있으면, localStorage에 저장 (Social Login 후, 이동할 페이지)
+  // 소셜 로그인은 외부 API와 연동된 후 리다이렉트로 이동되므로, 이전 페이지 정보를 로컬 스토리지에 저장해둔다.
+  if (location.state?.from) {
+    localStorage.setItem('from', location.state.from);
+  }
+
   if (location.state && location.state.error) {
     error = location.state.error;
     // 페이지 새로고침 시, state 값 제거
-    window.history.replaceState({}, document.title)
+    window.history.replaceState({}, document.title);
     Swal.fire({
       icon: 'warning',
       position: 'center',
       title: error
-    })
+    });
   }
 
   return (
