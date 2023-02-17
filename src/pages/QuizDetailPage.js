@@ -13,6 +13,7 @@ import arrow from "../images/arrow.png";
 import AnswerEditor from "../components/answer/AnswerEditor";
 import Button from "../components/common/Button";
 import {createAnswer} from "../lib/api/answer";
+import Dompurify from "dompurify";
 
 const QuizTitleBlock = styled.div`
   
@@ -323,7 +324,7 @@ const QuizDetailPage = () => {
             }).slice(0, -13)}
           </div>
         </QuizInfoBlock>
-        <QuizContentsBlock dangerouslySetInnerHTML={{__html: quiz.contents}}/>
+        <QuizContentsBlock dangerouslySetInnerHTML={{__html: Dompurify.sanitize(quiz.contents)}}/>
         <AnswerBlock>
           <div className='count'>
             {quiz.answers.length} 답변
