@@ -1,6 +1,6 @@
 import Header from "../components/common/Header";
 import {useEffect, useRef, useState} from "react";
-import {getQuizDetails} from "../lib/api/quiz";
+import {deleteQuiz, getQuizDetails} from "../lib/api/quiz";
 import {useNavigate, useParams} from "react-router-dom";
 import Swal from "sweetalert2";
 import Spinner from "../components/common/Spinner";
@@ -12,8 +12,8 @@ import AnswerItem from "../components/answer/AnswerItem";
 import arrow from "../images/arrow.png";
 import AnswerEditor from "../components/answer/AnswerEditor";
 import Button from "../components/common/Button";
-import {createAnswer} from "../lib/api/answer";
-import Dompurify from "dompurify";
+import {createAnswer, deleteAnswer, editAnswer} from "../lib/api/answer";
+import getLoginUser from "../lib/utils/getLoginUser";
 
 const QuizTitleBlock = styled.div`
   
@@ -90,6 +90,15 @@ const QuizInfoBlock = styled.div`
   
   .date {
     font-weight: 600;
+  }
+  
+  .buttons {
+    background-color: coral;
+    margin-left: auto;
+    
+    button {
+      margin-right: 1rem;
+    }
   }
 `;
 
@@ -175,11 +184,10 @@ const QuizDetailPage = () => {
   const navigate = useNavigate();
   const [onModal, setOnModal] = useState(false);
   const [user, setUser] = useState(null);
+  const [answerEditId, setAnswerEditId] = useState(false);
 
   useEffect(() => {
-    if (JSON.parse(localStorage.getItem('user')) !== null) {
-      setUser(JSON.parse(localStorage.getItem('user')));
-    }
+    setUser(getLoginUser());
   }, []);
 
   const onLogout = () => {
@@ -188,6 +196,7 @@ const QuizDetailPage = () => {
     quillInstance.current.root.dataset.placeholder = '로그인 후 답변을 입력할 수 있습니다.';
     quillInstance.current.disable();
     setUser(null);
+    setAnswerEditId(false);
   }
 
   const fetchQuizDetails = async () => {
@@ -226,15 +235,6 @@ const QuizDetailPage = () => {
 
   const onPost = () => {
 
-    // 로그인 유저인지 검증
-    if (!user) {
-      Swal.fire({
-        icon: 'warning',
-        title: '로그인 후 이용 가능합니다.',
-      })
-      return false;
-    }
-
     const contents = quillInstance.current.root.innerHTML;
 
     if (contents.replace(/<[^>]*>/g, '').length < 10) {
@@ -252,10 +252,10 @@ const QuizDetailPage = () => {
         await createAnswer(quizId, contents);
       } catch (e) {
         await Swal.fire({
-          icon: 'warning',
+          icon: 'error',
           position: 'center',
-          title: '퀴즈 작성에 실패했습니다. 잠시 후 다시 시도해주세요.'
-        })
+          title: '답변 작성에 실패했습니다. 잠시 후 다시 시도해주세요.'
+        });
       }
       setLoading(false);
       return true;
@@ -270,6 +270,150 @@ const QuizDetailPage = () => {
 
   const onCancel = () => {
     navigate(-1);
+  }
+
+  const onEdit = () => {
+    navigate('/post', {
+      state: {
+        quizId: quizId,
+        title: quiz.title,
+        contents: quiz.contents,
+      },
+    });
+  }
+
+  const onDelete = () => {
+
+    const deleteUserQuiz = async () => {
+
+      try {
+        setLoading(true);
+        await deleteQuiz(user.id, quizId);
+
+      } catch (e) {
+        await Swal.fire({
+          icon: 'error',
+          position: 'center',
+          title: '퀴즈 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.'
+        })
+      }
+      setLoading(false);
+      return true;
+    };
+
+    // 삭제 확인 창 모달
+    Swal.fire({
+      icon: 'warning',
+      text: '정말로 삭제하시겠습니까?',
+      position: 'center',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '삭제하기'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // 퀴즈 삭제에 성공하면, 홈 화면으로 이동
+        deleteUserQuiz()
+          .then(() => {
+            navigate('/quizzes', {
+              replace: true
+            });
+          });
+      }
+    })
+  }
+
+  const onAnswerEdit = (id) => {
+    // 현재 수정 중인 답변의 수정 버튼을 다시 누르면, 수정 모드를 해제한다.
+    if (answerEditId === id) {
+      setAnswerEditId(false);
+      return;
+    }
+    setAnswerEditId(id);
+    window.scrollTo(0, quillElement.current.offsetTop);
+  }
+
+  const onAnswerDelete = (quizId) => {
+
+      const deleteOn = async () => {
+
+        try {
+          setLoading(true);
+          await deleteAnswer(user.id, quizId);
+
+        } catch (e) {
+          await Swal.fire({
+            icon: 'error',
+            position: 'center',
+            title: '답변 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.'
+          })
+        }
+        setLoading(false);
+        return true;
+      };
+
+      // 삭제 확인 창 모달
+      Swal.fire({
+        icon: 'warning',
+        text: '정말로 삭제하시겠습니까?',
+        position: 'center',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '삭제하기'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // 답변 삭제에 성공하면, 퀴즈 상세 데이터를 다시 가져오기
+          deleteOn()
+            .then(() => {
+              fetchQuizDetails();
+            });
+        }
+      })
+
+  }
+
+  const onEditConfirm = () => {
+
+    const contents = quillInstance.current.root.innerHTML;
+
+    if (contents.replace(/<[^>]*>/g, '').length < 10) {
+      Swal.fire({
+        icon: 'warning',
+        title: '본문은 최소 10자 이상으로 작성해주세요.'
+      });
+      return false;
+    }
+
+    const edit = async () => {
+      try {
+        setLoading(true);
+        await editAnswer(user.id, answerEditId, contents);
+      } catch (e) {
+        await Swal.fire({
+          icon: 'error',
+          position: 'center',
+          title: '답변 수정에 실패했습니다. 잠시 후 다시 시도해주세요.'
+        });
+      }
+      setLoading(false);
+      return true;
+    };
+
+    // 답변 수정에 성공하면, 퀴즈 상세 데이터를 다시 가져오기
+    edit()
+      .then(() => {
+        fetchQuizDetails();
+      })
+      // 답변 수정 모드 해제
+      .finally(() => {
+        setAnswerEditId(false)
+      });
+  }
+
+  const onEditCancel = () => {
+    quillInstance.current.root.innerHTML = '';
+    setAnswerEditId(false);
   }
 
   if (loading) {
@@ -324,8 +468,14 @@ const QuizDetailPage = () => {
               hour12: false,
             }).slice(0, -13)}
           </div>
+          {quiz.author.id === (user && user.id) &&
+            <div className='buttons'>
+              <Button onClick={onEdit}>수정</Button>
+              <Button onClick={onDelete}>삭제</Button>
+            </div>
+          }
         </QuizInfoBlock>
-        <QuizContentsBlock dangerouslySetInnerHTML={{__html: Dompurify.sanitize(quiz.contents)}}/>
+        <QuizContentsBlock dangerouslySetInnerHTML={{__html: quiz.contents}}/>
         <AnswerBlock>
           <div className='count'>
             {quiz.answers.length} 답변
@@ -338,21 +488,38 @@ const QuizDetailPage = () => {
                         votes={answer.votes}
                         createdAt={answer.createdAt}
                         modifiedAt={answer.modifiedAt}
+                        user={user}
+                        onEdit={onAnswerEdit}
+                        onDelete={onAnswerDelete}
+                        isEditMode={answerEditId === answer.id}
             />
           ))}
         </AnswerBlock>
         <EditorTitle>
-          답변하기
+          {answerEditId ?
+            <div style={{
+              display: 'inline-block',
+              boxShadow: 'inset 0 -10rem 0 #D9FCDB',
+              transition : 'all 2s ease-in-out'
+            }}>답변 수정하기</div> :
+            <div>작성하기</div>
+          }
         </EditorTitle>
         <AnswerEditor quillInstance={quillInstance}
                       quillElement={quillElement}
                       user={user}
         />
-        <ButtonBlock>
-          <ButtonStyle onClick={onCancel}>돌아가기</ButtonStyle>
-          <ButtonStyle onClick={onPost}>제출하기</ButtonStyle>
-        </ButtonBlock>
-        <Spacer></Spacer>
+        {answerEditId ?
+          <ButtonBlock>
+            <ButtonStyle onClick={onEditConfirm}>수정하기</ButtonStyle>
+            <ButtonStyle onClick={onEditCancel}>취소하기</ButtonStyle>
+          </ButtonBlock> :
+          <ButtonBlock>
+            <ButtonStyle onClick={onPost}>제출하기</ButtonStyle>
+            <ButtonStyle onClick={onCancel}>돌아가기</ButtonStyle>
+          </ButtonBlock>
+        }
+        <Spacer/>
       </Responsive>
     </>
   );

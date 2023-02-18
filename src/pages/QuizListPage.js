@@ -9,6 +9,7 @@ import {Link, useNavigate, useSearchParams} from "react-router-dom";
 import Spinner from "../components/common/Spinner";
 import Swal from "sweetalert2";
 import palette from "../lib/styles/palette";
+import getLoginUser from "../lib/utils/getLoginUser";
 
 const QuizListBlock = styled(Responsive)`
   
@@ -100,9 +101,7 @@ const QuizListPage = () => {
   }
 
   useEffect(() => {
-    if (JSON.parse(localStorage.getItem('user')) !== null) {
-      setUser(JSON.parse(localStorage.getItem('user')));
-    }
+    setUser(getLoginUser());
   }, [])
 
   useEffect(() => {

@@ -58,7 +58,7 @@ const QuillWrapper = styled.div`
   }
 `;
 
-const Editor = ({onChangeField, quillElement, quillInstance}) => {
+const Editor = ({onChangeField, quillElement, quillInstance, title, contents}) => {
 
   console.log("Editor Rendering...");
 
@@ -69,7 +69,8 @@ const Editor = ({onChangeField, quillElement, quillInstance}) => {
   useEffect(() => {
     quillInstance.current = new Quill(quillElement.current, {
       theme: 'snow',
-      placeholder: '내용을 작성하세요',
+      // 이전 포스트의 내용이 있다면, PlaceHolder 제거
+      placeholder: !contents ? '내용을 작성하세요' : '',
       modules: {
         // https://quilljs.com/docs/modules/toolbar/ 참고
         toolbar: [
@@ -88,11 +89,18 @@ const Editor = ({onChangeField, quillElement, quillInstance}) => {
         onChangeField({key: 'body', value: quill.root.innerHTML});
       }
     });
+
+    // 이전 포스트의 내용이 있다면, 이전 내용을 불러오기
+    if (contents !== '') {
+      quill.root.innerHTML = contents;
+    }
+
   }, [onChangeField]);
 
   return (
     <EditorBlock>
       <TitleInput placeholder="제목을 입력하세요"
+                  defaultValue={title}
                   onChange={onChangeTitle}/>
       <QuillWrapper>
         <div ref={quillElement}/>

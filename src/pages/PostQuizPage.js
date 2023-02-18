@@ -3,8 +3,8 @@ import Editor from "../components/quiz/Editor";
 import Button from "../components/common/Button";
 import styled from "styled-components";
 import {useRef, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {createQuiz} from "../lib/api/quiz";
+import {useLocation, useNavigate} from "react-router-dom";
+import {createQuiz, editQuiz} from "../lib/api/quiz";
 import Spinner from "../components/common/Spinner";
 import Swal from "sweetalert2";
 import '../lib/styles/swal.css';
@@ -41,12 +41,21 @@ const PostQuizPage = ({user, onLogout}) => {
   console.log("PostQuizPage Rendering...");
 
   const navigate = useNavigate();
-
   const [loading, setLoading] = useState(false);
   const quillElement = useRef(null);
   const quillInstance = useRef(null);
-  // 타이틀이 바뀌어도 Re-rendering 되지 않도록 useRef 사용
+  const location = useLocation();
+
+  let quizId = null;
   let title = '';
+  let contents = '';
+
+  // 수정하기를 통해 들어온 경우에는 이전 데이터들을 불러온다.
+  if (location.state) {
+    quizId = location.state.quizId;
+    title = location.state.title;
+    contents = location.state.contents;
+  }
 
   const onChangeField = ({key, value}) => {
     if (key === 'title') {
@@ -69,7 +78,7 @@ const PostQuizPage = ({user, onLogout}) => {
         await createQuiz({title, contents});
       } catch (e) {
         await Swal.fire({
-          icon: 'warning',
+          icon: 'error',
           position: 'center',
           title: '퀴즈 작성에 실패했습니다. 잠시 후 다시 시도해주세요.'
         })
@@ -84,6 +93,43 @@ const PostQuizPage = ({user, onLogout}) => {
           navigate('/');
         }
       });
+  }
+
+  const onEdit = () => {
+
+    const contents = quillInstance.current.root.innerHTML;
+
+    const edit = async () => {
+
+      if (!validate({title, contents})) {
+        return false;
+      }
+
+      try {
+        setLoading(true);
+        const userId = user.id;
+        await editQuiz({userId, quizId, title, contents});
+      } catch (e) {
+        await Swal.fire({
+          icon: 'error',
+          position: 'center',
+          title: '퀴즈 수정에 실패했습니다. 잠시 후 다시 시도해주세요.'
+        });
+      }
+      setLoading(false);
+      return true;
+    };
+
+    edit()
+      .then((result) => {
+        if (result) {
+          navigate(-1);
+        }
+      });
+  }
+
+  const onCancel = () => {
+    navigate(-1);
   }
 
   const validate = ({title, contents}) => {
@@ -130,10 +176,6 @@ const PostQuizPage = ({user, onLogout}) => {
     return true;
   }
 
-  const onCancel = () => {
-    navigate(-1);
-  }
-
   if (loading) {
     return <Spinner/>
   }
@@ -145,10 +187,14 @@ const PostQuizPage = ({user, onLogout}) => {
         <Editor onChangeField={onChangeField}
                 quillInstance={quillInstance}
                 quillElement={quillElement}
+                title={title}
+                contents={contents}
         />
         <ButtonBlock>
+          {quizId ?
+            (<StyledButton onClick={onEdit}>수정하기</StyledButton>)
+            : (<StyledButton onClick={onPost}>작성하기</StyledButton>)}
           <StyledButton onClick={onCancel}>돌아가기</StyledButton>
-          <StyledButton onClick={onPost}>작성하기</StyledButton>
         </ButtonBlock>
       </Responsive>
     </>

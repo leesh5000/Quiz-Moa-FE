@@ -7,7 +7,6 @@ import Button from "./Button";
 
 const HeaderBlock = styled(Responsive)`
 
-  position: fixed;
   top: 0;
   height: 7rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
@@ -48,19 +47,9 @@ const UserBlock = styled.div`
   }
 `;
 
-const Spacer = styled.div`
-  height: 8.75rem;
-
-  @media (max-height: 1080px) {
-    height: 6.25rem;
-  }
-
-  background-color: coral;
-`;
-
 const StyledButton = styled(Button)`
   margin-right: 0.75rem;
-`
+`;
 
 const Header = ({user, onLogout}) => {
 
@@ -101,7 +90,6 @@ const Header = ({user, onLogout}) => {
           }
         </HeaderBlock>
       </Responsive>
-      <Spacer/>
     </>
   );
 }
