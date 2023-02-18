@@ -83,8 +83,22 @@ const QuizListPage = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
 
+  const sortType = {
+    latest: 'createdAt,desc',
+    answers: 'answerCount,desc',
+    totalVotes: 'totalVotes,desc',
+  }
+
   // Default: 최신순
-  const [sort, setSort] = useState('createdAt,desc');
+  const [sort, setSort] = useState(() => {
+    let defaultSort = localStorage.getItem('sort');
+    // 만약, 사용자가 악의적으로 LocalStorage의 Sort를 변경하여 Sort Type에 없는 값이 들어가는 경우에는 기본값인 최신순으로 설정한다.
+    if (Object.values(sortType).filter(value => value === defaultSort).length === 0) {
+      defaultSort = sortType.latest;
+      localStorage.setItem('sort', defaultSort);
+    }
+    return defaultSort;
+  });
 
   // 한 화면에 보여지는 페이지 개수
   const pageSize = 5;
@@ -102,19 +116,15 @@ const QuizListPage = () => {
 
   useEffect(() => {
     setUser(getLoginUser());
-  }, [])
+  }, []);
 
   useEffect(() => {
-    const fetchQuizzes = async () => {
+    const fetchQuizzes = async (page, size, sort) => {
       try {
         setLoading(true);
-
-        // 서버 스펙 상, page 0부터 시작
-        const curPage = getCurrentPage() - 1 < 0 ? 0 : getCurrentPage() - 1
-
         const response = await getQuizzes({
           page: curPage,
-          size: contentsCountPerPage,
+          size: size,
           sort: sort
         });
         setQuizzes(response.content);
@@ -130,7 +140,9 @@ const QuizListPage = () => {
       setLoading(false);
     };
 
-    fetchQuizzes();
+    // 서버 스펙 상, page 0부터 시작
+    const curPage = getCurrentPage() - 1 < 0 ? 0 : getCurrentPage() - 1;
+    fetchQuizzes(curPage, contentsCountPerPage, sort);
 
   }, [searchParams, sort]);
 
@@ -209,21 +221,27 @@ const QuizListPage = () => {
     setUser(null);
   }
 
+  const onSort = (sort) => {
+    setSort(sort);
+    // 페이지가 이동되더라도, 정렬 방식은 유지되도록 하기 위해 localStorage 에 저장한다.
+    localStorage.setItem('sort', sort);
+  }
+
   return (
     <>
       <Header user={user} onLogout={onLogout}/>
       <QuizListBlock>
         <div className='buttons'>
-          <SortingButton onClick={() => setSort('createdAt,desc')}
-                         style={sort === 'createdAt,desc' ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
+          <SortingButton onClick={() => onSort(sortType.latest)}
+                         style={sort === sortType.latest ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
             최신 순
           </SortingButton>
-          <SortingButton onClick={() => setSort('totalVotes,desc')}
-                         style={sort === 'totalVotes,desc' ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
+          <SortingButton onClick={() => onSort(sortType.totalVotes)}
+                         style={sort === sortType.totalVotes ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
             추천 순
           </SortingButton>
-          <SortingButton onClick={() => setSort('answerCount,desc')}
-                         style={sort === 'answerCount,desc' ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
+          <SortingButton onClick={() => onSort(sortType.answers)}
+                         style={sort === sortType.answers ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
             답변 순
           </SortingButton>
         </div>
