@@ -82,8 +82,9 @@ const PostQuizPage = ({user, onLogout}) => {
           position: 'center',
           title: '퀴즈 작성에 실패했습니다. 잠시 후 다시 시도해주세요.'
         })
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
       return true;
     };
 

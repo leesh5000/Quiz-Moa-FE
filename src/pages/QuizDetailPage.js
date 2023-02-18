@@ -1,6 +1,6 @@
 import Header from "../components/common/Header";
 import {useEffect, useRef, useState} from "react";
-import {deleteQuiz, getQuizDetails} from "../lib/api/quiz";
+import {deleteQuiz, getQuizDetails, voteQuiz} from "../lib/api/quiz";
 import {useNavigate, useParams} from "react-router-dom";
 import Swal from "sweetalert2";
 import Spinner from "../components/common/Spinner";
@@ -351,16 +351,17 @@ const QuizDetailPage = () => {
       try {
         setLoading(true);
         await deleteAnswer(user.id, answerId);
-
+        return true;
       } catch (e) {
         await Swal.fire({
           icon: 'error',
           position: 'center',
           title: '답변 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.'
         })
+        throw e;
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-      return true;
     };
 
     // 삭제 확인 창 모달
@@ -422,9 +423,12 @@ const QuizDetailPage = () => {
           position: 'center',
           title: '답변 수정에 실패했습니다. 잠시 후 다시 시도해주세요.'
         });
+
+        throw e;
+
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-      return true;
     };
 
     // 답변 수정에 성공하면, 굳이 퀴즈 상세 데이터를 다시 가져올 필요 없이 현재 보이는 답변 데이터만 수정한다.
@@ -461,6 +465,19 @@ const QuizDetailPage = () => {
       return false;
     }
 
+    const vote = async (value) => {
+      try {
+        setLoading(true);
+        await voteQuiz(quiz.id, value);
+      } catch (e) {
+        await Swal.fire({
+          icon: 'error',
+          position: 'center',
+          title: '투표에 실패했습니다. 잠시 후 다시 시도해주세요.'
+        });
+      }
+    }
+
   }
 
   if (loading) {
@@ -495,7 +512,7 @@ const QuizDetailPage = () => {
               <VoteModal setOnModal={() => setOnModal(false)}
                          votes={quiz.votes}/>}
             <img className='button'
-                 onClick={() => console.log('downvote')}
+                 onClick={() => onVote(-1)}
                  src={arrow}
                  style={{width: '26px', transform: 'rotate(360deg)'}}/>
           </div>
