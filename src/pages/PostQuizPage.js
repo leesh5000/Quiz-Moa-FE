@@ -78,7 +78,7 @@ const PostQuizPage = ({user, onLogout}) => {
         await createQuiz({title, contents});
       } catch (e) {
         await Swal.fire({
-          icon: 'warning',
+          icon: 'error',
           position: 'center',
           title: '퀴즈 작성에 실패했습니다. 잠시 후 다시 시도해주세요.'
         })
@@ -111,7 +111,7 @@ const PostQuizPage = ({user, onLogout}) => {
         await editQuiz({userId, quizId, title, contents});
       } catch (e) {
         await Swal.fire({
-          icon: 'warning',
+          icon: 'error',
           position: 'center',
           title: '퀴즈 수정에 실패했습니다. 잠시 후 다시 시도해주세요.'
         });

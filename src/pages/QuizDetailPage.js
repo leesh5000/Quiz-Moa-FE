@@ -250,7 +250,7 @@ const QuizDetailPage = () => {
         await createAnswer(quizId, contents);
       } catch (e) {
         await Swal.fire({
-          icon: 'warning',
+          icon: 'error',
           position: 'center',
           title: '답변 작성에 실패했습니다. 잠시 후 다시 시도해주세요.'
         });
@@ -283,8 +283,8 @@ const QuizDetailPage = () => {
   const onDelete = () => {
 
     const deleteUserQuiz = async () => {
-      try {
 
+      try {
         setLoading(true);
         const user = getLoginUser();
         // 로그인 정보가 없는 경우에는 로그아웃 처리한다.
@@ -297,13 +297,12 @@ const QuizDetailPage = () => {
           onLogout();
           return;
         }
-
         const userId = user.id;
         await deleteQuiz(userId, quizId);
 
       } catch (e) {
         await Swal.fire({
-          icon: 'warning',
+          icon: 'error',
           position: 'center',
           title: '퀴즈 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.'
         })
@@ -312,13 +311,25 @@ const QuizDetailPage = () => {
       return true;
     };
 
-    // 퀴즈 삭제에 성공하면, 홈 화면으로 이동
-    deleteUserQuiz()
-      .then(() => {
-        navigate('/quizzes', {
-          replace: true
-        });
-      });
+    // 삭제 확인 창 모달
+    Swal.fire({
+      icon: 'warning',
+      text: '정말로 삭제하시겠습니까?',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '삭제하기'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // 퀴즈 삭제에 성공하면, 홈 화면으로 이동
+        deleteUserQuiz()
+          .then(() => {
+            navigate('/quizzes', {
+              replace: true
+            });
+          });
+      }
+    })
   }
 
   if (loading) {

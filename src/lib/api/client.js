@@ -46,7 +46,7 @@ client.interceptors.response.use(
         .catch(e => {
           console.log("token refresh failed = " + e);
           Swal.fire({
-            icon: 'warning',
+            icon: 'error',
             position: 'center',
             title: '로그인이 만료되었습니다. 다시 로그인해주세요.'
           })
