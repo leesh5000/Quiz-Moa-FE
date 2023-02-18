@@ -215,7 +215,7 @@ const QuizDetailPage = () => {
           icon: 'warning',
           title: '삭제된 퀴즈입니다.',
         });
-        navigate(-1);
+        navigate('/');
         return false;
       }
 
@@ -404,6 +404,19 @@ const QuizDetailPage = () => {
         setLoading(true);
         await editAnswer(user.id, answerEditId, contents);
       } catch (e) {
+
+        // 만약, 사용자가 임의로 토큰을 변경하거나 삭제한 경우에는 401 에러가 발생한다. 이 경우에는 강제 로그아웃 처리한다.
+        if (e.response.status === 401) {
+          await Swal.fire({
+            icon: 'warning',
+            position: 'center',
+            title: '로그인 후 이용해주세요.',
+          });
+          localStorage.removeItem('accessToken');
+          navigate('/login');
+          return;
+        }
+
         await Swal.fire({
           icon: 'error',
           position: 'center',
@@ -421,7 +434,6 @@ const QuizDetailPage = () => {
 
         // 객체의 원본을 바꿔버리는 코드
         // quiz.answers.map(answer => answer.id === answerEditId ? answer.contents = contents : answer);
-
         const updateAnswers = quiz.answers
           .map(answer => answer.id === answerEditId ? {...answer, contents: contents} : answer);
 
@@ -439,6 +451,18 @@ const QuizDetailPage = () => {
     setAnswerEditId(false);
   }
 
+  const onVote = (value) => {
+
+    if (!user) {
+      Swal.fire({
+        icon: 'warning',
+        title: '로그인 후 투표가 가능합니다.',
+      });
+      return false;
+    }
+
+  }
+
   if (loading) {
     return <Spinner/>
   }
@@ -454,7 +478,7 @@ const QuizDetailPage = () => {
         <QuizTitleBlock>
           <div className='vote'>
             <img className='button'
-                 onClick={() => console.log('upvote')}
+                 onClick={() => onVote(1)}
                  src={arrow}
                  style={{width: '26px', transform: 'rotate(180deg)'}}/>
             <button className='count-button'
