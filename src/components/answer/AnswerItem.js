@@ -209,9 +209,7 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
             •
           </div>
           <div className="date">
-            {new Date(answer.createdAt).toLocaleString('ko-KR', {
-              hour12: false,
-            }).slice(0, -13)}
+            {new Date(answer.modifiedAt).toLocaleString().slice(0, -3)}
           </div>
         </div>
         {answer.author.id === (user && user.id) &&
