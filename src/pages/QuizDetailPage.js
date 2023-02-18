@@ -329,11 +329,19 @@ const QuizDetailPage = () => {
     // 현재 수정 중인 답변의 수정 버튼을 다시 누르면, 수정 모드를 해제한다.
     if (answerEditId === id) {
       setAnswerEditId(false);
+      quillInstance.current.root.innerHTML = '';
       return;
     }
+
+    // 수정 모드로 전환 시, 에디터에 수정 전 텍스트를 붙여넣어 줌
+    const previousContents = quiz.answers
+      .filter(answer => answer.id === id)
+      .map(answer => answer.contents);
+
     quillInstance.current.focus();
-    setAnswerEditId(id);
+    quillInstance.current.root.innerHTML = previousContents;
     window.scrollTo(0, quillElement.current.offsetTop);
+    setAnswerEditId(id);
   }
 
   const onAnswerDelete = (answerId) => {
