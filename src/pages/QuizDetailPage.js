@@ -1,6 +1,6 @@
 import Header from "../components/common/Header";
 import {useEffect, useRef, useState} from "react";
-import {deleteQuiz, getQuizDetails} from "../lib/api/quiz";
+import {deleteQuiz, getQuizDetails, voteQuiz} from "../lib/api/quiz";
 import {useNavigate, useParams} from "react-router-dom";
 import Swal from "sweetalert2";
 import Spinner from "../components/common/Spinner";
@@ -215,7 +215,7 @@ const QuizDetailPage = () => {
           icon: 'warning',
           title: '삭제된 퀴즈입니다.',
         });
-        navigate(-1);
+        navigate('/');
         return false;
       }
 
@@ -261,7 +261,9 @@ const QuizDetailPage = () => {
       return true;
     };
 
-    // 답변 작성에 성공하면, 퀴즈 상세 데이터를 다시 가져오기
+    // 답변 수정 같은 경우에는, 기존 답변의 내용만 업데이트 해주면 되지만,
+    // 답변 작성은 Author, Vote 등 답변을 이루는 많은 데이터를 생성해야 한다.
+    // 따라서, 답변 작성은 데이터를 새로 가져오도록 한다.
     postAnswer()
       .then(() => {
         fetchQuizDetails();
@@ -327,50 +329,63 @@ const QuizDetailPage = () => {
     // 현재 수정 중인 답변의 수정 버튼을 다시 누르면, 수정 모드를 해제한다.
     if (answerEditId === id) {
       setAnswerEditId(false);
+      quillInstance.current.root.innerHTML = '';
       return;
     }
-    setAnswerEditId(id);
+
+    // 수정 모드로 전환 시, 에디터에 수정 전 텍스트를 붙여넣어 줌
+    const previousContents = quiz.answers
+      .filter(answer => answer.id === id)
+      .map(answer => answer.contents);
+
+    quillInstance.current.focus();
+    quillInstance.current.root.innerHTML = previousContents;
     window.scrollTo(0, quillElement.current.offsetTop);
+    setAnswerEditId(id);
   }
 
-  const onAnswerDelete = (quizId) => {
+  const onAnswerDelete = (answerId) => {
 
-      const deleteOn = async () => {
+    const answerDelete = async () => {
 
-        try {
-          setLoading(true);
-          await deleteAnswer(user.id, quizId);
-
-        } catch (e) {
-          await Swal.fire({
-            icon: 'error',
-            position: 'center',
-            title: '답변 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.'
-          })
-        }
-        setLoading(false);
+      try {
+        setLoading(true);
+        await deleteAnswer(user.id, answerId);
         return true;
-      };
+      } catch (e) {
+        await Swal.fire({
+          icon: 'error',
+          position: 'center',
+          title: '답변 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.'
+        })
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      // 삭제 확인 창 모달
-      Swal.fire({
-        icon: 'warning',
-        text: '정말로 삭제하시겠습니까?',
-        position: 'center',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: '삭제하기'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // 답변 삭제에 성공하면, 퀴즈 상세 데이터를 다시 가져오기
-          deleteOn()
-            .then(() => {
-              fetchQuizDetails();
-            });
-        }
-      })
+    // 삭제 확인 창 모달
+    Swal.fire({
+      icon: 'warning',
+      text: '정말로 삭제하시겠습니까?',
+      position: 'center',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '삭제하기'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // 답변 삭제에 성공하면, 퀴즈 상세 데이터를 다시 가져올 필요 없이, 답변 목록만 업데이트 해주면 된다.
+        answerDelete()
+          .then(() => {
 
+            const removeAnswers = quiz.answers
+              .filter(answer => answer.id !== answerId);
+
+            setQuiz({...quiz, answers: removeAnswers});
+          });
+      }
+    });
   }
 
   const onEditConfirm = () => {
@@ -390,30 +405,103 @@ const QuizDetailPage = () => {
         setLoading(true);
         await editAnswer(user.id, answerEditId, contents);
       } catch (e) {
+
+        // 만약, 사용자가 임의로 토큰을 변경하거나 삭제한 경우에는 401 에러가 발생한다. 이 경우에는 강제 로그아웃 처리한다.
+        if (e.response.status === 401) {
+          await Swal.fire({
+            icon: 'warning',
+            position: 'center',
+            title: '로그인 후 이용해주세요.',
+          });
+          localStorage.removeItem('accessToken');
+          navigate('/login');
+          return;
+        }
+
         await Swal.fire({
           icon: 'error',
           position: 'center',
           title: '답변 수정에 실패했습니다. 잠시 후 다시 시도해주세요.'
         });
+
+        throw e;
+
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-      return true;
     };
 
-    // 답변 수정에 성공하면, 퀴즈 상세 데이터를 다시 가져오기
+    // 답변 수정에 성공하면, 굳이 퀴즈 상세 데이터를 다시 가져올 필요 없이 현재 보이는 답변 데이터만 수정한다.
+    // 어차피 재 요청하면, 수정된 데이터가 보이기 때문에.
     edit()
       .then(() => {
-        fetchQuizDetails();
+
+        // 객체의 원본을 바꿔버리는 코드
+        // quiz.answers.map(answer => answer.id === answerEditId ? answer.contents = contents : answer);
+        const updateAnswers = quiz.answers
+          .map(answer => answer.id === answerEditId ? {...answer, contents: contents} : answer);
+
+        setQuiz({...quiz, answers: updateAnswers});
+
       })
       // 답변 수정 모드 해제
       .finally(() => {
-        setAnswerEditId(false)
+        setAnswerEditId(false);
       });
   }
 
   const onEditCancel = () => {
     quillInstance.current.root.innerHTML = '';
     setAnswerEditId(false);
+  }
+
+  const onVote = (value) => {
+
+    if (!user) {
+      Swal.fire({
+        icon: 'warning',
+        title: '로그인 후 투표가 가능합니다.',
+      });
+      return false;
+    }
+
+    // 이미 투표에 참여한 경우, 투표를 중복해서 할 수 없다.
+    if (quiz.votes.filter(vote => vote.voter.id === user.id).length > 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: '이미 투표에 참여하였습니다.',
+      });
+      return false;
+    }
+
+    const vote = async (value) => {
+      try {
+        setLoading(true);
+        await voteQuiz(quiz.id, value);
+      } catch (e) {
+        await Swal.fire({
+          icon: 'error',
+          position: 'center',
+          title: '투표에 실패했습니다. 잠시 후 다시 시도해주세요.'
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    vote(value)
+      .then(() => {
+        const vote = {
+          id: null,
+          value: value,
+          voter: {
+            id: user.id,
+            username: user.username,
+            email: user.email
+          }
+        }
+        setQuiz({...quiz, votes: [...quiz.votes, vote]});
+      });
   }
 
   if (loading) {
@@ -431,7 +519,7 @@ const QuizDetailPage = () => {
         <QuizTitleBlock>
           <div className='vote'>
             <img className='button'
-                 onClick={() => console.log('upvote')}
+                 onClick={() => onVote(1)}
                  src={arrow}
                  style={{width: '26px', transform: 'rotate(180deg)'}}/>
             <button className='count-button'
@@ -442,13 +530,13 @@ const QuizDetailPage = () => {
                       return false;
                     }}
                     style={{color: onModal ? palette.gray[6] : palette.gray[8]}}>
-              {quiz.votes.length}
+              {quiz.votes.reduce((sum, vote) => sum + vote.value, 0)}
             </button>
             {onModal &&
               <VoteModal setOnModal={() => setOnModal(false)}
                          votes={quiz.votes}/>}
             <img className='button'
-                 onClick={() => console.log('downvote')}
+                 onClick={() => onVote(-1)}
                  src={arrow}
                  style={{width: '26px', transform: 'rotate(360deg)'}}/>
           </div>
@@ -482,6 +570,7 @@ const QuizDetailPage = () => {
           </div>
           {quiz.answers.map((answer, index) => (
             <AnswerItem key={index}
+                        answer={answer}
                         id={answer.id}
                         contents={answer.contents}
                         author={answer.author}
@@ -500,7 +589,7 @@ const QuizDetailPage = () => {
             <div style={{
               display: 'inline-block',
               boxShadow: 'inset 0 -10rem 0 #D9FCDB',
-              transition : 'all 2s ease-in-out'
+              transition: 'all 2s ease-in-out'
             }}>답변 수정하기</div> :
             <div>작성하기</div>
           }

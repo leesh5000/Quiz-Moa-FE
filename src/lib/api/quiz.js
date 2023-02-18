@@ -40,3 +40,11 @@ export const getQuizDetails = (quizId) => {
       return response;
     });
 }
+
+export const voteQuiz = (quizId, value) => {
+  return client
+    .post(`/quizzes/${quizId}/votes`, {value})
+    .then((response) => {
+      return response;
+    });
+}

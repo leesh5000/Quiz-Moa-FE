@@ -23,3 +23,11 @@ export const deleteAnswer = (userId, answerId) => {
       return response;
     });
 }
+
+export const voteAnswer = (answerId, value) => {
+  return client
+    .post(`/answers/${answerId}/votes`, {value})
+    .then((response) => {
+      return response;
+    });
+}
