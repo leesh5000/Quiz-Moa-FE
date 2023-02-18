@@ -124,7 +124,8 @@ const VoteModal = ({setOnModal, votes}) => {
           </div>
           {votes.map((vote, index) =>
             <VoterStyle key={index}>
-              {vote.voter.username}
+              {/*투표는 추천을 한 유저만 보이도록 설정*/}
+              {vote.value > 0 && vote.voter.username}
             </VoterStyle>
           )}
         </div>

@@ -32,14 +32,14 @@ export const setUpInterceptors = (navigate) => {
     response => {
       return response.data;
     },
-    e => {
+    async e => {
 
       const error = e.response.data;
 
       // 만약 만료된 토큰으로 요청 시, 토큰을 갱신하고 재 요청한다.
       if (error.errorCode === 'A-001') {
 
-        tokenRefresh()
+        await tokenRefresh()
 
           // 토큰 갱신 요청도 실패하면, 갱신 토큰이 만료된 것이므로 로그아웃 처리한다.
           .catch(e => {

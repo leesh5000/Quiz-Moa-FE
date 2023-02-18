@@ -5,6 +5,9 @@ import {useState} from "react";
 import arrow from "../../images/arrow.png";
 import Responsive from "../common/Responsive";
 import Button from "../common/Button";
+import Swal from "sweetalert2";
+import {voteAnswer} from "../../lib/api/answer";
+import Spinner from "../common/Spinner";
 
 const AnswerTitleBlock = styled.div`
   
@@ -100,15 +103,71 @@ const Spacer = styled.div`
   background-color: coral;
 `;
 
-const AnswerItem = ({id, contents, author, votes, createdAt, modifiedAt, user, onEdit, onDelete, isEditMode}) => {
+const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
 
   const [onModal, setOnModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [votes, setVotes] = useState(answer.votes);
+
   const onEditHandler = () => {
-    onEdit(id);
+    onEdit(answer.id);
   }
 
   const onDeleteHandler = () => {
-    onDelete(id);
+    onDelete(answer.id);
+  }
+
+  const onVote = (value) => {
+
+    if (!user) {
+      Swal.fire({
+        icon: 'warning',
+        title: '로그인 후 투표가 가능합니다.',
+      });
+      return false;
+    }
+
+    // 이미 투표에 참여한 경우, 투표를 중복해서 할 수 없다.
+    if (votes.filter(vote => vote.voter.id === user.id).length > 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: '이미 투표에 참여하였습니다.',
+      });
+      return false;
+    }
+
+    const vote = async (value) => {
+      try {
+        setLoading(true);
+        await voteAnswer(answer.id, value);
+      } catch (e) {
+        await Swal.fire({
+          icon: 'error',
+          position: 'center',
+          title: '투표에 실패했습니다. 잠시 후 다시 시도해주세요.'
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    vote(value)
+      .then(() => {
+        const vote = {
+          id: null,
+          value: value,
+          voter: {
+            id: user.id,
+            username: user.username,
+            email: user.email
+          }
+        }
+        setVotes([...votes, vote]);
+      });
+  }
+
+  if (loading) {
+    return <Spinner/>
   }
 
   return (
@@ -116,7 +175,7 @@ const AnswerItem = ({id, contents, author, votes, createdAt, modifiedAt, user, o
       <AnswerTitleBlock>
         <div className='vote'>
           <img className='vote-button'
-               onClick={() => console.log('upvote')}
+               onClick={() => onVote(1)}
                src={arrow}
                style={{width: '22px', transform: 'rotate(180deg)'}}
           />
@@ -129,7 +188,7 @@ const AnswerItem = ({id, contents, author, votes, createdAt, modifiedAt, user, o
                   }}
                   style={{color: onModal ? palette.gray[6] : palette.gray[8]}}
           >
-            {votes.length}
+            {votes.reduce((sum, vote) => sum + vote.value, 0)}
           </button>
           {onModal &&
             <VoteModal setOnModal={() => setOnModal(false)}
@@ -137,25 +196,25 @@ const AnswerItem = ({id, contents, author, votes, createdAt, modifiedAt, user, o
             />
           }
           <img className='vote-button'
-               onClick={() => console.log('downvote')}
+               onClick={() => onVote(-1)}
                src={arrow}
                style={{width: '22px', transform: 'rotate(360deg)'}}
           />
         </div>
         <div className="contents">
           <div className="author">
-            {author.username}
+            {answer.author.username}
           </div>
           <div className='spacer'>
             •
           </div>
           <div className="date">
-            {new Date(createdAt).toLocaleString('ko-KR', {
+            {new Date(answer.createdAt).toLocaleString('ko-KR', {
               hour12: false,
             }).slice(0, -13)}
           </div>
         </div>
-        {author.id === (user && user.id) &&
+        {answer.author.id === (user && user.id) &&
           <div className="buttons">
             <Button onClick={onEditHandler}
                     style={{backgroundColor: isEditMode ? palette.gray[6] : palette.gray[8]}}>
@@ -165,7 +224,7 @@ const AnswerItem = ({id, contents, author, votes, createdAt, modifiedAt, user, o
           </div>
         }
       </AnswerTitleBlock>
-      <AnswerBodyBlock dangerouslySetInnerHTML={{__html: contents}}/>
+      <AnswerBodyBlock dangerouslySetInnerHTML={{__html: answer.contents}}/>
       <Spacer/>
     </Responsive>
   );

@@ -465,6 +465,15 @@ const QuizDetailPage = () => {
       return false;
     }
 
+    // 이미 투표에 참여한 경우, 투표를 중복해서 할 수 없다.
+    if (quiz.votes.filter(vote => vote.voter.id === user.id).length > 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: '이미 투표에 참여하였습니다.',
+      });
+      return false;
+    }
+
     const vote = async (value) => {
       try {
         setLoading(true);
@@ -475,9 +484,24 @@ const QuizDetailPage = () => {
           position: 'center',
           title: '투표에 실패했습니다. 잠시 후 다시 시도해주세요.'
         });
+      } finally {
+        setLoading(false);
       }
     }
 
+    vote(value)
+      .then(() => {
+        const vote = {
+          id: null,
+          value: value,
+          voter: {
+            id: user.id,
+            username: user.username,
+            email: user.email
+          }
+        }
+        setQuiz({...quiz, votes: [...quiz.votes, vote]});
+      });
   }
 
   if (loading) {
@@ -506,7 +530,7 @@ const QuizDetailPage = () => {
                       return false;
                     }}
                     style={{color: onModal ? palette.gray[6] : palette.gray[8]}}>
-              {quiz.votes.length}
+              {quiz.votes.reduce((sum, vote) => sum + vote.value, 0)}
             </button>
             {onModal &&
               <VoteModal setOnModal={() => setOnModal(false)}
@@ -546,6 +570,7 @@ const QuizDetailPage = () => {
           </div>
           {quiz.answers.map((answer, index) => (
             <AnswerItem key={index}
+                        answer={answer}
                         id={answer.id}
                         contents={answer.contents}
                         author={answer.author}
@@ -564,7 +589,7 @@ const QuizDetailPage = () => {
             <div style={{
               display: 'inline-block',
               boxShadow: 'inset 0 -10rem 0 #D9FCDB',
-              transition : 'all 2s ease-in-out'
+              transition: 'all 2s ease-in-out'
             }}>답변 수정하기</div> :
             <div>작성하기</div>
           }
