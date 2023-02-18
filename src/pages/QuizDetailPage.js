@@ -261,7 +261,9 @@ const QuizDetailPage = () => {
       return true;
     };
 
-    // 답변 작성에 성공하면, 퀴즈 상세 데이터를 다시 가져오기
+    // 답변 수정 같은 경우에는, 기존 답변의 내용만 업데이트 해주면 되지만,
+    // 답변 작성은 Author, Vote 등 답변을 이루는 많은 데이터를 생성해야 한다.
+    // 따라서, 답변 작성은 데이터를 새로 가져오도록 한다.
     postAnswer()
       .then(() => {
         fetchQuizDetails();
@@ -329,48 +331,52 @@ const QuizDetailPage = () => {
       setAnswerEditId(false);
       return;
     }
+    quillInstance.current.focus();
     setAnswerEditId(id);
     window.scrollTo(0, quillElement.current.offsetTop);
   }
 
-  const onAnswerDelete = (quizId) => {
+  const onAnswerDelete = (answerId) => {
 
-      const deleteOn = async () => {
+    const answerDelete = async () => {
 
-        try {
-          setLoading(true);
-          await deleteAnswer(user.id, quizId);
+      try {
+        setLoading(true);
+        await deleteAnswer(user.id, answerId);
 
-        } catch (e) {
-          await Swal.fire({
-            icon: 'error',
-            position: 'center',
-            title: '답변 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.'
-          })
-        }
-        setLoading(false);
-        return true;
-      };
+      } catch (e) {
+        await Swal.fire({
+          icon: 'error',
+          position: 'center',
+          title: '답변 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.'
+        })
+      }
+      setLoading(false);
+      return true;
+    };
 
-      // 삭제 확인 창 모달
-      Swal.fire({
-        icon: 'warning',
-        text: '정말로 삭제하시겠습니까?',
-        position: 'center',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: '삭제하기'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // 답변 삭제에 성공하면, 퀴즈 상세 데이터를 다시 가져오기
-          deleteOn()
-            .then(() => {
-              fetchQuizDetails();
-            });
-        }
-      })
+    // 삭제 확인 창 모달
+    Swal.fire({
+      icon: 'warning',
+      text: '정말로 삭제하시겠습니까?',
+      position: 'center',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '삭제하기'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // 답변 삭제에 성공하면, 퀴즈 상세 데이터를 다시 가져올 필요 없이, 답변 목록만 업데이트 해주면 된다.
+        answerDelete()
+          .then(() => {
 
+            const removeAnswers = quiz.answers
+              .filter(answer => answer.id !== answerId);
+
+            setQuiz({...quiz, answers: removeAnswers});
+          });
+      }
+    });
   }
 
   const onEditConfirm = () => {
@@ -400,14 +406,23 @@ const QuizDetailPage = () => {
       return true;
     };
 
-    // 답변 수정에 성공하면, 퀴즈 상세 데이터를 다시 가져오기
+    // 답변 수정에 성공하면, 굳이 퀴즈 상세 데이터를 다시 가져올 필요 없이 현재 보이는 답변 데이터만 수정한다.
+    // 어차피 재 요청하면, 수정된 데이터가 보이기 때문에.
     edit()
       .then(() => {
-        fetchQuizDetails();
+
+        // 객체의 원본을 바꿔버리는 코드
+        // quiz.answers.map(answer => answer.id === answerEditId ? answer.contents = contents : answer);
+
+        const updateAnswers = quiz.answers
+          .map(answer => answer.id === answerEditId ? {...answer, contents: contents} : answer);
+
+        setQuiz({...quiz, answers: updateAnswers});
+
       })
       // 답변 수정 모드 해제
       .finally(() => {
-        setAnswerEditId(false)
+        setAnswerEditId(false);
       });
   }
 
