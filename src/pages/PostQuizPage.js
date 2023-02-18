@@ -107,33 +107,9 @@ const PostQuizPage = ({user, onLogout}) => {
 
       try {
         setLoading(true);
-        const user = JSON.parse(localStorage.getItem('user'));
-        // 로그인 정보가 없는 경우
-        if (!user) {
-          await Swal.fire({
-            icon: 'warning',
-            position: 'center',
-            title: '로그인 정보가 올바르지 않습니다. 다시 로그인 해주세요.'
-          })
-          return;
-        }
-
         const userId = user.id;
         await editQuiz({userId, quizId, title, contents});
       } catch (e) {
-
-        // 403 에러인 경우는, 유저가 악의적으로 LocalStorage의 유저 정보를 변경한 것이므로 로그아웃 처리한다.
-        if (e.response.status === 403) {
-          await Swal.fire({
-            icon: 'warning',
-            position: 'center',
-            title: '해당 리소스에 접근할 수 없는 유저입니다. <br> 재 로그인 후 다시 시도 해주세요.'
-          })
-          onLogout();
-          setLoading(false);
-          return;
-        }
-
         await Swal.fire({
           icon: 'warning',
           position: 'center',

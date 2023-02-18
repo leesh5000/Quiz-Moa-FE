@@ -16,6 +16,14 @@ export const editQuiz = ({userId, quizId, title, contents}) => {
     });
 }
 
+export const deleteQuiz = (userId, quizId) => {
+  return client
+    .delete(`/users/${userId}/quizzes/${quizId}`)
+    .then((response) => {
+      return response;
+    });
+}
+
 export const getQuizzes = ({page, size, sort}) => {
 
   return client

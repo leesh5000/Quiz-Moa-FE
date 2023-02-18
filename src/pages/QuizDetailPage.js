@@ -1,6 +1,6 @@
 import Header from "../components/common/Header";
 import {useEffect, useRef, useState} from "react";
-import {getQuizDetails} from "../lib/api/quiz";
+import {deleteQuiz, getQuizDetails} from "../lib/api/quiz";
 import {useNavigate, useParams} from "react-router-dom";
 import Swal from "sweetalert2";
 import Spinner from "../components/common/Spinner";
@@ -13,6 +13,7 @@ import arrow from "../images/arrow.png";
 import AnswerEditor from "../components/answer/AnswerEditor";
 import Button from "../components/common/Button";
 import {createAnswer} from "../lib/api/answer";
+import getLoginUser from "../lib/utils/getLoginUser";
 
 const QuizTitleBlock = styled.div`
   
@@ -185,9 +186,7 @@ const QuizDetailPage = () => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    if (JSON.parse(localStorage.getItem('user')) !== null) {
-      setUser(JSON.parse(localStorage.getItem('user')));
-    }
+    setUser(getLoginUser());
   }, []);
 
   const onLogout = () => {
@@ -234,15 +233,6 @@ const QuizDetailPage = () => {
 
   const onPost = () => {
 
-    // 로그인 유저인지 검증
-    if (!user) {
-      Swal.fire({
-        icon: 'warning',
-        title: '로그인 후 이용 가능합니다.',
-      })
-      return false;
-    }
-
     const contents = quillInstance.current.root.innerHTML;
 
     if (contents.replace(/<[^>]*>/g, '').length < 10) {
@@ -262,8 +252,8 @@ const QuizDetailPage = () => {
         await Swal.fire({
           icon: 'warning',
           position: 'center',
-          title: '퀴즈 작성에 실패했습니다. 잠시 후 다시 시도해주세요.'
-        })
+          title: '답변 작성에 실패했습니다. 잠시 후 다시 시도해주세요.'
+        });
       }
       setLoading(false);
       return true;
@@ -292,6 +282,43 @@ const QuizDetailPage = () => {
 
   const onDelete = () => {
 
+    const deleteUserQuiz = async () => {
+      try {
+
+        setLoading(true);
+        const user = getLoginUser();
+        // 로그인 정보가 없는 경우에는 로그아웃 처리한다.
+        if (!user) {
+          await Swal.fire({
+            icon: 'warning',
+            position: 'center',
+            title: '잘못된 로그인 정보입니다. 로그아웃 후 다시 시도해주세요.'
+          })
+          onLogout();
+          return;
+        }
+
+        const userId = user.id;
+        await deleteQuiz(userId, quizId);
+
+      } catch (e) {
+        await Swal.fire({
+          icon: 'warning',
+          position: 'center',
+          title: '퀴즈 삭제에 실패했습니다. 잠시 후 다시 시도해주세요.'
+        })
+      }
+      setLoading(false);
+      return true;
+    };
+
+    // 퀴즈 삭제에 성공하면, 홈 화면으로 이동
+    deleteUserQuiz()
+      .then(() => {
+        navigate('/quizzes', {
+          replace: true
+        });
+      });
   }
 
   if (loading) {
@@ -346,7 +373,7 @@ const QuizDetailPage = () => {
               hour12: false,
             }).slice(0, -13)}
           </div>
-          {quiz.author.id === user.id &&
+          {quiz.author.id === (user && user.id) &&
             <div className='buttons'>
               <Button onClick={onEdit}>수정</Button>
               <Button onClick={onDelete}>삭제</Button>
