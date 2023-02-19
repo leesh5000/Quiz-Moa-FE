@@ -81,6 +81,9 @@ const InfoBlock = styled.div`
 `;
 
 const QuizItem = ({id, title, answerCount, votes, author, modifiedAt}) => {
+
+  console.log('QuizItem rendering...');
+
   return (
     <QuizItemBlock>
       <TitleBlock>
@@ -100,7 +103,11 @@ const QuizItem = ({id, title, answerCount, votes, author, modifiedAt}) => {
       </TitleBlock>
       <InfoBlock>
         <div className='author'>
-          {author.username}
+          <Link style={{textDecoration: 'underline'}}
+                to={`/users/${author.email}`}
+          >
+            {author.username}
+          </Link>
         </div>
         <div className='spacer'>
           •

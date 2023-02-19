@@ -1,13 +1,14 @@
 import styled from "styled-components";
 import palette from "../../lib/styles/palette";
 import VoteModal from "../common/VoteModal";
-import {useState} from "react";
+import React, {useState} from "react";
 import arrow from "../../images/arrow.png";
 import Responsive from "../common/Responsive";
 import Button from "../common/Button";
 import Swal from "sweetalert2";
 import {voteAnswer} from "../../lib/api/answer";
 import Spinner from "../common/Spinner";
+import {Link} from "react-router-dom";
 
 const AnswerTitleBlock = styled.div`
   
@@ -186,15 +187,13 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
                     e.stopPropagation();
                     return false;
                   }}
-                  style={{color: onModal ? palette.gray[6] : palette.gray[8]}}
-          >
+                  style={{color: onModal ? palette.gray[6] : palette.gray[8]}}>
             {votes.reduce((sum, vote) => sum + vote.value, 0)}
           </button>
           {onModal &&
             <VoteModal setOnModal={() => setOnModal(false)}
                        votes={votes}
-            />
-          }
+            />}
           <img className='vote-button'
                onClick={() => onVote(-1)}
                src={arrow}
@@ -203,7 +202,11 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
         </div>
         <div className="contents">
           <div className="author">
-            {answer.author.username}
+            <Link style={{textDecoration: 'underline'}}
+                  to={`/users/${answer.author.email}`}
+            >
+              {answer.author.username}
+            </Link>
           </div>
           <div className='spacer'>
             •

@@ -176,7 +176,7 @@ const UserProfilePage = ({user, onLogout}) => {
       <ProfileBlock>
         <div className='title'>
           {user.email === profile.email ?
-            '내 프로필' : `${profile.email}의 프로필`}
+            '내 프로필' : `${profile.username}의 프로필`}
         </div>
         <div className='profile'>
           <div className='img-box'>
