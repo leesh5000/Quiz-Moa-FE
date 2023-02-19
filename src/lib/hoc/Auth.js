@@ -5,10 +5,9 @@ import Swal from "sweetalert2";
 
 export default function (SpecificComponent) {
 
-    const navigate = useNavigate();
-
     function AuthenticationCheck(props) {
 
+      const navigate = useNavigate();
       let user = getLoginUser();
 
       useEffect(() => {
@@ -18,7 +17,9 @@ export default function (SpecificComponent) {
             position: 'center',
             title: '로그인 후 이용 가능한 서비스입니다.'
           })
-          navigate('/login');
+          navigate('/login', {
+            replace: true
+          });
         }
       }, []);
 
@@ -29,8 +30,12 @@ export default function (SpecificComponent) {
           title: '로그인 후 이용 가능한 서비스입니다.'
         })
         user = null;
-        navigate('/login');
+        navigate('/login', {
+          replace: true
+        });
       }
+
+      if (!user) return null;
 
       return <SpecificComponent {...props} user={user} onLogout={onLogout}/>;
     }
