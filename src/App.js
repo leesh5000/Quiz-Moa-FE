@@ -14,13 +14,13 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
       <Route path="/quizzes" element={<QuizListPage/>} />
       <Route path="/quizzes?page=:page" element={<QuizListPage/>}/>
       <Route path="/quizzes/:id" element={<QuizDetailPage/>}/>
       <Route path="/login" element={<LoginPage/>}/>
       <Route path="/oauth2/callback/*" element={<OAuth2RedirectHandler/>}/>
       <Route path="/post" element={<AuthPostQuizPage/>}/>
+      <Route path="/*" element={<Home />} />
     </Routes>
   )
 }
