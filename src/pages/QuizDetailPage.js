@@ -1,7 +1,7 @@
 import Header from "../components/common/Header";
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {deleteQuiz, getQuizDetails, voteQuiz} from "../lib/api/quiz";
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import Swal from "sweetalert2";
 import Spinner from "../components/common/Spinner";
 import Responsive from "../components/common/Responsive";
@@ -338,8 +338,8 @@ const QuizDetailPage = () => {
       .filter(answer => answer.id === id)
       .map(answer => answer.contents);
 
-    quillInstance.current.focus();
     quillInstance.current.root.innerHTML = previousContents;
+    quillInstance.current.focus();
     window.scrollTo(0, quillElement.current.offsetTop);
     setAnswerEditId(id);
   }
@@ -546,7 +546,12 @@ const QuizDetailPage = () => {
         </QuizTitleBlock>
         <QuizInfoBlock>
           <div className='author'>
-            {quiz.author.username}
+            <Link style={{textDecoration: 'underline'}}
+                  to={`/users/${quiz.author.email}`}
+                  state={{id: quiz.author.id}}
+            >
+              {quiz.author.username}
+            </Link>
           </div>
           <div className='spacer'>
             •

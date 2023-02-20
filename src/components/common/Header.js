@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React from "react";
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {logout} from "../../lib/api/auth";
 import Responsive from "./Responsive";
 import Button from "./Button";
@@ -56,10 +56,26 @@ const Header = ({user, onLogout}) => {
   console.log('Header Rendering...');
 
   const location = useLocation();
+  const navigate = useNavigate();
 
   const onLogoutWrapper = () => {
     logout()
     onLogout();
+  }
+
+  const goProfile = () => {
+    // 현재 URL이 내 정보 페이지라면, 아무것도 하지 않음
+    if (location.pathname === `/users/${user.email}`) {
+      return;
+    }
+
+    if (user) {
+      navigate(`/users/${user.email}`, {
+        state: {
+          id: user.id
+        }
+      });
+    }
   }
 
   return (
@@ -70,7 +86,7 @@ const Header = ({user, onLogout}) => {
           {user ? (
             <div className="right">
               <UserBlock>{user.email}</UserBlock>
-              <StyledButton>
+              <StyledButton onClick={goProfile}>
                 내 정보
               </StyledButton>
               <StyledButton onClick={onLogoutWrapper}>

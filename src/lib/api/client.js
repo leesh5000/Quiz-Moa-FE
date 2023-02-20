@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {tokenRefresh} from "./token";
 import {getCookie} from "../cookie/CookieUtils";
+import Swal from "sweetalert2";
 
 const client = axios.create();
 
@@ -29,8 +30,8 @@ export const setUpInterceptors = (navigate) => {
 
 // 별도로 then, catch 하지 않으면 인터셉터가 처리
   client.interceptors.response.use(
-    response => {
-      return response.data;
+    async response => {
+      return await response.data;
     },
     async e => {
 
@@ -66,6 +67,18 @@ export const setUpInterceptors = (navigate) => {
             error: '로그인 후 이용해주세요.'
           }
         });
+      }
+
+      // 404 에러라면, 바로 이전 페이지로 이동하고, 에러를 넘기지 말고 리턴한다.
+      if (e.response.status === 404) {
+        await Swal.fire({
+          icon: 'warning',
+          title: e.response.data.errorMessage
+        });
+        navigate(-1, {
+          replace: true,
+        });
+        return;
       }
 
       return Promise.reject(e);

@@ -1,15 +1,14 @@
+import Header from "../components/common/Header";
 import styled from "styled-components";
 import {useEffect, useState} from "react";
-import {getQuizzes} from "../lib/api/quiz";
+import QuizItem from "../components/quiz/QuizItem";
 import Responsive from "../components/common/Responsive";
 import Button from "../components/common/Button";
-import {Link, useNavigate, useSearchParams} from "react-router-dom";
-import Swal from "sweetalert2";
-import getLoginUser from "../lib/utils/getLoginUser";
-import Header from "../components/common/Header";
-import QuizItem from "../components/quiz/QuizItem";
+import {Link, useNavigate, useParams, useSearchParams} from "react-router-dom";
 import Spinner from "../components/common/Spinner";
+import Swal from "sweetalert2";
 import palette from "../lib/styles/palette";
+import {getProfile, getUserQuizzes} from "../lib/api/user";
 
 const QuizListBlock = styled(Responsive)`
   
@@ -32,20 +31,6 @@ const SortingButton = styled(Button)`
   margin-left: 0.75rem;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
-`;
-
-const StyledButton = styled(Button)`
-  height: 2.5rem;
-  font-size: 1.15rem;
-  font-weight: bold;
-  padding: 0.35rem 0.65rem;
-
-  @media (max-width: 420px) {
-    height: 2rem;
-    font-size: 1.15rem;
-    font-weight: bold;
-    padding: 0.35rem 0.65rem;
-  }
 `;
 
 const Footer = styled(Responsive)`
@@ -74,14 +59,17 @@ const Footer = styled(Responsive)`
   }
 `;
 
-const QuizListPage = () => {
+const UserQuizListPage = ({user, onLogout}) => {
 
   console.log('QuizListPage Rendering...');
 
   const [quizzes, setQuizzes] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const email = useParams().email;
+  const [profile, setProfile] = useState(null);
 
   const sortType = {
     latest: 'createdAt,desc',
@@ -106,23 +94,23 @@ const QuizListPage = () => {
   // 한 페이지당 컨텐츠 사이즈
   const contentsCountPerPage = 5;
 
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
   const getCurrentPage = () => {
     const page = searchParams.get('page');
     return (page === undefined || page === null) ? 1 : page;
   }
 
   useEffect(() => {
-    setUser(getLoginUser());
-  }, []);
 
-  useEffect(() => {
-    const fetchQuizzes = async (page, size, sort) => {
+    const fetchUserQuizzes = async (page, size, sort) => {
       try {
         setLoading(true);
-        const response = await getQuizzes({
+        // 매번 Profile API, Quiz API를 호출하지 말고, 페이지가 새로고침되어 Profile이 없는 경우에만 Profile API를 호출한다.
+        let tempProfile = profile;
+        if (!tempProfile) {
+          tempProfile = await getProfile(email);
+          setProfile(tempProfile);
+        }
+        const response = await getUserQuizzes(tempProfile.id, {
           page: curPage,
           size: size,
           sort: sort
@@ -136,13 +124,17 @@ const QuizListPage = () => {
           icon: 'warning',
           title: '퀴즈 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.',
         })
+        navigate(-1, {
+          replace: true,
+        })
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     // 서버 스펙 상, page 0부터 시작
     const curPage = getCurrentPage() - 1 < 0 ? 0 : getCurrentPage() - 1;
-    fetchQuizzes(curPage, contentsCountPerPage, sort);
+    fetchUserQuizzes(curPage, contentsCountPerPage, sort);
 
   }, [searchParams, sort]);
 
@@ -190,7 +182,7 @@ const QuizListPage = () => {
         <Link className="child"
               style={value === curPage ? {color: 'red'} : {color: 'blueviolet'}}
               key={index}
-              to={`?page=${value}`}>
+              to={'?page=' + value}>
           {value}
         </Link>
       ))
@@ -201,24 +193,8 @@ const QuizListPage = () => {
     return <Spinner/>
   }
 
-  if (!quizzes) {
+  if (!quizzes || !profile) {
     return null;
-  }
-
-  const goPost = () => {
-    // HOC에서 로그인 유저 검증
-    if (!user) {
-      Swal.fire({
-        icon: 'warning',
-        title: '로그인 후 이용 가능합니다.',
-      });
-      return;
-    }
-    navigate('/post');
-  }
-
-  const onLogout = () => {
-    setUser(null);
   }
 
   const onSort = (sort) => {
@@ -231,6 +207,9 @@ const QuizListPage = () => {
     <>
       <Header user={user} onLogout={onLogout}/>
       <QuizListBlock>
+        <div className='title'>
+          <h1>{profile.username}의 퀴즈</h1>
+        </div>
         <div className='buttons'>
           <SortingButton onClick={() => onSort(sortType.latest)}
                          style={sort === sortType.latest ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
@@ -260,14 +239,9 @@ const QuizListPage = () => {
         <div className='page'>
           {calculatePageNumber()}
         </div>
-        <div className='post'>
-          <StyledButton cyan onClick={goPost}>
-            퀴즈 작성
-          </StyledButton>
-        </div>
       </Footer>
     </>
   );
 }
 
-export default QuizListPage;
+export default UserQuizListPage;

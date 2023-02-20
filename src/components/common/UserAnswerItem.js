@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import React from "react";
-import {Link} from "react-router-dom";
 import palette from "../../lib/styles/palette";
+import {Link} from "react-router-dom";
+import React from "react";
 
-const QuizItemBlock = styled.div`
+const AnswerItemBlock = styled.div`
   
   background-color: antiquewhite;
   display: flex;
@@ -38,15 +38,9 @@ const TitleBlock = styled.div`
   }
   
   .left {
-    display: flex;
-    flex-direction: column;
-    font-size: 0.825rem;
+    font-size: 0.925rem;
     margin-right: 1rem;
     white-space: nowrap;
-
-    .count {
-      margin-bottom: 0.25rem;
-    }
   }
 `;
 
@@ -80,24 +74,21 @@ const InfoBlock = styled.div`
   }
 `;
 
-const QuizItem = ({id, title, answerCount, votes, author, modifiedAt}) => {
+const UserAnswerItem = ({id, quizId, contents, votes, author, modifiedAt}) => {
 
   console.log('QuizItem rendering...');
 
   return (
-    <QuizItemBlock>
+    <AnswerItemBlock>
       <TitleBlock>
         <div className="left">
           <div className="count">
             추천 {votes}
           </div>
-          <div className="count">
-            답변 {answerCount}
-          </div>
         </div>
         <div className="title">
-          <Link to={`/quizzes/${id}`}>
-            {title}
+          <Link to={`/quizzes/${quizId}`}>
+            {contents.replace(/<[^>]*>/g, '')}
           </Link>
         </div>
       </TitleBlock>
@@ -117,9 +108,9 @@ const QuizItem = ({id, title, answerCount, votes, author, modifiedAt}) => {
           {modifiedAt}
         </div>
       </InfoBlock>
-    </QuizItemBlock>
+    </AnswerItemBlock>
   );
-}
+};
 
 // 퀴즈 하나가 바뀔 때마다 전부 리렌더링 되는 것을 방지
-export default React.memo(QuizItem);
+export default React.memo(UserAnswerItem);

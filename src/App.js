@@ -7,20 +7,29 @@ import Home from "./pages/Home";
 import QuizDetailPage from "./pages/QuizDetailPage";
 import LoginPage from "./pages/LoginPage";
 import Auth from "./lib/hoc/Auth";
+import UserProfilePage from "./pages/UserProfilePage";
+import UserQuizListPage from "./pages/UserQuizListPage";
+import UserAnswerListPage from "./pages/UserAnswerListPage";
 
 function App() {
 
   const AuthPostQuizPage = Auth(PostQuizPage);
+  const AuthUserProfilePage = Auth(UserProfilePage);
+  const AuthQuizListPage = Auth(UserQuizListPage);
+  const AuthAnswerListPage = Auth(UserAnswerListPage);
 
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
       <Route path="/quizzes" element={<QuizListPage/>} />
       <Route path="/quizzes?page=:page" element={<QuizListPage/>}/>
       <Route path="/quizzes/:id" element={<QuizDetailPage/>}/>
       <Route path="/login" element={<LoginPage/>}/>
       <Route path="/oauth2/callback/*" element={<OAuth2RedirectHandler/>}/>
       <Route path="/post" element={<AuthPostQuizPage/>}/>
+      <Route path="/users/:email" element={<AuthUserProfilePage/>} />
+      <Route path="/users/:email/quizzes" element={<AuthQuizListPage/>} />
+      <Route path="/users/:email/answers" element={<AuthAnswerListPage/>} />
+      <Route path="/*" element={<Home />} />
     </Routes>
   )
 }
