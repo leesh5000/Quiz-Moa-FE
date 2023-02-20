@@ -204,6 +204,7 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
           <div className="author">
             <Link style={{textDecoration: 'underline'}}
                   to={`/users/${answer.author.email}`}
+                  state={{id: answer.author.id}}
             >
               {answer.author.username}
             </Link>

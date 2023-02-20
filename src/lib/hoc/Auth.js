@@ -17,7 +17,7 @@ export default function (SpecificComponent) {
             position: 'center',
             title: '로그인 후 이용 가능한 서비스입니다.'
           })
-          navigate('/login', {
+          navigate(-1, {
             replace: true
           });
         }

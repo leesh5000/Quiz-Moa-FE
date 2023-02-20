@@ -105,6 +105,7 @@ const QuizItem = ({id, title, answerCount, votes, author, modifiedAt}) => {
         <div className='author'>
           <Link style={{textDecoration: 'underline'}}
                 to={`/users/${author.email}`}
+                state={{id: author.id}}
           >
             {author.username}
           </Link>

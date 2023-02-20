@@ -548,6 +548,7 @@ const QuizDetailPage = () => {
           <div className='author'>
             <Link style={{textDecoration: 'underline'}}
                   to={`/users/${quiz.author.email}`}
+                  state={{id: quiz.author.id}}
             >
               {quiz.author.username}
             </Link>

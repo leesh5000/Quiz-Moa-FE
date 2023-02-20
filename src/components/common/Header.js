@@ -70,7 +70,11 @@ const Header = ({user, onLogout}) => {
     }
 
     if (user) {
-      navigate(`/users/${user.email}`);
+      navigate(`/users/${user.email}`, {
+        state: {
+          id: user.id
+        }
+      });
     }
   }
 

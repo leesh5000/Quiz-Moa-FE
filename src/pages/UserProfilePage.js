@@ -137,13 +137,12 @@ const UserProfilePage = ({user, onLogout}) => {
   console.log('UserProfilePage rendering...');
 
   const navigate = useNavigate();
-  const email = useParams().email;
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState(null);
+  const email = useParams().email;
 
   useEffect(() => {
 
-    // 현재 로그인 한 유저와 URL 파라미터로 전달된 이메일이 다르면,
     const getUserProfile = async (email) => {
       try {
         setLoading(true);
@@ -155,7 +154,7 @@ const UserProfilePage = ({user, onLogout}) => {
           title: '프로필을 불러오는데 실패했습니다.',
         });
         navigate(-1, {
-          replace: true
+          replace: true,
         });
       } finally {
         setLoading(false);
@@ -202,11 +201,17 @@ const UserProfilePage = ({user, onLogout}) => {
         <div className='title'>
           활동 내역
         </div>
-        <Link className='link'>
-          내 퀴즈 보기 {profile.quizzes.totalCount}
+        <Link className='link'
+              to={`/users/${profile.email}/quizzes`}
+              state={{
+                id: profile.id
+              }}>
+          {user.email === profile.email ?
+            '내 퀴즈 보기' : `${profile.username}의 퀴즈 보기`} {profile.quizzes.totalCount}
         </Link>
         <Link className='link'>
-          내 답변 보기 {profile.answers.totalCount}
+          {user.email === profile.email ?
+            '내 답변 보기' : `${profile.username}의 답변 보기`} {profile.answers.totalCount}
         </Link>
       </HistoryBlock>
     </>
