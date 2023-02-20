@@ -9,12 +9,14 @@ import LoginPage from "./pages/LoginPage";
 import Auth from "./lib/hoc/Auth";
 import UserProfilePage from "./pages/UserProfilePage";
 import UserQuizListPage from "./pages/UserQuizListPage";
+import UserAnswerListPage from "./pages/UserAnswerListPage";
 
 function App() {
 
   const AuthPostQuizPage = Auth(PostQuizPage);
   const AuthUserProfilePage = Auth(UserProfilePage);
   const AuthQuizListPage = Auth(UserQuizListPage);
+  const AuthAnswerListPage = Auth(UserAnswerListPage);
 
   return (
     <Routes>
@@ -26,6 +28,7 @@ function App() {
       <Route path="/post" element={<AuthPostQuizPage/>}/>
       <Route path="/users/:email" element={<AuthUserProfilePage/>} />
       <Route path="/users/:email/quizzes" element={<AuthQuizListPage/>} />
+      <Route path="/users/:email/answers" element={<AuthAnswerListPage/>} />
       <Route path="/*" element={<Home />} />
     </Routes>
   )

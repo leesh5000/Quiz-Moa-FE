@@ -30,8 +30,8 @@ export const setUpInterceptors = (navigate) => {
 
 // 별도로 then, catch 하지 않으면 인터셉터가 처리
   client.interceptors.response.use(
-    response => {
-      return response.data;
+    async response => {
+      return await response.data;
     },
     async e => {
 

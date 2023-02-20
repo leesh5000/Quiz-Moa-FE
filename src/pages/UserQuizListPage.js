@@ -33,20 +33,6 @@ const SortingButton = styled(Button)`
   padding-right: 0.5rem;
 `;
 
-const StyledButton = styled(Button)`
-  height: 2.5rem;
-  font-size: 1.15rem;
-  font-weight: bold;
-  padding: 0.35rem 0.65rem;
-
-  @media (max-width: 420px) {
-    height: 2rem;
-    font-size: 1.15rem;
-    font-weight: bold;
-    padding: 0.35rem 0.65rem;
-  }
-`;
-
 const Footer = styled(Responsive)`
   height: 12rem;
   background-color: gray;
@@ -88,7 +74,7 @@ const UserQuizListPage = ({user, onLogout}) => {
   const sortType = {
     latest: 'createdAt,desc',
     answers: 'answerCount,desc',
-    totalVotes: 'totalVotes,desc',
+    totalVotesSum: 'totalVotesSum,desc',
   }
 
   // Default: 최신순
@@ -141,8 +127,9 @@ const UserQuizListPage = ({user, onLogout}) => {
         navigate(-1, {
           replace: true,
         })
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     // 서버 스펙 상, page 0부터 시작
@@ -206,20 +193,8 @@ const UserQuizListPage = ({user, onLogout}) => {
     return <Spinner/>
   }
 
-  if (!quizzes) {
+  if (!quizzes || !profile) {
     return null;
-  }
-
-  const goPost = () => {
-    // HOC에서 로그인 유저 검증
-    if (!user) {
-      Swal.fire({
-        icon: 'warning',
-        title: '로그인 후 이용 가능합니다.',
-      });
-      return;
-    }
-    navigate('/post');
   }
 
   const onSort = (sort) => {
@@ -240,8 +215,8 @@ const UserQuizListPage = ({user, onLogout}) => {
                          style={sort === sortType.latest ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
             최신 순
           </SortingButton>
-          <SortingButton onClick={() => onSort(sortType.totalVotes)}
-                         style={sort === sortType.totalVotes ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
+          <SortingButton onClick={() => onSort(sortType.totalVotesSum)}
+                         style={sort === sortType.totalVotesSum ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
             추천 순
           </SortingButton>
           <SortingButton onClick={() => onSort(sortType.answers)}
@@ -255,7 +230,7 @@ const UserQuizListPage = ({user, onLogout}) => {
                     title={quiz.title}
                     answerCount={quiz.answerCount}
                     author={quiz.author}
-                    votes={quiz.totalVotes}
+                    votes={quiz.totalVotesSum}
                     modifiedAt={new Date(quiz.modifiedAt).toLocaleString().slice(0, -3)}
           />
         ))}

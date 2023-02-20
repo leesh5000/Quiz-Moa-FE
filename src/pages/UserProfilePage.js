@@ -165,9 +165,13 @@ const UserProfilePage = ({user, onLogout}) => {
 
   }, [navigate]);
 
-  if (loading) return <Spinner/>;
+  if (loading) {
+    return <Spinner/>;
+  }
 
-  if (!profile) return null;
+  if (!profile || !profile.quizzes) {
+    return null;
+  }
 
   return (
     <>
@@ -191,8 +195,7 @@ const UserProfilePage = ({user, onLogout}) => {
               {profile.username}
             </div>
             <div className='total-recommend'>
-              <h3>받은 총 추천 수</h3>
-              {profile.quizzes.totalVotesSum + profile.answers.totalVotesSum}
+              <h3>받은 총 추천 수</h3> {profile.quizzes.totalVotesSum + profile.answers.totalVotesSum}
             </div>
           </div>
         </div>
@@ -209,7 +212,11 @@ const UserProfilePage = ({user, onLogout}) => {
           {user.email === profile.email ?
             '내 퀴즈 보기' : `${profile.username}의 퀴즈 보기`} {profile.quizzes.totalCount}
         </Link>
-        <Link className='link'>
+        <Link className='link'
+              to={`/users/${profile.email}/answers`}
+              state={{
+                id: profile.id
+              }}>
           {user.email === profile.email ?
             '내 답변 보기' : `${profile.username}의 답변 보기`} {profile.answers.totalCount}
         </Link>
