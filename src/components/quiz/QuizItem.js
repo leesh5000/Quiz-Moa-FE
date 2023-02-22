@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import React from "react";
-import {Link} from "react-router-dom";
 import palette from "../../lib/styles/palette";
 
 const QuizItemBlock = styled.div`
@@ -8,12 +7,18 @@ const QuizItemBlock = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1rem 1rem 0.5rem;
-  outline: 2px solid ${palette.gray[2]};
+  outline: 1px solid ${palette.gray[2]};
   border-radius: 8px;
   box-sizing: border-box;
   box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.08);
   margin-bottom: 1rem;
   margin-top: 1rem;
+  
+  cursor: pointer;
+  
+  &:hover {
+    background: ${palette.cyan[0]};
+  }
 
   @media (max-width: 1200px) {
     margin: 0.5rem 1rem;
@@ -23,9 +28,9 @@ const QuizItemBlock = styled.div`
 
 const TitleBlock = styled.div`
   padding-bottom: 0.5rem;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: bold;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
 
   display: flex;
   justify-content: left;
@@ -61,8 +66,7 @@ const InfoBlock = styled.div`
   
   display: flex;
   justify-content: space-between;
-  //background-color: aliceblue;
-  font-size: 1rem;
+  font-size: 0.95rem;
   letter-spacing: 0.75px;
   font-weight: 600;
   color: ${palette.gray[6]};
@@ -70,10 +74,6 @@ const InfoBlock = styled.div`
   .author {
     display: flex;
     align-items: center;
-    
-    .by {
-      margin-right: 0.5rem;
-    }
   }
   
   .spacer {
@@ -88,12 +88,12 @@ const InfoBlock = styled.div`
   }
 `;
 
-const QuizItem = ({id, title, answerCount, votes, author, modifiedAt}) => {
+const QuizItem = ({id, onClick, title, answerCount, votes, author, modifiedAt}) => {
 
   console.log('QuizItem rendering...');
 
   return (
-    <QuizItemBlock>
+    <QuizItemBlock onClick={onClick}>
       <TitleBlock>
         <div className="left">
           <div className="count">
@@ -104,21 +104,14 @@ const QuizItem = ({id, title, answerCount, votes, author, modifiedAt}) => {
           </div>
         </div>
         <div className="title">
-          <Link to={`/quizzes/${id}`}>
+          <div>
             {title}
-          </Link>
+          </div>
         </div>
       </TitleBlock>
       <InfoBlock>
         <div className='author'>
-          <div className='by'>
-            by
-          </div>
-          <Link style={{textDecoration: 'underline'}}
-                to={`/users/${author.email}`}
-                state={{id: author.id}}>
-            {author.username}
-          </Link>
+          by {author.username}
         </div>
         <div className="date">
           {modifiedAt}

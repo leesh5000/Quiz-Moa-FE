@@ -11,7 +11,8 @@ const buttonStyle = css`
   color: white;
   outline: none;
   cursor: pointer;
-
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.12);
+  
   background: ${palette.gray[7]};
 
   &:hover {

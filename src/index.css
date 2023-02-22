@@ -46,6 +46,15 @@ code {
   monospace;
 }
 
+pre {
+  background: #dee2e6;
+  padding: 1rem;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  border: 1px solid #ced4da;
+}
+
 /*html::-webkit-scrollbar {*/
 /*  display: none;*/
 /*  width: 16px;*/

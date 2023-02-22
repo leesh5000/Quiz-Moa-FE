@@ -21,10 +21,12 @@ const ButtonBlock = styled(Responsive)`
   }
   @media (max-width: 768px) {
     width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   @media (max-height: 1020px) {
-    margin-bottom: 0rem;
+    margin-bottom: 0;
   }
   
   height: 4rem;

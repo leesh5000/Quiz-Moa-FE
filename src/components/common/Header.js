@@ -34,12 +34,15 @@ const Wrapper = styled(Responsive)`
       font-size: 1.5rem;
       margin-left: 1rem;
     }
-
   }
 
   .right {
     display: flex;
     align-items: center;
+    
+    @media (max-width: 1200px) {
+      font-size: 1.5rem;
+    }
   }
 `;
 
@@ -59,6 +62,10 @@ const StyledButton = styled(Button)`
 
 const Spacer = styled.div`
   height: 8rem;
+  
+  @media (max-height: 1024px) {
+    height: 6rem;
+  }
 `;
 
 const Header = ({user, onLogout}) => {

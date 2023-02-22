@@ -3,61 +3,96 @@ import styled from "styled-components";
 import {useEffect, useState} from "react";
 import QuizItem from "../components/quiz/QuizItem";
 import Responsive from "../components/common/Responsive";
-import Button from "../components/common/Button";
-import {Link, useNavigate, useParams, useSearchParams} from "react-router-dom";
+import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import Spinner from "../components/common/Spinner";
 import Swal from "sweetalert2";
 import palette from "../lib/styles/palette";
 import {getProfile, getUserQuizzes} from "../lib/api/user";
+import {SortType} from "../global/SortType";
+import calculatePage from "../lib/utils/calculatePage";
+import Button from "../components/common/Button";
+import {getCurrentPage} from "../lib/utils/getCurrentPage";
 
 const QuizListBlock = styled(Responsive)`
-  
+
   box-sizing: border-box;
-  background: aqua;
-  
+  height: 1020px;
+
   display: flex;
   flex-direction: column;
   padding-bottom: 3rem;
-  
+
+  .author-title {
+    font-size: 1rem;
+    letter-spacing: 2px;
+    color: ${palette.gray[7]};
+
+    @media (max-width: 1200px) {
+      margin: 0 1rem;
+    }
+  }
+
   .buttons {
     display: flex;
-    justify-content: right;
-    background-color: dodgerblue;
+    justify-content: left;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+    @media (max-width: 1200px) {
+      margin-left: 0.75rem;
+    }
+  }
+
+  @media (max-height: 1020px) {
+    height: 920px;
   }
 
 `;
 
-const SortingButton = styled(Button)`
-  margin-left: 0.75rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+const SortingButtonStyle = styled.button`
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: ${palette.gray[6]};
+  border: none;
+  cursor: pointer;
+  background: none;
+  margin-right: 1rem;
+  padding-bottom: 0.35rem;
+  letter-spacing: 1.25px;
 `;
 
-const Footer = styled(Responsive)`
-  height: 12rem;
-  background-color: gray;
-  
+const Footer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  height: 8rem;
+
+  @media (max-width: 1200px) {
+    height: 4rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
   .page {
-    font-size: 1.325rem;
-    font-weight: 700;
-    background-color: dodgerblue;
-    text-align: center;
-    
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: ${palette.gray[7]};
+
     .child {
-      color: blueviolet;
+      border-radius: 4px;
+      outline: 1px solid ${palette.gray[4]};
+      padding: 0.45rem;
       margin-left: 0.5rem;
       margin-right: 0.5rem;
     }
   }
-  
-  .post {
-    text-align: right;
-    
-    @media (max-width: 1024px) {
-      margin-right: 0.5rem;
-    }
-  }
 `;
+
+const StyledButton = styled(Button)`
+  height: 2.25rem;
+  font-size: 1.125rem;
+  font-weight: bold;
+`;
+
 
 const UserQuizListPage = ({user, onLogout}) => {
 
@@ -92,12 +127,7 @@ const UserQuizListPage = ({user, onLogout}) => {
   const pageSize = 5;
 
   // 한 페이지당 컨텐츠 사이즈
-  const contentsCountPerPage = 5;
-
-  const getCurrentPage = () => {
-    const page = searchParams.get('page');
-    return (page === undefined || page === null) ? 1 : page;
-  }
+  const contentsCountPerPage = 6;
 
   useEffect(() => {
 
@@ -133,61 +163,11 @@ const UserQuizListPage = ({user, onLogout}) => {
     };
 
     // 서버 스펙 상, page 0부터 시작
-    const curPage = getCurrentPage() - 1 < 0 ? 0 : getCurrentPage() - 1;
+    const tempCurPage = getCurrentPage(searchParams.get('page'));
+    const curPage = tempCurPage - 1 < 0 ? 0 : tempCurPage - 1;
     fetchUserQuizzes(curPage, contentsCountPerPage, sort);
 
   }, [searchParams, sort]);
-
-  const calculatePageNumber = () => {
-    const arr = [];
-    const curPage = Number(getCurrentPage()) < 0 ? 1 : Number(getCurrentPage());
-
-    // 한 화면에 보여지는 페이지 개수가 전체 페이지 수보다 클 경우에는 1부터 마지막 페이지까지 보여주고 리턴한다.
-    if (totalPages <= pageSize) {
-      for (let i = 1; i <= totalPages; i++) {
-        arr.push(i);
-      }
-    } else {
-      // 현재 페이지가 전체 페이지 수의 반 이하일 경우에는 1부터 pageSize까지의 페이지를 보여준다.
-      if (curPage <= Math.round(pageSize / 2)) {
-        for (let i = 1; i <= pageSize; i++) {
-          arr.push(i);
-        }
-      } else {
-        // 현재 페이지가 전체 페이지 수의 반을 넘을 경우에는 현재 페이지가 가운데가 오도록 보여져야 한다.
-        // 즉, 현재 페이지가 6이고, 페이지 사이즈가 5일 경우에는 4 5 6 7 8 이런 식으로 보여져야 한다.
-        const halfOfPageSize = Math.round(pageSize / 2) - 1;
-        let temp = halfOfPageSize;
-        while (temp > 0) {
-          arr.push(curPage - temp);
-          temp--;
-        }
-        arr.push(curPage);
-        temp = 1;
-        while (temp <= halfOfPageSize) {
-          let nextPage = curPage + temp;
-
-          // 마지막 페이지라면, 더 이상 진행하지 않고 종료한다.
-          if (nextPage === totalPages) {
-            break;
-          }
-          arr.push(nextPage);
-          temp++;
-        }
-      }
-    }
-
-    return (
-      arr.map((value, index) => (
-        <Link className="child"
-              style={value === curPage ? {color: 'red'} : {color: 'blueviolet'}}
-              key={index}
-              to={'?page=' + value}>
-          {value}
-        </Link>
-      ))
-    );
-  };
 
   if (loading) {
     return <Spinner/>
@@ -203,29 +183,53 @@ const UserQuizListPage = ({user, onLogout}) => {
     localStorage.setItem('sort', sort);
   }
 
+  const activeSortingButtonCss = {
+    color: palette.gray[8],
+    borderBottom: '2px solid #212529'
+  }
+
+  const onQuizDetails = (id) => {
+    navigate(`/quizzes/${id}`);
+  }
+
+  const goPost = () => {
+    // HOC에서 로그인 유저 검증
+    if (!user) {
+      Swal.fire({
+        icon: 'warning',
+        title: '로그인 후 이용 가능합니다.',
+      });
+      return;
+    }
+    navigate('/post');
+  }
+
   return (
     <>
       <Header user={user} onLogout={onLogout}/>
       <QuizListBlock>
-        <div className='title'>
+        <div className='author-title'>
           <h1>{profile.username}의 퀴즈</h1>
         </div>
         <div className='buttons'>
-          <SortingButton onClick={() => onSort(sortType.latest)}
-                         style={sort === sortType.latest ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
+          <SortingButtonStyle onClick={() => onSort(SortType.LATEST)}
+                              style={(sort === SortType.LATEST) ? activeSortingButtonCss : null}>
             최신 순
-          </SortingButton>
-          <SortingButton onClick={() => onSort(sortType.totalVotesSum)}
-                         style={sort === sortType.totalVotesSum ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
+          </SortingButtonStyle>
+          <SortingButtonStyle onClick={() => onSort(SortType.TOTAL_VOTES_SUM)}
+                              style={(sort === SortType.TOTAL_VOTES_SUM) ? activeSortingButtonCss : null}>
             추천 순
-          </SortingButton>
-          <SortingButton onClick={() => onSort(sortType.answers)}
-                         style={sort === sortType.answers ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
+          </SortingButtonStyle>
+          <SortingButtonStyle onClick={() => onSort(SortType.ANSWERS)}
+                              style={(sort === SortType.ANSWERS) ? activeSortingButtonCss : null}>
             답변 순
-          </SortingButton>
+          </SortingButtonStyle>
         </div>
         {quizzes.map((quiz, index) => (
           <QuizItem key={index}
+                    onClick={() => {
+                      onQuizDetails(quiz.id)
+                    }}
                     id={quiz.id}
                     title={quiz.title}
                     answerCount={quiz.answerCount}
@@ -235,11 +239,18 @@ const UserQuizListPage = ({user, onLogout}) => {
           />
         ))}
       </QuizListBlock>
-      <Footer>
-        <div className='page'>
-          {calculatePageNumber()}
-        </div>
-      </Footer>
+      <Responsive>
+        <Footer>
+          <div className='page'>
+            {calculatePage(totalPages, pageSize, getCurrentPage(searchParams.get('page')))}
+          </div>
+          <div className='post'>
+            <StyledButton cyan onClick={goPost}>
+              퀴즈 작성
+            </StyledButton>
+          </div>
+        </Footer>
+      </Responsive>
     </>
   );
 }
