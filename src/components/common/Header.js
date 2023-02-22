@@ -5,12 +5,17 @@ import {logout} from "../../lib/api/auth";
 import Responsive from "./Responsive";
 import Button from "./Button";
 
-const HeaderBlock = styled(Responsive)`
-
-  top: 0;
-  height: 7rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+const HeaderBlock = styled.div`
+  position: fixed;
+  width: 100%;
+  background: white;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
   z-index: 10;
+`;
+
+const Wrapper = styled(Responsive)`
+  
+  height: 7rem;
 
   @media (max-height: 1024px) {
     height: 5.75rem;
@@ -19,7 +24,6 @@ const HeaderBlock = styled(Responsive)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: brown;
 
   .logo {
     font-size: 2rem;
@@ -28,7 +32,7 @@ const HeaderBlock = styled(Responsive)`
 
     @media (max-width: 1024px) {
       font-size: 1.5rem;
-      margin-left: 0.5rem;
+      margin-left: 1rem;
     }
 
   }
@@ -41,14 +45,20 @@ const HeaderBlock = styled(Responsive)`
 
 const UserBlock = styled.div`
   font-weight: 800;
-  margin-right: 0.75rem;
+  font-size: 1.125rem;
+  margin-right: 2rem;
+  letter-spacing: 2px;
   @media (max-width: 760px) {
     display: none;
   }
 `;
 
 const StyledButton = styled(Button)`
-  margin-right: 0.75rem;
+  margin-right: 1rem;
+`;
+
+const Spacer = styled.div`
+  height: 8rem;
 `;
 
 const Header = ({user, onLogout}) => {
@@ -80,12 +90,12 @@ const Header = ({user, onLogout}) => {
 
   return (
     <>
-      <Responsive>
-        <HeaderBlock>
+      <HeaderBlock>
+        <Wrapper>
           <Link to="/" className="logo">QUIZ APP</Link>
           {user ? (
             <div className="right">
-              <UserBlock>{user.email}</UserBlock>
+              <UserBlock>{user.username}</UserBlock>
               <StyledButton onClick={goProfile}>
                 내 정보
               </StyledButton>
@@ -104,8 +114,9 @@ const Header = ({user, onLogout}) => {
             </div>
           )
           }
-        </HeaderBlock>
-      </Responsive>
+        </Wrapper>
+      </HeaderBlock>
+      <Spacer/>
     </>
   );
 }

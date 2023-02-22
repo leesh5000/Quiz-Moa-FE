@@ -1,4 +1,4 @@
-import google from "../../images/google.png";
+import google from '../../images/google.png';
 
 export default function Google () {
 

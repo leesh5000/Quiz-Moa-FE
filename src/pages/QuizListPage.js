@@ -14,7 +14,7 @@ import palette from "../lib/styles/palette";
 const QuizListBlock = styled(Responsive)`
   
   box-sizing: border-box;
-  background: aqua;
+  height: 1020px;
   
   display: flex;
   flex-direction: column;
@@ -22,54 +22,68 @@ const QuizListBlock = styled(Responsive)`
   
   .buttons {
     display: flex;
-    justify-content: right;
-    background-color: dodgerblue;
+    justify-content: left;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+
+    @media (max-width: 1200px) {
+      margin-left: 0.5rem;
+    }
+  }
+
+  @media (max-height: 1020px) {
+    height: 920px;
   }
 
 `;
 
-const SortingButton = styled(Button)`
-  margin-left: 0.75rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+const SortingButton = styled.button`
+
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: ${palette.gray[6]};
+  border: none;
+  cursor: pointer;
+  background: none;
+  margin-right: 1rem;
+  padding-bottom: 0.35rem;
+  letter-spacing: 2px;
 `;
 
 const StyledButton = styled(Button)`
-  height: 2.5rem;
-  font-size: 1.15rem;
+  height: 2.25rem;
+  font-size: 1.125rem;
   font-weight: bold;
-  padding: 0.35rem 0.65rem;
-
-  @media (max-width: 420px) {
-    height: 2rem;
-    font-size: 1.15rem;
-    font-weight: bold;
-    padding: 0.35rem 0.65rem;
-  }
 `;
 
 const Footer = styled(Responsive)`
-  height: 12rem;
-  background-color: gray;
+  
+  display: flex;
+  justify-content: space-between;
+  height: 8rem;
+
+  @media (max-width: 1200px) {
+    margin-left: 0.5rem;
+    height: 4rem
+  }
   
   .page {
-    font-size: 1.325rem;
-    font-weight: 700;
-    background-color: dodgerblue;
-    text-align: center;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: ${palette.gray[7]};
     
     .child {
-      color: blueviolet;
+      border-radius: 4px;
+      outline: 1px solid ${palette.gray[4]};
+      padding: 0.45rem;
       margin-left: 0.5rem;
       margin-right: 0.5rem;
     }
   }
   
   .post {
-    text-align: right;
-    
     @media (max-width: 1024px) {
-      margin-right: 0.5rem;
+      margin-right: 1.5rem;
     }
   }
 `;
@@ -104,7 +118,7 @@ const QuizListPage = () => {
   const pageSize = 5;
 
   // 한 페이지당 컨텐츠 사이즈
-  const contentsCountPerPage = 5;
+  const contentsCountPerPage = 7;
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -188,7 +202,7 @@ const QuizListPage = () => {
     return (
       arr.map((value, index) => (
         <Link className="child"
-              style={value === curPage ? {color: 'red'} : {color: 'blueviolet'}}
+              style={value === curPage ? {backgroundColor: '#c5f6fa'} : null}
               key={index}
               to={`?page=${value}`}>
           {value}
@@ -227,21 +241,26 @@ const QuizListPage = () => {
     localStorage.setItem('sort', sort);
   }
 
+  const activeSortingButton = {
+    color: palette.gray[8],
+    borderBottom: '2px solid #212529'
+  }
+
   return (
     <>
       <Header user={user} onLogout={onLogout}/>
       <QuizListBlock>
         <div className='buttons'>
           <SortingButton onClick={() => onSort(sortType.latest)}
-                         style={sort === sortType.latest ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
+                         style={(sort === sortType.latest) ? activeSortingButton : null}>
             최신 순
           </SortingButton>
           <SortingButton onClick={() => onSort(sortType.totalVotesSum)}
-                         style={sort === sortType.totalVotesSum ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
+            style={(sort === sortType.totalVotesSum) ? activeSortingButton : null}>
             추천 순
           </SortingButton>
           <SortingButton onClick={() => onSort(sortType.answers)}
-                         style={sort === sortType.answers ? {background: palette.gray[6]} : {background: palette.gray[8]}}>
+                         style={(sort === sortType.answers) ? activeSortingButton : null}>
             답변 순
           </SortingButton>
         </div>

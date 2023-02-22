@@ -18,6 +18,7 @@ const EditorBlock = styled(Responsive)` /* 페이지 위아래 여백 지정 */
 `;
 
 const TitleInput = styled.input`
+  background: none;
   font-size: 1.75rem;
   outline: none;
   padding-bottom: 0.5rem;
@@ -40,6 +41,7 @@ const QuillWrapper = styled.div`
   padding-top: 0;
   
   .ql-editor {
+    background-color: white;
     min-height: 812px;
     max-height: 812px;
     font-size: 1.125rem;
