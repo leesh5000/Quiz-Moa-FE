@@ -1,14 +1,14 @@
-import Responsive from "../components/common/Responsive";
-import Editor from "../components/quiz/Editor";
-import Button from "../components/common/Button";
+import Responsive from "../../components/common/Responsive";
+import Editor from "../../components/quiz/Editor";
+import Button from "../../components/common/Button";
 import styled from "styled-components";
 import {useRef, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
-import {createQuiz, editQuiz} from "../lib/api/quiz";
-import Spinner from "../components/common/Spinner";
+import {createQuiz, editQuiz} from "../../lib/api/quiz";
+import Spinner from "../../components/common/Spinner";
 import Swal from "sweetalert2";
-import '../lib/styles/swal.css';
-import Header from "../components/common/Header";
+import '../../lib/styles/swal.css';
+import Header from "../../components/common/Header";
 
 const ButtonBlock = styled(Responsive)`
 

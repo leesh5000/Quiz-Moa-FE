@@ -1,15 +1,15 @@
 import './App.css';
 import {Route, Routes} from "react-router-dom";
-import QuizListPage from "./pages/QuizListPage";
+import QuizListPage from "./pages/quiz/QuizListPage";
 import OAuth2RedirectHandler from "./components/social/OAuth2RedirectHandler";
-import PostQuizPage from "./pages/PostQuizPage";
+import PostQuizPage from "./pages/post/PostQuizPage";
 import Home from "./pages/Home";
-import QuizDetailPage from "./pages/QuizDetailPage";
+import QuizDetailPage from "./pages/quiz/QuizDetailPage";
 import LoginPage from "./pages/LoginPage";
 import Auth from "./lib/hoc/Auth";
-import UserProfilePage from "./pages/UserProfilePage";
-import UserQuizListPage from "./pages/UserQuizListPage";
-import UserAnswerListPage from "./pages/UserAnswerListPage";
+import UserProfilePage from "./pages/user/UserProfilePage";
+import UserQuizListPage from "./pages/user/UserQuizListPage";
+import UserAnswerListPage from "./pages/user/UserAnswerListPage";
 
 function App() {
 

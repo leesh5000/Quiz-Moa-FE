@@ -1,13 +1,13 @@
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import Header from "../components/common/Header";
+import Header from "../../components/common/Header";
 import styled from "styled-components";
-import kakao from "../images/kakao.png";
-import palette from "../lib/styles/palette";
-import {getProfile} from "../lib/api/user";
+import kakao from "../../images/kakao.png";
+import palette from "../../lib/styles/palette";
+import {getProfile} from "../../lib/api/user";
 import Swal from "sweetalert2";
-import Spinner from "../components/common/Spinner";
-import Responsive from "../components/common/Responsive";
+import Spinner from "../../components/common/Spinner";
+import Responsive from "../../components/common/Responsive";
 
 const Wrapper = styled(Responsive)`
   color: ${palette.gray[8]};

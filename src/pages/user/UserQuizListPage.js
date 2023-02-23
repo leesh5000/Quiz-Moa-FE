@@ -1,23 +1,25 @@
-import Header from "../components/common/Header";
+import Header from "../../components/common/Header";
 import styled from "styled-components";
 import {useEffect, useState} from "react";
-import QuizItem from "../components/quiz/QuizItem";
-import Responsive from "../components/common/Responsive";
+import QuizItem from "../../components/quiz/QuizItem";
+import Responsive from "../../components/common/Responsive";
 import {useNavigate, useParams, useSearchParams} from "react-router-dom";
-import Spinner from "../components/common/Spinner";
+import Spinner from "../../components/common/Spinner";
 import Swal from "sweetalert2";
-import palette from "../lib/styles/palette";
-import {getProfile, getUserQuizzes} from "../lib/api/user";
-import {SortType} from "../global/SortType";
-import calculatePage from "../lib/utils/calculatePage";
-import Button from "../components/common/Button";
-import {getCurrentPage} from "../lib/utils/getCurrentPage";
+import palette from "../../lib/styles/palette";
+import {getProfile, getUserQuizzes} from "../../lib/api/user";
+import {SortType} from "../../global/SortType";
+import {getCurrentPage} from "../../lib/utils/getCurrentPage";
+import SortingButton from "../../components/common/SortingButton";
+import useSort from "../../lib/utils/useSort";
+import Footer from "../../components/common/Footer";
 
 const QuizListBlock = styled(Responsive)`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   padding-bottom: 3rem;
+  height: 1100px;
 
   .author-title {
     font-size: 1rem;
@@ -39,55 +41,6 @@ const QuizListBlock = styled(Responsive)`
       margin-left: 0.75rem;
     }
   }
-
-  @media (max-height: 1020px) {
-    height: 920px;
-  }
-
-`;
-
-const SortingButtonStyle = styled.button`
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: ${palette.gray[6]};
-  border: none;
-  cursor: pointer;
-  background: none;
-  margin-right: 1rem;
-  padding-bottom: 0.35rem;
-  letter-spacing: 1.25px;
-`;
-
-const Footer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  height: 8rem;
-
-  @media (max-width: 1200px) {
-    height: 4rem;
-    margin-left: 1rem;
-    margin-right: 1rem;
-  }
-
-  .page {
-    font-size: 1.125rem;
-    font-weight: 600;
-    color: ${palette.gray[7]};
-
-    .child {
-      border-radius: 4px;
-      outline: 1px solid ${palette.gray[4]};
-      padding: 0.45rem;
-      margin-left: 0.5rem;
-      margin-right: 0.5rem;
-    }
-  }
-`;
-
-const StyledButton = styled(Button)`
-  height: 2.25rem;
-  font-size: 1.125rem;
-  font-weight: bold;
 `;
 
 
@@ -102,29 +55,13 @@ const UserQuizListPage = ({user, onLogout}) => {
   const [searchParams] = useSearchParams();
   const email = useParams().email;
   const [profile, setProfile] = useState(null);
-
-  const sortType = {
-    latest: 'createdAt,desc',
-    answers: 'answerCount,desc',
-    totalVotesSum: 'totalVotesSum,desc',
-  }
-
-  // Default: 최신순
-  const [sort, setSort] = useState(() => {
-    let defaultSort = localStorage.getItem('sort');
-    // 만약, 사용자가 악의적으로 LocalStorage의 Sort를 변경하여 Sort Type에 없는 값이 들어가는 경우에는 기본값인 최신순으로 설정한다.
-    if (Object.values(sortType).filter(value => value === defaultSort).length === 0) {
-      defaultSort = sortType.latest;
-      localStorage.setItem('sort', defaultSort);
-    }
-    return defaultSort;
-  });
+  const [sort, setSort] = useSort();
 
   // 한 화면에 보여지는 페이지 개수
   const pageSize = 5;
 
   // 한 페이지당 컨텐츠 사이즈
-  const contentsCountPerPage = 7;
+  const contentsCountPerPage = 6;
 
   useEffect(() => {
 
@@ -174,21 +111,6 @@ const UserQuizListPage = ({user, onLogout}) => {
     return null;
   }
 
-  const onSort = (sort) => {
-    setSort(sort);
-    // 페이지가 이동되더라도, 정렬 방식은 유지되도록 하기 위해 localStorage 에 저장한다.
-    localStorage.setItem('sort', sort);
-  }
-
-  const activeSortingButtonCss = {
-    color: palette.gray[8],
-    borderBottom: '2px solid #212529'
-  }
-
-  const onQuizDetails = (id) => {
-    navigate(`/quizzes/${id}`);
-  }
-
   const goPost = () => {
     // HOC에서 로그인 유저 검증
     if (!user) {
@@ -209,23 +131,26 @@ const UserQuizListPage = ({user, onLogout}) => {
           <h1>{profile.username}의 퀴즈</h1>
         </div>
         <div className='buttons'>
-          <SortingButtonStyle onClick={() => onSort(SortType.LATEST)}
-                              style={(sort === SortType.LATEST) ? activeSortingButtonCss : null}>
-            최신 순
-          </SortingButtonStyle>
-          <SortingButtonStyle onClick={() => onSort(SortType.TOTAL_VOTES_SUM)}
-                              style={(sort === SortType.TOTAL_VOTES_SUM) ? activeSortingButtonCss : null}>
-            추천 순
-          </SortingButtonStyle>
-          <SortingButtonStyle onClick={() => onSort(SortType.ANSWERS)}
-                              style={(sort === SortType.ANSWERS) ? activeSortingButtonCss : null}>
-            답변 순
-          </SortingButtonStyle>
+          <SortingButton sortType={SortType.LATEST}
+                         setSort={setSort}
+                         sort={sort}
+                         description={'최신순'}>
+          </SortingButton>
+          <SortingButton sortType={SortType.TOTAL_VOTES_SUM}
+                         setSort={setSort}
+                         sort={sort}
+                         description={'추천 순'}>
+          </SortingButton>
+          <SortingButton sortType={SortType.ANSWERS}
+                         setSort={setSort}
+                         sort={sort}
+                         description={'답변 순'}>
+          </SortingButton>
         </div>
         {quizzes.map((quiz, index) => (
           <QuizItem key={index}
                     onClick={() => {
-                      onQuizDetails(quiz.id)
+                      navigate(`/quizzes/${quiz.id}`);
                     }}
                     id={quiz.id}
                     title={quiz.title}
@@ -236,18 +161,10 @@ const UserQuizListPage = ({user, onLogout}) => {
           />
         ))}
       </QuizListBlock>
-      <Responsive>
-        <Footer>
-          <div className='page'>
-            {calculatePage(totalPages, pageSize, getCurrentPage(searchParams.get('page')))}
-          </div>
-          <div className='post'>
-            <StyledButton cyan onClick={goPost}>
-              퀴즈 작성
-            </StyledButton>
-          </div>
-        </Footer>
-      </Responsive>
+      <Footer totalPages={totalPages}
+              pageSize={pageSize}
+              user={user}>
+      </Footer>
     </>
   );
 }

@@ -1,19 +1,19 @@
-import Header from "../components/common/Header";
+import Header from "../../components/common/Header";
 import React, {useEffect, useRef, useState} from "react";
-import {deleteQuiz, getQuizDetails, voteQuiz} from "../lib/api/quiz";
+import {deleteQuiz, getQuizDetails, voteQuiz} from "../../lib/api/quiz";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import Swal from "sweetalert2";
-import Spinner from "../components/common/Spinner";
-import Responsive from "../components/common/Responsive";
+import Spinner from "../../components/common/Spinner";
+import Responsive from "../../components/common/Responsive";
 import styled from "styled-components";
-import VoteModal from "../components/common/VoteModal";
-import palette from "../lib/styles/palette";
-import AnswerItem from "../components/answer/AnswerItem";
-import arrow from "../images/arrow.png";
-import AnswerEditor from "../components/answer/AnswerEditor";
-import Button from "../components/common/Button";
-import {createAnswer, deleteAnswer, editAnswer} from "../lib/api/answer";
-import getLoginUser from "../lib/utils/getLoginUser";
+import VoteModal from "../../components/common/VoteModal";
+import palette from "../../lib/styles/palette";
+import AnswerItem from "../../components/answer/AnswerItem";
+import arrow from "../../images/arrow.png";
+import AnswerEditor from "../../components/answer/AnswerEditor";
+import Button from "../../components/common/Button";
+import {createAnswer, deleteAnswer, editAnswer} from "../../lib/api/answer";
+import getLoginUser from "../../lib/utils/getLoginUser";
 
 const QuizWrapper = styled.div`
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.12);
