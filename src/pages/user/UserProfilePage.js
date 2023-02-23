@@ -149,7 +149,7 @@ const HistoryBlock = styled.div`
     font-weight: 550;
     
     &:hover {
-      color: ${palette.gray[5]};
+      color: ${palette.cyan[5]};
       text-decoration: underline;
     }
   }

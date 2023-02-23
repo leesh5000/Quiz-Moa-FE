@@ -16,7 +16,8 @@ import {createAnswer, deleteAnswer, editAnswer} from "../../lib/api/answer";
 import getLoginUser from "../../lib/utils/getLoginUser";
 
 const QuizWrapper = styled.div`
-  box-shadow: 0 0 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.12);
+  outline: 2px solid ${palette.gray[2]};
   border-radius: 8px;
   padding: 1rem;
   margin-top: 1rem;
@@ -105,7 +106,7 @@ const QuizInfoBlock = styled.div`
     font-weight: 800;
     &:hover {
       text-decoration: underline;
-      color: ${palette.gray[5]};
+      color: ${palette.cyan[5]};
     }
   }
   

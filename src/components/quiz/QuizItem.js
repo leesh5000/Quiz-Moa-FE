@@ -7,7 +7,7 @@ const QuizItemBlock = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1rem;
-  outline: 1px solid ${palette.gray[2]};
+  outline: 2px solid ${palette.gray[2]};
   border-radius: 8px;
   box-sizing: border-box;
   box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.08);

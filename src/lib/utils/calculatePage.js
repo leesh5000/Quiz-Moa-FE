@@ -8,6 +8,7 @@ const StyledNumber = styled(Link)`
   padding: 0.45rem;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08);
 `;
 
 const calculatePage = (totalPage, pageSize, currentPage) => {

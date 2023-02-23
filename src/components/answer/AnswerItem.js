@@ -70,7 +70,7 @@ const AnswerTitleBlock = styled.div`
       letter-spacing: 0.5px;
       color: ${palette.gray[7]};
       &:hover {
-        color: ${palette.gray[6]};
+        color: ${palette.cyan[5]};
         text-decoration: underline;
       }
     }
@@ -125,11 +125,11 @@ const AnswerBodyBlock = styled.div`
 `;
 
 const AnswerWrapper = styled.div`
-  border: 1px solid ${palette.gray[3]};
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 2rem;
-  box-shadow: 2px 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.08);
+  outline: 1px solid ${palette.gray[2]};
 
   @media (max-width: 1200px) {
     margin: 1rem;
