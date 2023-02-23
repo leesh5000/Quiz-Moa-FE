@@ -6,7 +6,7 @@ const QuizItemBlock = styled.div`
 
   display: flex;
   flex-direction: column;
-  padding: 1rem 1rem 0.5rem;
+  padding: 1rem;
   outline: 1px solid ${palette.gray[2]};
   border-radius: 8px;
   box-sizing: border-box;
@@ -21,13 +21,14 @@ const QuizItemBlock = styled.div`
   }
 
   @media (max-width: 1200px) {
-    margin: 0.5rem 1rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
   }
 
 `;
 
 const TitleBlock = styled.div`
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.75rem;
   font-size: 1.25rem;
   font-weight: bold;
   letter-spacing: 1px;
@@ -46,10 +47,10 @@ const TitleBlock = styled.div`
   .left {
     display: flex;
     flex-direction: column;
-    font-size: 0.825rem;
+    font-size: 0.875rem;
     margin-right: 1.25rem;
     white-space: nowrap;
-    font-weight: 800;
+    font-weight: 700;
     color: ${palette.gray[7]};
     
     @media (max-width: 1200px) {
@@ -57,7 +58,7 @@ const TitleBlock = styled.div`
     }
 
     .count {
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.35rem;
     }
   }
 `;
@@ -74,11 +75,6 @@ const InfoBlock = styled.div`
   .author {
     display: flex;
     align-items: center;
-  }
-  
-  .spacer {
-    margin-left: 0.25rem;
-    margin-right: 0.25rem;
   }
 
   .date {

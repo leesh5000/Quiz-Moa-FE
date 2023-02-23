@@ -16,7 +16,6 @@ import calculatePage from "../lib/utils/calculatePage";
 import {getCurrentPage} from "../lib/utils/getCurrentPage";
 
 const QuizListBlock = styled(Responsive)`
-  height: 1020px;
   display: flex;
   flex-direction: column;
   padding-bottom: 3rem;

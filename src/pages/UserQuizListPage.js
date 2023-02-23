@@ -14,10 +14,7 @@ import Button from "../components/common/Button";
 import {getCurrentPage} from "../lib/utils/getCurrentPage";
 
 const QuizListBlock = styled(Responsive)`
-
   box-sizing: border-box;
-  height: 1020px;
-
   display: flex;
   flex-direction: column;
   padding-bottom: 3rem;
@@ -127,7 +124,7 @@ const UserQuizListPage = ({user, onLogout}) => {
   const pageSize = 5;
 
   // 한 페이지당 컨텐츠 사이즈
-  const contentsCountPerPage = 6;
+  const contentsCountPerPage = 7;
 
   useEffect(() => {
 
