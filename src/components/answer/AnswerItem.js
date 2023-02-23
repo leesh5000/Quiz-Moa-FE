@@ -11,43 +11,52 @@ import Spinner from "../common/Spinner";
 import {Link} from "react-router-dom";
 
 const AnswerTitleBlock = styled.div`
-  
-  background-color: olive;
   display: flex;
   justify-content: left;
   align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid ${palette.gray[3]};
 
   @media (max-width: 780px) {
     padding-left: 0.5rem;
   }
 
   .vote {
-    background-color: blueviolet;
     height: 4rem;
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-    
-    .vote-button {
-      background-color: blue;
+
+    .button {
+      cursor: pointer;
+      opacity: 0.35;
+      &:hover {
+        opacity: 1;
+      }
     }
 
     .count-button {
-      cursor: pointer;
       border: none;
       outline: none;
-      font-size: 1rem;
+      cursor: pointer;
+      font-size: 1.25rem;
       font-weight: bold;
-      background-color: brown;
+      background-color: transparent;
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
+      color: ${palette.gray[8]};
+      &:hover {
+        opacity: 0.3;
+      }
     }
   }
 
   .contents {
-    background-color: aquamarine;
     font-weight: 800;
-    margin-left: 0.5rem;
+    margin-left: 1.25rem;
     display: flex;
     justify-content: left;
     align-items: center;
@@ -57,15 +66,19 @@ const AnswerTitleBlock = styled.div`
     }
     
     .author {
-      font-size: 1.25rem;
+      font-size: 1rem;
       letter-spacing: 0.5px;
       color: ${palette.gray[7]};
+      &:hover {
+        color: ${palette.cyan[5]};
+        text-decoration: underline;
+      }
     }
 
     .spacer {
       font-size: 0.75rem;
-      margin-right: 0.5rem;
-      margin-left: 0.5rem;
+      margin-right: 0.75rem;
+      margin-left: 0.75rem;
     }
 
     .date {
@@ -74,11 +87,26 @@ const AnswerTitleBlock = styled.div`
   }
 
   .buttons {
-    background-color: coral;
     margin-left: auto;
 
+    .edit {
+      background: ${palette.blue[6]};
+
+      &:hover {
+        background-color: ${palette.blue[2]};
+      }
+    }
+
+    .delete {
+      background: ${palette.red[6]};
+
+      &:hover {
+        background-color: ${palette.red[2]};
+      }
+    }
+
     button {
-      margin-right: 1rem;
+      margin-right: 1.125rem;
     }
   }
 `;
@@ -86,22 +114,26 @@ const AnswerTitleBlock = styled.div`
 const AnswerBodyBlock = styled.div`
 
   overflow-wrap: break-word;
-  border-bottom: 2px solid ${palette.gray[5]};
   letter-spacing: 0.5px;
-  padding: 0.5rem;
+  padding: 0.5rem 0.5rem 1.5rem;
+  margin-bottom: 2.5rem;
+  font-size: 1.025rem;
 
   @media (max-width: 780px) {
     margin-right: 0.5rem;
   }
-  
-  p {
-    margin: 0;
-  }
 `;
 
-const Spacer = styled.div`
-  height: 2rem;
-  background-color: coral;
+const AnswerWrapper = styled.div`
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.08);
+  outline: 1px solid ${palette.gray[2]};
+
+  @media (max-width: 1200px) {
+    margin: 1rem;
+  }
 `;
 
 const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
@@ -173,61 +205,64 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
 
   return (
     <Responsive>
-      <AnswerTitleBlock>
-        <div className='vote'>
-          <img className='vote-button'
-               onClick={() => onVote(1)}
-               src={arrow}
-               style={{width: '22px', transform: 'rotate(180deg)'}}
-          />
-          <button className='count-button'
-                  onClick={(e) => {
-                    setOnModal(!onModal)
-                    // 이벤트 버블링 방지
-                    e.stopPropagation();
-                    return false;
-                  }}
-                  style={{color: onModal ? palette.gray[6] : palette.gray[8]}}>
-            {votes.reduce((sum, vote) => sum + vote.value, 0)}
-          </button>
-          {onModal &&
-            <VoteModal setOnModal={() => setOnModal(false)}
-                       votes={votes}
-            />}
-          <img className='vote-button'
-               onClick={() => onVote(-1)}
-               src={arrow}
-               style={{width: '22px', transform: 'rotate(360deg)'}}
-          />
-        </div>
-        <div className="contents">
-          <div className="author">
-            <Link style={{textDecoration: 'underline'}}
-                  to={`/users/${answer.author.email}`}
-                  state={{id: answer.author.id}}
-            >
-              {answer.author.username}
-            </Link>
+      <AnswerWrapper>
+        <AnswerTitleBlock>
+          <div className='vote'>
+            <img className='button'
+                 onClick={() => onVote(1)}
+                 src={arrow}
+                 style={{width: '22px', transform: 'rotate(180deg)'}}
+            />
+            <button className='count-button'
+                    onClick={(e) => {
+                      setOnModal(!onModal)
+                      // 이벤트 버블링 방지
+                      e.stopPropagation();
+                      return false;
+                    }}
+                    style={{color: onModal ? palette.gray[5] : palette.gray[10]}}>
+              {votes.reduce((sum, vote) => sum + vote.value, 0)}
+            </button>
+            {onModal &&
+              <VoteModal setOnModal={() => setOnModal(false)}
+                         votes={votes}
+              />}
+            <img className='button'
+                 onClick={() => onVote(-1)}
+                 src={arrow}
+                 style={{width: '22px', transform: 'rotate(360deg)'}}
+            />
           </div>
-          <div className='spacer'>
-            •
+          <div className="contents">
+            <div className="author">
+              <Link to={`/users/${answer.author.email}`}
+                    state={{id: answer.author.id}}
+              >
+                {answer.author.username}
+              </Link>
+            </div>
+            <div className='spacer'>
+              •
+            </div>
+            <div className="date">
+              {new Date(answer.modifiedAt).toLocaleString().slice(0, -3)}
+            </div>
           </div>
-          <div className="date">
-            {new Date(answer.modifiedAt).toLocaleString().slice(0, -3)}
-          </div>
-        </div>
-        {answer.author.id === (user && user.id) &&
-          <div className="buttons">
-            <Button onClick={onEditHandler}
-                    style={{backgroundColor: isEditMode ? palette.gray[6] : palette.gray[8]}}>
-              수정
-            </Button>
-            <Button onClick={onDeleteHandler}>삭제</Button>
-          </div>
-        }
-      </AnswerTitleBlock>
-      <AnswerBodyBlock dangerouslySetInnerHTML={{__html: answer.contents}}/>
-      <Spacer/>
+          {answer.author.id === (user && user.id) &&
+            <div className="buttons">
+              <Button onClick={onEditHandler}
+                      className='edit'>
+                수정
+              </Button>
+              <Button onClick={onDeleteHandler}
+                      className='delete'>
+                삭제
+              </Button>
+            </div>
+          }
+        </AnswerTitleBlock>
+        <AnswerBodyBlock dangerouslySetInnerHTML={{__html: answer.contents}}/>
+      </AnswerWrapper>
     </Responsive>
   );
 }

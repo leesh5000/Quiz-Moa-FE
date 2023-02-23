@@ -28,10 +28,9 @@ export const setUpInterceptors = (navigate) => {
     }
   )
 
-// 별도로 then, catch 하지 않으면 인터셉터가 처리
   client.interceptors.response.use(
-    async response => {
-      return await response.data;
+    response => {
+      return response.data;
     },
     async e => {
 
@@ -57,7 +56,7 @@ export const setUpInterceptors = (navigate) => {
         // 실패했던 요청을 다시 요청한다.
         const originalRequest = e.config;
         originalRequest.headers.Authorization = `Bearer ${localStorage.getItem('accessToken')}`;
-        return axios(originalRequest);
+        return client.request(originalRequest);
       }
 
       if (e.response.status === 401) {

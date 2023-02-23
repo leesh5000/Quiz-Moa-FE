@@ -1,39 +1,44 @@
-import Responsive from "../components/common/Responsive";
-import Editor from "../components/quiz/Editor";
-import Button from "../components/common/Button";
+import Responsive from "../../components/common/Responsive";
+import Editor from "../../components/quiz/Editor";
+import Button from "../../components/common/Button";
 import styled from "styled-components";
 import {useRef, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
-import {createQuiz, editQuiz} from "../lib/api/quiz";
-import Spinner from "../components/common/Spinner";
+import {createQuiz, editQuiz} from "../../lib/api/quiz";
+import Spinner from "../../components/common/Spinner";
 import Swal from "sweetalert2";
-import '../lib/styles/swal.css';
-import Header from "../components/common/Header";
+import '../../lib/styles/swal.css';
+import Header from "../../components/common/Header";
 
 const ButtonBlock = styled(Responsive)`
 
   position: fixed;
   bottom: 0;
+  margin-bottom: 8rem;
   
   @media (max-width: 1024px) {
     width: 768px;
   }
   @media (max-width: 768px) {
     width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (max-height: 1020px) {
+    margin-bottom: 0;
   }
   
   height: 4rem;
-  background-color: coral;
   display: flex;
   justify-content: space-between;
   align-items: center;
 `;
 
 const StyledButton = styled(Button)`
-  font-size: 1.15rem;
-  padding: 0.35rem 0.85rem;
-  margin-left: 0.75rem;
-  margin-right: 0.75rem;
+  height: 2.25rem;
+  font-size: 1.125rem;
+  font-weight: bold;
 `;
 
 const PostQuizPage = ({user, onLogout}) => {
@@ -193,9 +198,9 @@ const PostQuizPage = ({user, onLogout}) => {
         />
         <ButtonBlock>
           {quizId ?
-            (<StyledButton onClick={onEdit}>수정하기</StyledButton>)
-            : (<StyledButton onClick={onPost}>작성하기</StyledButton>)}
-          <StyledButton onClick={onCancel}>돌아가기</StyledButton>
+            (<StyledButton cyan onClick={onEdit}>수정하기</StyledButton>)
+            : (<StyledButton cyan onClick={onPost}>작성하기</StyledButton>)}
+          <StyledButton cyan onClick={onCancel}>돌아가기</StyledButton>
         </ButtonBlock>
       </Responsive>
     </>

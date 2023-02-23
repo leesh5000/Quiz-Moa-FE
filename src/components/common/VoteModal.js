@@ -2,21 +2,26 @@ import styled from "styled-components";
 import Button from "./Button";
 import {useEffect, useRef} from "react";
 import palette from "../../lib/styles/palette";
+import {useNavigate} from "react-router-dom";
 
 const VoteModalWrapper = styled.div`
 
   width: 360px;
-  height: 420px;
+  height: 480px;
+  background-color: ${palette.cyan[0]};
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.16);
+  border-radius: 16px;
+  border: 1px solid ${palette.gray[4]};
+  z-index: 9;
 
   @media (max-width: 768px) {
     width: 300px;
   }
 
   @media (max-height: 960px) {
-    height: 380px;
+    height: 480px;
   }
 
-  background-color: olive;
   position: fixed;
   top: 50%;
   left: 50%;
@@ -24,30 +29,30 @@ const VoteModalWrapper = styled.div`
 
   .header {
     height: 4rem;
-    background-color: bisque;
 
     .title {
-      background-color: aquamarine;
       font-size: 1.35rem;
       font-weight: 600;
       text-align: center;
       padding-top: 1rem;
       margin: 0 auto;
+      padding-bottom: 1rem;
     }
   }
-  
+
   .body {
-    height: 100%;
-    overflow-y: scroll;
+    height: 380px;
+    overflow: auto;
     padding-top: 1rem;
     padding-bottom: 1rem;
-    background-color: coral;
-    
+
     .info {
-      font-size: 1.05rem;
+      font-size: 1rem;
       font-weight: 600;
       letter-spacing: 1px;
       padding-bottom: 0.5rem;
+      color: ${palette.gray[8]};
+      text-align: center;
     }
   }
 `;
@@ -60,20 +65,30 @@ const ButtonStyle = styled(Button)`
   font-weight: bold;
   padding: 0.25rem 0.5rem;
   margin-top: 1rem;
-  margin-right: 0.5rem;
+  margin-right: 1rem;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.125);
+  background-color: ${palette.gray[7]};
 `;
 
 const VoterStyle = styled.div`
-  
+
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.125);
+  border: 1px solid ${palette.gray[4]};
+  border-radius: 8px;
+
   font-size: 1.15rem;
   height: 3rem;
-  background-color: aqua;
-  border-bottom: 2.5px solid ${palette.gray[5]};
+  margin: 0.75rem 1rem;
+  background-color: ${palette.gray[1]};
   padding-left: 1rem;
+  
+  &:hover {
+    background-color: ${palette.cyan[1]};
+    cursor: pointer;
+  }
 `;
 
 const VoteModal = ({setOnModal, votes}) => {
@@ -81,6 +96,7 @@ const VoteModal = ({setOnModal, votes}) => {
   console.log('vote modal rendering...');
 
   const ref = useRef();
+  const navigate = useNavigate();
 
   // 모달창 외부 스크롤 방지
   useEffect(() => {
@@ -123,7 +139,11 @@ const VoteModal = ({setOnModal, votes}) => {
             투표 결과는 추천을 한 유저만 노출됩니다.
           </div>
           {votes.map((vote, index) =>
-            <VoterStyle key={index}>
+            <VoterStyle key={index}
+                        onClick={() => {
+                          navigate(`/users/${vote.voter.email}`);
+                        }}
+            >
               {/*투표는 추천을 한 유저만 보이도록 설정*/}
               {vote.value > 0 && vote.voter.username}
             </VoterStyle>

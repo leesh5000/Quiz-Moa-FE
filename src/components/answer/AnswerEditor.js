@@ -8,12 +8,11 @@ import Responsive from "../common/Responsive";
 
 const EditorBlock = styled(Responsive)` /* 페이지 위아래 여백 지정 */
   height: 682px;
-  background-color: aquamarine;
   padding-top: 1.25rem;
   padding-bottom: 5rem;
 
   @media (max-width: 1024px) {
-    padding: 0 0.5rem;
+    padding: 1rem;
   }
 
   @media (max-height: 1024px) {
@@ -24,7 +23,8 @@ const EditorBlock = styled(Responsive)` /* 페이지 위아래 여백 지정 */
 const QuillWrapper = styled.div`
 
   padding-top: 0;
-  
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.08);
+
   .ql-editor {
     min-height: 486px;
     max-height: 486px;

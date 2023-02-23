@@ -1,39 +1,52 @@
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import Header from "../components/common/Header";
+import Header from "../../components/common/Header";
 import styled from "styled-components";
-import Responsive from "../components/common/Responsive";
-import kakao from "../images/kakao.png";
-import palette from "../lib/styles/palette";
-import {getProfile} from "../lib/api/user";
+import kakao from "../../images/kakao.png";
+import palette from "../../lib/styles/palette";
+import {getProfile} from "../../lib/api/user";
 import Swal from "sweetalert2";
-import Spinner from "../components/common/Spinner";
+import Spinner from "../../components/common/Spinner";
+import Responsive from "../../components/common/Responsive";
 
-const ProfileBlock = styled(Responsive)`
-  
-  background-color: coral;
-  height: 420px;
-  margin-top: 6rem;
-  
+const Wrapper = styled(Responsive)`
+  color: ${palette.gray[8]};
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+
+const ProfileBlock = styled.div`
+
+  box-sizing: border-box;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+
+  @media (max-width: 1200px) {
+    margin: 1rem 1rem 0;
+  }
+
   .title {
-    background-color: bisque;
     font-size: 2rem;
     font-weight: 600;
     letter-spacing: 2px;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid ${palette.gray[3]};
   }
-  
+
   .profile {
-    background-color: gray;
     height: 300px;
     display: flex;
     justify-content: left;
     align-items: center;
-    
-    .img-box{
-      background-color: aqua;
+
+    .img-box {
       width: 300px;
       text-align: center;
-      
+
       img {
         width: 200px;
         height: 200px;
@@ -46,10 +59,9 @@ const ProfileBlock = styled(Responsive)`
         }
       }
     }
-    
+
     .info {
       width: 100%;
-      background-color: aquamarine;
       margin-left: 3rem;
       margin-right: auto;
       font-size: 1.5rem;
@@ -62,7 +74,7 @@ const ProfileBlock = styled(Responsive)`
         margin-left: 1rem;
         font-size: 1rem;
       }
-      
+
       h3 {
         color: ${palette.gray[9]};
         font-size: 1.5rem;
@@ -72,9 +84,8 @@ const ProfileBlock = styled(Responsive)`
           font-size: 1.25rem;
         }
       }
-      
+
       .email {
-        background-color: bisque;
         display: flex;
         align-items: center;
 
@@ -83,9 +94,8 @@ const ProfileBlock = styled(Responsive)`
           flex-direction: column;
         }
       }
-      
+
       .username {
-        background-color: azure;
         display: flex;
         align-items: center;
 
@@ -94,9 +104,8 @@ const ProfileBlock = styled(Responsive)`
           flex-direction: column;
         }
       }
-      
+
       .total-recommend {
-        background-color: beige;
         display: flex;
         align-items: center;
 
@@ -109,15 +118,24 @@ const ProfileBlock = styled(Responsive)`
   }
 `;
 
-const HistoryBlock = styled(Responsive)`
-  background-color: dodgerblue;
+const HistoryBlock = styled.div`
+
+  box-sizing: border-box;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  padding: 1.5rem;
+  
+  @media (max-width: 1200px) {
+    margin: 1rem;
+  }
+  
   height: 240px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 
   .title {
-    background-color: bisque;
     font-size: 2rem;
     font-weight: 600;
     letter-spacing: 2px;
@@ -125,10 +143,15 @@ const HistoryBlock = styled(Responsive)`
   }
   
   .link {
-    background-color: darkgray;
-    font-size: 1.5rem;
-    text-decoration: underline;
+    font-size: 1.25rem;
     margin-bottom: 1.5rem;
+    color: ${palette.gray[7]};
+    font-weight: 550;
+    
+    &:hover {
+      color: ${palette.cyan[5]};
+      text-decoration: underline;
+    }
   }
 `;
 
@@ -176,51 +199,53 @@ const UserProfilePage = ({user, onLogout}) => {
   return (
     <>
       <Header user={user} onLogout={onLogout}/>
-      <ProfileBlock>
-        <div className='title'>
-          {user.email === profile.email ?
-            '내 프로필' : `${profile.username}의 프로필`}
-        </div>
-        <div className='profile'>
-          <div className='img-box'>
-            <img src={kakao} alt="kakao"/>
+      <Wrapper>
+        <ProfileBlock>
+          <div className='title'>
+            {user.email === profile.email ?
+              '내 프로필' : `${profile.username}의 프로필`}
           </div>
-          <div className='info'>
-            <div className='email'>
-              <h3>이메일</h3>
-              {profile.email}
+          <div className='profile'>
+            <div className='img-box'>
+              <img src={kakao} alt="kakao"/>
             </div>
-            <div className='username'>
-              <h3>이름</h3>
-              {profile.username}
-            </div>
-            <div className='total-recommend'>
-              <h3>받은 총 추천 수</h3> {profile.quizzes.totalVotesSum + profile.answers.totalVotesSum}
+            <div className='info'>
+              <div className='email'>
+                <h3>이메일</h3>
+                {profile.email}
+              </div>
+              <div className='username'>
+                <h3>이름</h3>
+                {profile.username}
+              </div>
+              <div className='total-recommend'>
+                <h3>받은 총 추천 수</h3> {profile.quizzes.totalVotesSum + profile.answers.totalVotesSum}
+              </div>
             </div>
           </div>
-        </div>
-      </ProfileBlock>
-      <HistoryBlock>
-        <div className='title'>
-          활동 내역
-        </div>
-        <Link className='link'
-              to={`/users/${profile.email}/quizzes`}
-              state={{
-                id: profile.id
-              }}>
-          {user.email === profile.email ?
-            '내 퀴즈 보기' : `${profile.username}의 퀴즈 보기`} {profile.quizzes.totalCount}
-        </Link>
-        <Link className='link'
-              to={`/users/${profile.email}/answers`}
-              state={{
-                id: profile.id
-              }}>
-          {user.email === profile.email ?
-            '내 답변 보기' : `${profile.username}의 답변 보기`} {profile.answers.totalCount}
-        </Link>
-      </HistoryBlock>
+        </ProfileBlock>
+        <HistoryBlock>
+          <div className='title'>
+            활동 내역
+          </div>
+          <Link className='link'
+                to={`/users/${profile.email}/quizzes`}
+                state={{
+                  id: profile.id
+                }}>
+            {user.email === profile.email ?
+              '내 퀴즈 보기' : `${profile.username}의 퀴즈 보기`} {profile.quizzes.totalCount}
+          </Link>
+          <Link className='link'
+                to={`/users/${profile.email}/answers`}
+                state={{
+                  id: profile.id
+                }}>
+            {user.email === profile.email ?
+              '내 답변 보기' : `${profile.username}의 답변 보기`} {profile.answers.totalCount}
+          </Link>
+        </HistoryBlock>
+      </Wrapper>
     </>
   );
 }

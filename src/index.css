@@ -27,6 +27,7 @@ html {
 
   /*-ms-overflow-style: none; !* 인터넷 익스플로러 *!*/
   /*scrollbar-width: none; !* 파이어폭스 *!*/
+  background: #f8f9fa;
 
 }
 
@@ -43,6 +44,15 @@ a {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
   monospace;
+}
+
+pre {
+  background: #dee2e6;
+  padding: 1rem;
+  border-radius: 4px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  border: 1px solid #ced4da;
 }
 
 /*html::-webkit-scrollbar {*/

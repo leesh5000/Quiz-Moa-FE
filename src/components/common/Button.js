@@ -4,18 +4,19 @@ import {Link} from "react-router-dom";
 
 const buttonStyle = css`
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 1rem;
   font-weight: bold;
-  padding: 0.25rem 0.75rem;
+  padding: 0.35rem 0.65rem;
   color: white;
   outline: none;
   cursor: pointer;
-
-  background: ${palette.gray[8]};
+  box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.12);
+  
+  background: ${palette.gray[7]};
 
   &:hover {
-    background: ${palette.gray[6]};
+    background: ${palette.gray[5]};
   }
 
   ${props => 

@@ -1,42 +1,55 @@
-import Header from "../components/common/Header";
+import Header from "../../components/common/Header";
 import React, {useEffect, useRef, useState} from "react";
-import {deleteQuiz, getQuizDetails, voteQuiz} from "../lib/api/quiz";
+import {deleteQuiz, getQuizDetails, voteQuiz} from "../../lib/api/quiz";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import Swal from "sweetalert2";
-import Spinner from "../components/common/Spinner";
-import Responsive from "../components/common/Responsive";
+import Spinner from "../../components/common/Spinner";
+import Responsive from "../../components/common/Responsive";
 import styled from "styled-components";
-import VoteModal from "../components/common/VoteModal";
-import palette from "../lib/styles/palette";
-import AnswerItem from "../components/answer/AnswerItem";
-import arrow from "../images/arrow.png";
-import AnswerEditor from "../components/answer/AnswerEditor";
-import Button from "../components/common/Button";
-import {createAnswer, deleteAnswer, editAnswer} from "../lib/api/answer";
-import getLoginUser from "../lib/utils/getLoginUser";
+import VoteModal from "../../components/common/VoteModal";
+import palette from "../../lib/styles/palette";
+import AnswerItem from "../../components/answer/AnswerItem";
+import arrow from "../../images/arrow.png";
+import AnswerEditor from "../../components/answer/AnswerEditor";
+import Button from "../../components/common/Button";
+import {createAnswer, deleteAnswer, editAnswer} from "../../lib/api/answer";
+import getLoginUser from "../../lib/utils/getLoginUser";
+
+const QuizWrapper = styled.div`
+  box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.12);
+  outline: 2px solid ${palette.gray[2]};
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+
+  @media (max-width: 1200px) {
+    margin: 0 1rem 1rem;
+  }
+
+  @media (max-height: 1024px) {
+    margin-top: 1.5rem;
+  }
+`;
 
 const QuizTitleBlock = styled.div`
   
-  margin-top: 1.725rem;
-  height: 4.625rem;
-  background-color: blueviolet;
   letter-spacing: 0.5px;
   display: flex;
   justify-content: left;
   align-items: center;
 
-  @media (max-width: 780px) {
-    margin-top: 1rem;
-    padding-left: 0.5rem;
+  @media (max-width: 1200px) {
+    margin-top: 0;
+    padding-left: 1rem;
   }
   
   .title {
-    margin-left: 1rem;
-    font-size: 2rem;
+    margin-left: 1.5rem;
+    font-size: 1.5rem;
     font-weight: 600;
 
     text-overflow: ellipsis;
-    white-space: nowrap;
     overflow: hidden;
   }
   
@@ -48,6 +61,10 @@ const QuizTitleBlock = styled.div`
     
     .button {
       cursor: pointer;
+      opacity: 0.35;
+      &:hover {
+        opacity: 1;
+      }
     }
     
     .count-button {
@@ -57,6 +74,11 @@ const QuizTitleBlock = styled.div`
       font-size: 1.725rem;
       font-weight: bold;
       background-color: transparent;
+      &:hover {
+        opacity: 0.3;
+      }
+      padding-top: 0.25rem;
+      padding-bottom: 0.25rem;
     }
   }
 `;
@@ -64,28 +86,34 @@ const QuizTitleBlock = styled.div`
 const QuizInfoBlock = styled.div`
   height: 3rem;
   margin-top: 1rem;
-  background-color: bisque;
-  
-  @media (max-width: 780px) {
-    padding-left: 0.5rem;
+
+  @media (max-width: 1200px) {
+    margin-top: 0;
+    padding-left: 1rem;
   }
   
   display: flex;
   justify-content: left;
   align-items: center;
-  font-size: 1rem;
-  color: ${palette.gray[7]};
-  border-bottom: 2.5px solid ${palette.gray[5]};
+  font-size: 1.05rem;
+  color: ${palette.gray[6]};
+  border-bottom: 1px solid ${palette.gray[4]};
   letter-spacing: 0.5px;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
 
   .author {
     font-weight: 800;
+    &:hover {
+      text-decoration: underline;
+      color: ${palette.cyan[5]};
+    }
   }
   
   .spacer {
-    font-size: 0.75rem;
-    margin-right: 0.25rem;
-    margin-left: 0.25rem;
+    font-size: 1rem;
+    margin-right: 0.75rem;
+    margin-left: 0.75rem;
   }
   
   .date {
@@ -93,11 +121,24 @@ const QuizInfoBlock = styled.div`
   }
   
   .buttons {
-    background-color: coral;
     margin-left: auto;
     
+    .edit {
+      background: ${palette.blue[6]};
+      &:hover {
+        background-color: ${palette.blue[2]};
+      }
+    }
+
+    .delete {
+      background: ${palette.red[6]};
+      &:hover {
+        background-color: ${palette.red[2]};
+      }
+    }
+    
     button {
-      margin-right: 1rem;
+      margin-right: 1.125rem;
     }
   }
 `;
@@ -105,13 +146,15 @@ const QuizInfoBlock = styled.div`
 const QuizContentsBlock = styled.div`
   width: 100%;
   min-height: 280px;
-  background-color: gray;
   font-size: 1.125rem;
   letter-spacing: 1px;
   overflow-wrap: break-word;
+  margin-bottom: 1.5rem;
 
-  @media (max-width: 780px) {
-    padding: 0.5rem;
+  @media (max-width: 1200px) {
+    margin-top: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   p {
@@ -123,20 +166,24 @@ const AnswerBlock = styled.div`
   
   .count {
     font-size: 1.65rem;
-    background-color: azure;
     margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: ${palette.gray[8]};
+    padding-left: 0.5rem;
 
-    @media (max-width: 780px) {
-      padding-left: 0.5rem;
+    @media (max-width: 1200px) {
+      padding-left: 1.5rem;
     }
   }
 `;
 
 const EditorTitle = styled.div`
   padding-top: 1rem;
-  font-size: 2.15rem;
+  font-size: 1.75rem;
   font-weight: 600;
+  letter-spacing: 2px;
   color: ${palette.gray[7]};
 
   @media (max-width: 1024px) {
@@ -163,13 +210,15 @@ const ButtonBlock = styled.div`
   justify-content: space-between;
   
   @media (max-width: 1024px) {
-    padding-left: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 `;
 
 const ButtonStyle = styled(Button)`
-  font-size: 1.15rem;
-  height: 2rem;
+  height: 2.25rem;
+  font-size: 1.125rem;
+  font-weight: bold;
 `;
 
 const QuizDetailPage = () => {
@@ -334,11 +383,9 @@ const QuizDetailPage = () => {
     }
 
     // 수정 모드로 전환 시, 에디터에 수정 전 텍스트를 붙여넣어 줌
-    const previousContents = quiz.answers
+    quillInstance.current.root.innerHTML = quiz.answers
       .filter(answer => answer.id === id)
       .map(answer => answer.contents);
-
-    quillInstance.current.root.innerHTML = previousContents;
     quillInstance.current.focus();
     window.scrollTo(0, quillElement.current.offsetTop);
     setAnswerEditId(id);
@@ -516,59 +563,65 @@ const QuizDetailPage = () => {
     <>
       <Header user={user} onLogout={onLogout}/>
       <Responsive>
-        <QuizTitleBlock>
-          <div className='vote'>
-            <img className='button'
-                 onClick={() => onVote(1)}
-                 src={arrow}
-                 style={{width: '26px', transform: 'rotate(180deg)'}}/>
-            <button className='count-button'
-                    onClick={(e) => {
-                      setOnModal(!onModal)
-                      // 이벤트 버블링 방지
-                      e.stopPropagation();
-                      return false;
-                    }}
-                    style={{color: onModal ? palette.gray[6] : palette.gray[8]}}>
-              {quiz.votes.reduce((sum, vote) => sum + vote.value, 0)}
-            </button>
-            {onModal &&
-              <VoteModal setOnModal={() => setOnModal(false)}
-                         votes={quiz.votes}/>}
-            <img className='button'
-                 onClick={() => onVote(-1)}
-                 src={arrow}
-                 style={{width: '26px', transform: 'rotate(360deg)'}}/>
-          </div>
-          <div className='title'>
-            {quiz.title}
-          </div>
-        </QuizTitleBlock>
-        <QuizInfoBlock>
-          <div className='author'>
-            <Link style={{textDecoration: 'underline'}}
-                  to={`/users/${quiz.author.email}`}
-                  state={{id: quiz.author.id}}
-            >
-              {quiz.author.username}
-            </Link>
-          </div>
-          <div className='spacer'>
-            •
-          </div>
-          <div className='date'>
-            {new Date(quiz.modifiedAt).toLocaleString('ko-KR', {
-              hour12: false,
-            }).slice(0, -13)}
-          </div>
-          {quiz.author.id === (user && user.id) &&
-            <div className='buttons'>
-              <Button onClick={onEdit}>수정</Button>
-              <Button onClick={onDelete}>삭제</Button>
+        <QuizWrapper>
+          <QuizTitleBlock>
+            <div className='vote'>
+              <img className='button'
+                   onClick={() => onVote(1)}
+                   src={arrow}
+                   style={{width: '26px', transform: 'rotate(180deg)'}}/>
+              <button className='count-button'
+                      onClick={(e) => {
+                        setOnModal(!onModal)
+                        // 이벤트 버블링 방지
+                        e.stopPropagation();
+                        return false;
+                      }}
+                      style={{color: onModal ? palette.gray[5] : palette.gray[10]}}>
+                {quiz.votes.reduce((sum, vote) => sum + vote.value, 0)}
+              </button>
+              {onModal &&
+                <VoteModal setOnModal={() => setOnModal(false)}
+                           votes={quiz.votes}/>}
+              <img className='button'
+                   onClick={() => onVote(-1)}
+                   src={arrow}
+                   style={{width: '26px', transform: 'rotate(360deg)'}}
+              />
             </div>
-          }
-        </QuizInfoBlock>
-        <QuizContentsBlock dangerouslySetInnerHTML={{__html: quiz.contents}}/>
+            <div className='title'>
+              {quiz.title}
+            </div>
+          </QuizTitleBlock>
+          <QuizInfoBlock>
+            <div className='author'>
+              <Link to={`/users/${quiz.author.email}`}
+                    state={{id: quiz.author.id}}
+              >
+                {quiz.author.username}
+              </Link>
+            </div>
+            <div className='spacer'>
+              •
+            </div>
+            <div className='date'>
+              {new Date(quiz.modifiedAt).toLocaleString().slice(0, -3)}
+            </div>
+            {quiz.author.id === (user && user.id) &&
+              <div className='buttons'>
+                <Button onClick={onEdit}
+                        className='edit'>
+                  수정
+                </Button>
+                <Button onClick={onDelete}
+                        className='delete'>
+                  삭제
+                </Button>
+              </div>
+            }
+          </QuizInfoBlock>
+          <QuizContentsBlock dangerouslySetInnerHTML={{__html: quiz.contents}}/>
+        </QuizWrapper>
         <AnswerBlock>
           <div className='count'>
             {quiz.answers.length} 답변
@@ -593,24 +646,23 @@ const QuizDetailPage = () => {
           {answerEditId ?
             <div style={{
               display: 'inline-block',
-              boxShadow: 'inset 0 -10rem 0 #D9FCDB',
-              transition: 'all 2s ease-in-out'
+              boxShadow: 'inset 0 -5rem 0 #c5f6fa',
+              transition: 'all 0.5s ease-in-out'
             }}>답변 수정하기</div> :
-            <div>작성하기</div>
+            <div>답변 작성하기</div>
           }
         </EditorTitle>
         <AnswerEditor quillInstance={quillInstance}
                       quillElement={quillElement}
-                      user={user}
-        />
+                      user={user}/>
         {answerEditId ?
           <ButtonBlock>
-            <ButtonStyle onClick={onEditConfirm}>수정하기</ButtonStyle>
-            <ButtonStyle onClick={onEditCancel}>취소하기</ButtonStyle>
+            <ButtonStyle cyan onClick={onEditConfirm}>수정하기</ButtonStyle>
+            <ButtonStyle cyan onClick={onEditCancel}>취소하기</ButtonStyle>
           </ButtonBlock> :
           <ButtonBlock>
-            <ButtonStyle onClick={onPost}>제출하기</ButtonStyle>
-            <ButtonStyle onClick={onCancel}>돌아가기</ButtonStyle>
+            <ButtonStyle cyan onClick={onPost}>제출하기</ButtonStyle>
+            <ButtonStyle cyan onClick={onCancel}>돌아가기</ButtonStyle>
           </ButtonBlock>
         }
         <Spacer/>

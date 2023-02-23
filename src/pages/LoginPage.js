@@ -13,17 +13,17 @@ const LoginPageBlock = styled.div`
   top: 0;
   bottom: 0;
   right: 0;
-  background: ${palette.gray[2]};
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 
-  h3 {
-    display: flex;
-    justify-content: center;
+  .title {
+    text-align: center;
     color: ${palette.gray[8]};
-    margin: 0 0 1rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 2.5rem;
   }
 `;
 
@@ -39,27 +39,26 @@ const WhiteBox = styled.div`
   @media (max-width: 420px) {
     width: 100%;
   }
-  
+
   .logo-area {
-    display: block;
-    padding-bottom: 1.5rem;
     text-align: center;
     font-size: 2rem;
     font-weight: bold;
     letter-spacing: 2px;
-    margin-bottom: 1.5rem;
+    margin-bottom: 4rem;
   }
-  
+
   .img-area {
+
+    width: 300px;
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
-    
+    margin: 0 auto 1rem;
+
     img {
-      margin-top: 1.3rem;
-      width: 236px;
-      height: 72px;
+      width: 72px;
+      object-fit: cover;
     }
   }
 `;
@@ -94,7 +93,9 @@ const LoginPage = () => {
         <div className="logo-area">
           <Link to="/"><h2>QUIZ APP</h2></Link>
         </div>
-        <h3>소셜 계정으로 로그인</h3>
+        <div className="title">
+          SNS 로그인 / 회원가입
+        </div>
         <div className="img-area">
           <Google/>
           <Naver/>
