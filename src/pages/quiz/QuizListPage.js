@@ -89,6 +89,7 @@ const QuizListPage = () => {
 
   const onLogout = () => {
     setUser(null);
+    localStorage.removeItem('username');
   }
 
   return (
