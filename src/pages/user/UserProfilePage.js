@@ -184,6 +184,8 @@ const UserProfilePage = ({user, onLogout}) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [quizzes, setQuizzes] = useState([]);
+  const [answers, setAnswers] = useState([]);
   const [edit, setEdit] = useState(false);
   const email = useParams().email;
   let username = '';
@@ -195,6 +197,8 @@ const UserProfilePage = ({user, onLogout}) => {
         setLoading(true);
         const response = await getProfile(email);
         setProfile(response);
+        setQuizzes(response?.quizzes);
+        setAnswers(response?.answers);
       } catch (e) {
         await Swal.fire({
           icon: 'warning',
@@ -216,7 +220,7 @@ const UserProfilePage = ({user, onLogout}) => {
     return <Spinner/>;
   }
 
-  if (!profile || !profile.quizzes) {
+  if (!profile || !quizzes || !answers) {
     return null;
   }
 
@@ -305,7 +309,7 @@ const UserProfilePage = ({user, onLogout}) => {
                 </div>
               </div>
               <div className='total-recommend'>
-                <h3>받은 총 추천 수</h3> {profile.quizzes.totalVotesSum + profile.answers.totalVotesSum}
+                <h3>받은 총 추천 수</h3> {quizzes.totalVotesSum + answers.totalVotesSum}
               </div>
             </div>
           </div>
@@ -320,7 +324,7 @@ const UserProfilePage = ({user, onLogout}) => {
                   id: profile.id
                 }}>
             {user.email === profile.email ?
-              '내 퀴즈 보기' : `${profile.username}의 퀴즈 보기`} {profile.quizzes.totalCount}
+              '내 퀴즈 보기' : `${profile.username}의 퀴즈 보기`} {quizzes.totalCount}
           </Link>
           <Link className='link'
                 to={`/users/${profile.email}/answers`}
@@ -328,7 +332,7 @@ const UserProfilePage = ({user, onLogout}) => {
                   id: profile.id
                 }}>
             {user.email === profile.email ?
-              '내 답변 보기' : `${profile.username}의 답변 보기`} {profile.answers.totalCount}
+              '내 답변 보기' : `${profile.username}의 답변 보기`} {answers.totalCount}
           </Link>
         </HistoryBlock>
       </Wrapper>

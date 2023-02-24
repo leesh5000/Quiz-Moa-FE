@@ -655,12 +655,12 @@ const QuizDetailPage = () => {
                       user={user}/>
         {answerEditId ?
           <ButtonBlock>
-            <ButtonStyle cyan onClick={onEditConfirm}>수정하기</ButtonStyle>
             <ButtonStyle cyan onClick={onEditCancel}>취소하기</ButtonStyle>
+            <ButtonStyle cyan onClick={onEditConfirm}>수정하기</ButtonStyle>
           </ButtonBlock> :
           <ButtonBlock>
-            <ButtonStyle cyan onClick={onPost}>제출하기</ButtonStyle>
             <ButtonStyle cyan onClick={onCancel}>돌아가기</ButtonStyle>
+            <ButtonStyle cyan onClick={onPost}>제출하기</ButtonStyle>
           </ButtonBlock>
         }
         <Spacer/>

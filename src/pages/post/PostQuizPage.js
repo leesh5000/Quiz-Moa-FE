@@ -195,10 +195,10 @@ const PostQuizPage = ({user, onLogout}) => {
                 contents={contents}
         />
         <ButtonBlock>
+          <StyledButton cyan onClick={onCancel}>돌아가기</StyledButton>
           {quizId ?
             (<StyledButton cyan onClick={onEdit}>수정하기</StyledButton>)
             : (<StyledButton cyan onClick={onPost}>작성하기</StyledButton>)}
-          <StyledButton cyan onClick={onCancel}>돌아가기</StyledButton>
         </ButtonBlock>
       </Responsive>
     </>

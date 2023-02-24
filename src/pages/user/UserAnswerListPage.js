@@ -81,7 +81,7 @@ const UserAnswerListPage = ({user, onLogout}) => {
           sort: sort
         });
         setAnswers(response.content);
-        setTotalPages(response.totalPages);
+        setTotalPages(response.totalPages + 1);
       } catch (e) {
         console.log('get quizzes error', e);
         await Swal.fire({

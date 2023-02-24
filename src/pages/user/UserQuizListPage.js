@@ -78,7 +78,7 @@ const UserQuizListPage = ({user, onLogout}) => {
           sort: sort
         });
         setQuizzes(response.content);
-        setTotalPages(response.totalPages);
+        setTotalPages(response.totalPages + 1);
 
       } catch (e) {
         console.log('get quizzes error', e);
