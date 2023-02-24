@@ -61,8 +61,6 @@ const QuillWrapper = styled.div`
 
 const Editor = ({onChangeField, quillElement, quillInstance, title, contents}) => {
 
-  console.log("Editor Rendering...");
-
   const onChangeTitle = e => {
     onChangeField({ key: 'title', value: e.target.value });
   };

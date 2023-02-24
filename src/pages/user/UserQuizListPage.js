@@ -46,8 +46,6 @@ const QuizListBlock = styled(Responsive)`
 
 const UserQuizListPage = ({user, onLogout}) => {
 
-  console.log('QuizListPage Rendering...');
-
   const [quizzes, setQuizzes] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);

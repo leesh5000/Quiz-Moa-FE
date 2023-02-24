@@ -80,8 +80,6 @@ const InfoBlock = styled.div`
 
 const UserAnswerItem = ({id, onClick, quizId, contents, votes, author, modifiedAt}) => {
 
-  console.log('QuizItem rendering...');
-
   return (
     <AnswerItemBlock onClick={onClick}>
       <TitleBlock>

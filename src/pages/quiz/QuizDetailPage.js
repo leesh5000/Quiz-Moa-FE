@@ -223,8 +223,6 @@ const ButtonStyle = styled(Button)`
 
 const QuizDetailPage = () => {
 
-  console.log('QuizDetailPage rendering...');
-
   const quillElement = useRef(null);
   const quillInstance = useRef(null);
   const [loading, setLoading] = useState(false);

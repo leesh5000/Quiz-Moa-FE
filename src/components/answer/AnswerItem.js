@@ -267,4 +267,4 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
   );
 }
 
-export default AnswerItem;
+export default React.memo(AnswerItem);

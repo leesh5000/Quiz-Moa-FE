@@ -43,8 +43,6 @@ const StyledButton = styled(Button)`
 
 const PostQuizPage = ({user, onLogout}) => {
 
-  console.log("PostQuizPage Rendering...");
-
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const quillElement = useRef(null);

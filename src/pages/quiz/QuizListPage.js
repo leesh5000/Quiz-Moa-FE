@@ -67,8 +67,6 @@ const StyledButton = styled(Button)`
 
 const QuizListPage = () => {
 
-  console.log('QuizListPage Rendering...');
-
   const [quizzes, setQuizzes] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);

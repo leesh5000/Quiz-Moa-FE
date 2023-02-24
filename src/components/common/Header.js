@@ -70,8 +70,6 @@ const Spacer = styled.div`
 
 const Header = ({user, onLogout}) => {
 
-  console.log('Header Rendering...');
-
   const location = useLocation();
   const navigate = useNavigate();
 

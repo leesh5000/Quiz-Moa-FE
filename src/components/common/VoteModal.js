@@ -93,8 +93,6 @@ const VoterStyle = styled.div`
 
 const VoteModal = ({setOnModal, votes}) => {
 
-  console.log('vote modal rendering...');
-
   const ref = useRef();
   const navigate = useNavigate();
 

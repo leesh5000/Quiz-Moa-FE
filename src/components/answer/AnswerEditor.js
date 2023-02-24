@@ -40,8 +40,6 @@ const QuillWrapper = styled.div`
 
 const AnswerEditor = ({quillElement, quillInstance, user}) => {
 
-  console.log("Editor Rendering...");
-
   useEffect(() => {
     quillInstance.current = new Quill(quillElement.current, {
       theme: 'snow',

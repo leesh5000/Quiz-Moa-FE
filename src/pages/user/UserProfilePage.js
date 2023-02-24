@@ -181,8 +181,6 @@ const UsernameInput = styled.input`
 
 const UserProfilePage = ({user, onLogout}) => {
 
-  console.log('UserProfilePage rendering...');
-
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState(null);
