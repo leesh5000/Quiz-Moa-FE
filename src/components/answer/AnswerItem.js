@@ -115,8 +115,7 @@ const AnswerBodyBlock = styled.div`
 
   overflow-wrap: break-word;
   letter-spacing: 0.5px;
-  padding: 0.5rem 0.5rem 1.5rem;
-  margin-bottom: 2.5rem;
+  padding: 0.5rem 0.5rem;
   font-size: 1.025rem;
 
   @media (max-width: 780px) {
@@ -226,7 +225,7 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
             {onModal &&
               <VoteModal setOnModal={() => setOnModal(false)}
                          votes={votes}
-              />}
+                         user={user}/>}
             <img className='button'
                  onClick={() => onVote(-1)}
                  src={arrow}

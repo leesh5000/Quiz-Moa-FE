@@ -580,7 +580,8 @@ const QuizDetailPage = () => {
               </button>
               {onModal &&
                 <VoteModal setOnModal={() => setOnModal(false)}
-                           votes={quiz.votes}/>}
+                           votes={quiz.votes}
+                           user={user}/>}
               <img className='button'
                    onClick={() => onVote(-1)}
                    src={arrow}

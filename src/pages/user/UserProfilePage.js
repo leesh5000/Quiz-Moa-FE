@@ -3,17 +3,26 @@ import {useEffect, useState} from "react";
 import Header from "../../components/common/Header";
 import styled from "styled-components";
 import palette from "../../lib/styles/palette";
-import {getProfile, updateUsername} from "../../lib/api/user";
+import {deleteUser, getProfile, updateUsername} from "../../lib/api/user";
 import Swal from "sweetalert2";
 import Spinner from "../../components/common/Spinner";
 import Responsive from "../../components/common/Responsive";
 import kakao from "../../images/kakao.png";
+import Button from "../../components/common/Button";
 
 const Wrapper = styled(Responsive)`
-  color: ${palette.gray[8]};
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    padding-bottom: 1rem;
+    color: ${palette.gray[9]};
+    border-bottom: 1px solid ${palette.gray[3]};
+  }
 `;
 
 const ProfileBlock = styled.div`
@@ -23,22 +32,13 @@ const ProfileBlock = styled.div`
   border-radius: 6px;
   padding: 1.5rem;
   margin-top: 3rem;
-  margin-bottom: 3rem;
 
   @media (max-width: 1200px) {
-    margin: 1rem 1rem 0;
-  }
-
-  .title {
-    font-size: 2rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid ${palette.gray[3]};
+    margin: 1rem 1rem;
   }
 
   .profile {
-    height: 300px;
+    padding-top: 1.5rem;
     display: flex;
     justify-content: left;
     align-items: center;
@@ -64,8 +64,7 @@ const ProfileBlock = styled.div`
       width: 100%;
       margin-left: 3rem;
       margin-right: auto;
-      font-size: 1.5rem;
-      font-weight: 600;
+      font-size: 1.125rem;
       letter-spacing: 1px;
       color: ${palette.gray[7]};
       word-break: break-all;
@@ -76,8 +75,8 @@ const ProfileBlock = styled.div`
       }
 
       h3 {
-        color: ${palette.gray[9]};
-        font-size: 1.5rem;
+        color: ${palette.gray[8]};
+        font-size: 1.25rem;
         margin-right: 1.5rem;
 
         @media (max-width: 420px) {
@@ -135,34 +134,27 @@ const HistoryBlock = styled.div`
   box-sizing: border-box;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.12);
   border-radius: 6px;
-  margin-bottom: 1rem;
   padding: 1.5rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
   
   @media (max-width: 1200px) {
     margin: 1rem;
   }
   
-  height: 240px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  .title {
-    font-size: 2rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-    margin-bottom: 1.5rem;
-  }
   
   .link {
+    margin-top: 1.5rem;
     padding-right: 0;
     font-size: 1.25rem;
-    margin-bottom: 1.5rem;
-    color: ${palette.gray[7]};
-    font-weight: 550;
+    color: ${palette.gray[8]};
+    font-weight: 400;
     
     &:hover {
-      color: ${palette.cyan[5]};
+      color: ${palette.cyan[4]};
       text-decoration: underline;
     }
   }
@@ -178,6 +170,37 @@ const UsernameInput = styled.input`
     width: 100%;
   }
 `;
+
+const ButtonBlock = styled.div`
+  padding: 2rem;
+  box-sizing: border-box;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.12);
+  border-radius: 6px;
+  
+  .description {
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: ${palette.gray[6]};
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 1200px) {
+    margin: 1rem;
+  }
+`;
+
+const StyledButton = styled(Button)`
+  background-color: ${palette.red[6]};
+  &:hover {
+    background-color: ${palette.red[3]};
+  }
+  height: 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 1.5rem;
+`;
+
 
 const UserProfilePage = ({user, onLogout}) => {
 
@@ -204,25 +227,21 @@ const UserProfilePage = ({user, onLogout}) => {
           icon: 'warning',
           title: '프로필을 불러오는데 실패했습니다.',
         });
-        navigate(-1, {
-          replace: true,
-        });
+        throw e;
       } finally {
         setLoading(false);
       }
     }
 
-    getUserProfile(email);
+    getUserProfile(email)
+      .catch(e => {
+        console.log(e);
+        navigate('-1', {
+          replace: true,
+        });
+      });
 
   }, [navigate]);
-
-  if (loading) {
-    return <Spinner/>;
-  }
-
-  if (!profile || !quizzes || !answers) {
-    return null;
-  }
 
   const onEdit = () => {
 
@@ -275,6 +294,45 @@ const UserProfilePage = ({user, onLogout}) => {
     setEdit(!edit);
   }
 
+  const onDeletion = () => {
+    Swal.fire({
+      title: '회원 탈퇴',
+      text: '정말로 탈퇴하시겠습니까?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '탈퇴',
+      cancelButtonText: '취소',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          setLoading(true);
+          await deleteUser(user.id);
+          localStorage.clear();
+          navigate('/', {
+            replace: true,
+          });
+        } catch (e) {
+          await Swal.fire({
+            icon: 'warning',
+            title: '잠시 후 다시 시도해주세요.',
+          });
+        } finally {
+          setLoading(false);
+        }
+      }
+    });
+  }
+
+  if (loading) {
+    return <Spinner/>;
+  }
+
+  if (!profile || !quizzes || !answers) {
+    return null;
+  }
+
   return (
     <>
       <Header user={user} onLogout={onLogout}/>
@@ -296,17 +354,20 @@ const UserProfilePage = ({user, onLogout}) => {
               <div className='username'>
                 <h3>이름</h3>
                 <div className='name'>
-                  {edit ? <UsernameInput type="text"
-                                         defaultValue={profile.username}
-                                         onChange={(e) => {
-                                           username = e.target.value;
-                                         }}/>
+                  {edit ?
+                    <UsernameInput type="text"
+                                   defaultValue={profile.username}
+                                   onChange={(e) => {
+                                     username = e.target.value;
+                                   }}/>
                     : profile.username}
                 </div>
-                <div className='edit-button'
-                     onClick={onEdit}>
-                  {edit ? '저장' : '수정'}
-                </div>
+                {(user.email === email) && (
+                  <div className='edit-button'
+                       onClick={onEdit}>
+                    {edit ? '저장' : '수정'}
+                  </div>
+                )}
               </div>
               <div className='total-recommend'>
                 <h3>받은 총 추천 수</h3> {quizzes.totalVotesSum + answers.totalVotesSum}
@@ -335,6 +396,19 @@ const UserProfilePage = ({user, onLogout}) => {
               '내 답변 보기' : `${profile.username}의 답변 보기`} {answers.totalCount}
           </Link>
         </HistoryBlock>
+        {(user.email === email) && (
+          <ButtonBlock>
+            <div className='title'>
+              회원 탈퇴
+            </div>
+            <div className='description'>
+              탈퇴 시 작성한 모든 퀴즈와 답변 정보는 삭제됩니다.
+            </div>
+            <StyledButton onClick={onDeletion}>
+              회원 탈퇴
+            </StyledButton>
+          </ButtonBlock>
+        )}
       </Wrapper>
     </>
   );

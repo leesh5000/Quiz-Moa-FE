@@ -26,8 +26,16 @@ export const getUserAnswers = (userId, {page, size, sort}) => {
 
 export const updateUsername = (userId, {value}) => {
   return client
-    .put(`/users/${userId}`, {username: value})
+    .patch(`/users/${userId}`, {username: value})
     .then(response => {
       return response;
     });
+}
+
+export const deleteUser = (userId) => {
+  return client
+    .delete(`/users/${userId}`)
+    .then(response => {
+      return response;
+    })
 }
