@@ -102,7 +102,9 @@ const Header = ({user, onLogout}) => {
           <Link to="/" className="logo">QUIZ APP</Link>
           {user ? (
             <div className="right">
-              <UserBlock>{user.username}</UserBlock>
+              <UserBlock>{localStorage.getItem('username') ?
+                localStorage.getItem('username') : user.username
+              }</UserBlock>
               <StyledButton onClick={goProfile}>
                 내 정보
               </StyledButton>

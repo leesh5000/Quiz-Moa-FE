@@ -191,7 +191,7 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
           value: value,
           voter: {
             id: user.id,
-            username: user.username,
+            username: localStorage.getItem('username') ? localStorage.getItem('username') : user.username,
             email: user.email
           }
         }

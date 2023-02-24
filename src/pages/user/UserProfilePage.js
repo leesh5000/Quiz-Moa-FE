@@ -266,6 +266,7 @@ const UserProfilePage = ({user, onLogout}) => {
             ...profile,
             username,
           });
+          localStorage.setItem('username', username);
         });
     }
 

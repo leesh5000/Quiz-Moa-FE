@@ -20,7 +20,9 @@ export default function (SpecificComponent) {
           navigate(-1, {
             replace: true
           });
+          return;
         }
+
       }, []);
 
       const onLogout = () => {
@@ -30,6 +32,7 @@ export default function (SpecificComponent) {
           title: '로그인 후 이용 가능한 서비스입니다.'
         })
         user = null;
+        localStorage.removeItem('username');
         navigate('/login', {
           replace: true
         });
