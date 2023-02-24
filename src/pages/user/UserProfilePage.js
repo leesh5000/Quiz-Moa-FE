@@ -7,7 +7,7 @@ import {deleteUser, getProfile, updateUsername} from "../../lib/api/user";
 import Swal from "sweetalert2";
 import Spinner from "../../components/common/Spinner";
 import Responsive from "../../components/common/Responsive";
-import kakao from "../../images/kakao.png";
+import person from "../../images/person.png";
 import Button from "../../components/common/Button";
 
 const Wrapper = styled(Responsive)`
@@ -50,8 +50,9 @@ const ProfileBlock = styled.div`
       img {
         width: 200px;
         height: 200px;
-        border-radius: 0;
         object-fit: cover;
+        border-radius: 100%;
+        opacity: 0.7;
 
         @media (max-width: 420px) {
           width: 125px;
@@ -340,7 +341,7 @@ const UserProfilePage = ({user, onLogout}) => {
           </div>
           <div className='profile'>
             <div className='img-box'>
-              <img src={kakao} alt="kakao"/>
+              <img src={person} alt="userImage"/>
             </div>
             <div className='info'>
               {user.id === profile.id && (
