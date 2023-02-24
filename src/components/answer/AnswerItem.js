@@ -234,7 +234,7 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
           </div>
           <div className="contents">
             <div className="author">
-              <Link to={`/users/${answer.author.email}`}
+              <Link to={`/users/${answer.author.id}`}
                     state={{id: answer.author.id}}
               >
                 {answer.author.username}

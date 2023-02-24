@@ -51,7 +51,7 @@ const UserQuizListPage = ({user, onLogout}) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const email = useParams().email;
+  const userId = Number(useParams().id);
   const [profile, setProfile] = useState(null);
   const [sort, setSort] = useSort();
 
@@ -69,7 +69,7 @@ const UserQuizListPage = ({user, onLogout}) => {
         // 매번 Profile API, Quiz API를 호출하지 말고, 페이지가 새로고침되어 Profile이 없는 경우에만 Profile API를 호출한다.
         let tempProfile = profile;
         if (!tempProfile) {
-          tempProfile = await getProfile(email);
+          tempProfile = await getProfile(userId);
           setProfile(tempProfile);
         }
         const response = await getUserQuizzes(tempProfile.id, {
@@ -78,7 +78,7 @@ const UserQuizListPage = ({user, onLogout}) => {
           sort: sort
         });
         setQuizzes(response.content);
-        setTotalPages(response.totalPages + 1);
+        setTotalPages(response.totalPages);
 
       } catch (e) {
         console.log('get quizzes error', e);
@@ -109,24 +109,12 @@ const UserQuizListPage = ({user, onLogout}) => {
     return null;
   }
 
-  const goPost = () => {
-    // HOC에서 로그인 유저 검증
-    if (!user) {
-      Swal.fire({
-        icon: 'warning',
-        title: '로그인 후 이용 가능합니다.',
-      });
-      return;
-    }
-    navigate('/post');
-  }
-
   return (
     <>
       <Header user={user} onLogout={onLogout}/>
       <QuizListBlock>
         <div className='author-title'>
-          <h1>{profile.username}의 퀴즈</h1>
+          {profile.id === user.id ? <h1>내 퀴즈</h1> : <h1>{profile.username}의 퀴즈</h1>}
         </div>
         <div className='buttons'>
           <SortingButton sortType={SortType.LATEST}

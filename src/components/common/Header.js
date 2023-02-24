@@ -80,12 +80,12 @@ const Header = ({user, onLogout}) => {
 
   const goProfile = () => {
     // 현재 URL이 내 정보 페이지라면, 아무것도 하지 않음
-    if (location.pathname === `/users/${user.email}`) {
+    if (location.pathname === `/users/${user.id}`) {
       return;
     }
 
     if (user) {
-      navigate(`/users/${user.email}`, {
+      navigate(`/users/${user.id}`, {
         state: {
           id: user.id
         }

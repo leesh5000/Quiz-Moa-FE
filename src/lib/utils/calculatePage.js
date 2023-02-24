@@ -41,7 +41,8 @@ const calculatePage = (totalPage, pageSize, currentPage) => {
         let nextPage = curPage + temp;
 
         // 마지막 페이지라면, 더 이상 진행하지 않고 종료한다.
-        if (nextPage === totalPage) {
+        // 서버 스펙 상, Page = 0 부터 시작하므로, 마지막 페이지는 totalPage + 1 이다.
+        if (nextPage === (totalPage + 1)) {
           break;
         }
         arr.push(nextPage);

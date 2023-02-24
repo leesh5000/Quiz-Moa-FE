@@ -6,12 +6,12 @@ import Header from "../../components/common/Header";
 import palette from "../../lib/styles/palette";
 import styled from "styled-components";
 import Responsive from "../../components/common/Responsive";
-import UserAnswerItem from "../../components/answer/UserAnswerItem";
 import Swal from "sweetalert2";
-import {SortType} from "../../global/SortType";
-import SortingButton from "../../components/common/SortingButton";
 import useSort from "../../lib/utils/useSort";
+import SortingButton from "../../components/common/SortingButton";
 import Footer from "../../components/common/Footer";
+import UserAnswerItem from "../../components/answer/UserAnswerItem";
+import {SortType} from "../../global/SortType";
 
 const QuizListBlock = styled(Responsive)`
 
@@ -49,7 +49,7 @@ const UserAnswerListPage = ({user, onLogout}) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const email = useParams().email;
+  const userId = Number(useParams().id);
   const [profile, setProfile] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [sort, setSort] = useSort();
@@ -72,7 +72,7 @@ const UserAnswerListPage = ({user, onLogout}) => {
         // 매번 Profile API, Quiz API를 호출하지 말고, 페이지가 새로고침되어 Profile이 없는 경우에만 Profile API를 호출한다.
         let tempProfile = profile;
         if (!tempProfile) {
-          tempProfile = await getProfile(email);
+          tempProfile = await getProfile(userId);
           setProfile(tempProfile);
         }
         const response = await getUserAnswers(tempProfile.id, {
@@ -81,9 +81,9 @@ const UserAnswerListPage = ({user, onLogout}) => {
           sort: sort
         });
         setAnswers(response.content);
-        setTotalPages(response.totalPages + 1);
+        setTotalPages(response.totalPages);
       } catch (e) {
-        console.log('get quizzes error', e);
+        console.log('get answers error', e);
         await Swal.fire({
           icon: 'warning',
           title: '답변 목록을 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.',
@@ -115,7 +115,7 @@ const UserAnswerListPage = ({user, onLogout}) => {
       <Header user={user} onLogout={onLogout}/>
       <QuizListBlock>
         <div className='author-title'>
-          <h1>{profile.username}의 답변</h1>
+          {profile.id === user.id ? <h1>내 답변</h1> : <h1>{profile.username}의 답변</h1>}
         </div>
         <div className='buttons'>
           <SortingButton sortType={SortType.LATEST}

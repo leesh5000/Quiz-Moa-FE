@@ -145,7 +145,7 @@ const VoteModal = ({setOnModal, votes, user}) => {
         {votes.map((vote, index) =>
           <VoterStyle key={index}
                       onClick={() => {
-                        navigate(`/users/${vote.voter.email}`);
+                        navigate(`/users/${vote.voter.id}`);
                       }}>
             {/*투표는 추천을 한 유저만 보이도록 설정*/}
             {vote.value > 0 && vote.voter.username}

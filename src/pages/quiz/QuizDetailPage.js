@@ -594,7 +594,7 @@ const QuizDetailPage = () => {
           </QuizTitleBlock>
           <QuizInfoBlock>
             <div className='author'>
-              <Link to={`/users/${quiz.author.email}`}
+              <Link to={`/users/${quiz.author.id}`}
                     state={{id: quiz.author.id}}
               >
                 {quiz.author.username}

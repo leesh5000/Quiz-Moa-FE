@@ -60,7 +60,7 @@ const QuizListPage = () => {
         });
         setQuizzes(response.content);
         // 서버 스펙 상, Page는 0 부터 시작
-        setTotalPages(response.totalPages + 1);
+        setTotalPages(response.totalPages);
 
       } catch (e) {
         console.log('get quizzes error', e);

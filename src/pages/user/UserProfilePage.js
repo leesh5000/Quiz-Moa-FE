@@ -207,21 +207,17 @@ const UserProfilePage = ({user, onLogout}) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState(null);
-  const [quizzes, setQuizzes] = useState([]);
-  const [answers, setAnswers] = useState([]);
   const [edit, setEdit] = useState(false);
-  const email = useParams().email;
+  const userId = Number(useParams().id);
   let username = '';
 
   useEffect(() => {
 
-    const getUserProfile = async (email) => {
+    const getUserProfile = async (userId) => {
       try {
         setLoading(true);
-        const response = await getProfile(email);
+        const response = await getProfile(userId);
         setProfile(response);
-        setQuizzes(response?.quizzes);
-        setAnswers(response?.answers);
       } catch (e) {
         await Swal.fire({
           icon: 'warning',
@@ -233,7 +229,7 @@ const UserProfilePage = ({user, onLogout}) => {
       }
     }
 
-    getUserProfile(email)
+    getUserProfile(userId)
       .catch(e => {
         console.log(e);
         navigate('-1', {
@@ -329,7 +325,7 @@ const UserProfilePage = ({user, onLogout}) => {
     return <Spinner/>;
   }
 
-  if (!profile || !quizzes || !answers) {
+  if (!profile) {
     return null;
   }
 
@@ -347,10 +343,12 @@ const UserProfilePage = ({user, onLogout}) => {
               <img src={kakao} alt="kakao"/>
             </div>
             <div className='info'>
-              <div className='email'>
-                <h3>이메일</h3>
-                {profile.email}
-              </div>
+              {user.id === profile.id && (
+                <div className='email'>
+                  <h3>이메일</h3>
+                  {profile.email}
+                </div>
+              )}
               <div className='username'>
                 <h3>이름</h3>
                 <div className='name'>
@@ -362,7 +360,7 @@ const UserProfilePage = ({user, onLogout}) => {
                                    }}/>
                     : profile.username}
                 </div>
-                {(user.email === email) && (
+                {(user.id === userId) && (
                   <div className='edit-button'
                        onClick={onEdit}>
                     {edit ? '저장' : '수정'}
@@ -370,7 +368,7 @@ const UserProfilePage = ({user, onLogout}) => {
                 )}
               </div>
               <div className='total-recommend'>
-                <h3>받은 총 추천 수</h3> {quizzes.totalVotesSum + answers.totalVotesSum}
+                <h3>받은 총 추천 수</h3> {profile.quizzes.totalVotesSum + profile.answers.totalVotesSum}
               </div>
             </div>
           </div>
@@ -380,23 +378,23 @@ const UserProfilePage = ({user, onLogout}) => {
             활동 내역
           </div>
           <Link className='link'
-                to={`/users/${profile.email}/quizzes`}
+                to={`/users/${profile.id}/quizzes`}
                 state={{
                   id: profile.id
                 }}>
             {user.email === profile.email ?
-              '내 퀴즈 보기' : `${profile.username}의 퀴즈 보기`} {quizzes.totalCount}
+              '내 퀴즈 보기' : `${profile.username}의 퀴즈 보기`} {profile.quizzes.totalCount}
           </Link>
           <Link className='link'
-                to={`/users/${profile.email}/answers`}
+                to={`/users/${profile.id}/answers`}
                 state={{
                   id: profile.id
                 }}>
             {user.email === profile.email ?
-              '내 답변 보기' : `${profile.username}의 답변 보기`} {answers.totalCount}
+              '내 답변 보기' : `${profile.username}의 답변 보기`} {profile.answers.totalCount}
           </Link>
         </HistoryBlock>
-        {(user.email === email) && (
+        {(user.id === userId) && (
           <ButtonBlock>
             <div className='title'>
               회원 탈퇴

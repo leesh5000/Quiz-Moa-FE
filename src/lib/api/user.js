@@ -1,8 +1,8 @@
 import client from "./client";
 
-export const getProfile = (email) => {
+export const getProfile = (userId) => {
   return client
-    .get(`/users/${email}`)
+    .get(`/users/${userId}`)
     .then(response => {
       return response;
     });

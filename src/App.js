@@ -26,9 +26,9 @@ function App() {
       <Route path="/login" element={<LoginPage/>}/>
       <Route path="/oauth2/callback/*" element={<OAuth2RedirectHandler/>}/>
       <Route path="/post" element={<AuthPostQuizPage/>}/>
-      <Route path="/users/:email" element={<AuthUserProfilePage/>} />
-      <Route path="/users/:email/quizzes" element={<AuthQuizListPage/>} />
-      <Route path="/users/:email/answers" element={<AuthAnswerListPage/>} />
+      <Route path="/users/:id" element={<AuthUserProfilePage/>} />
+      <Route path="/users/:id/quizzes" element={<AuthQuizListPage/>} />
+      <Route path="/users/:id/answers" element={<AuthAnswerListPage/>} />
       <Route path="/*" element={<Home />} />
     </Routes>
   )
