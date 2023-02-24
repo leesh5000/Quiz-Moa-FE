@@ -2,12 +2,12 @@ import {Link, useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Header from "../../components/common/Header";
 import styled from "styled-components";
-import kakao from "../../images/kakao.png";
 import palette from "../../lib/styles/palette";
-import {getProfile} from "../../lib/api/user";
+import {getProfile, updateUsername} from "../../lib/api/user";
 import Swal from "sweetalert2";
 import Spinner from "../../components/common/Spinner";
 import Responsive from "../../components/common/Responsive";
+import kakao from "../../images/kakao.png";
 
 const Wrapper = styled(Responsive)`
   color: ${palette.gray[8]};
@@ -98,6 +98,18 @@ const ProfileBlock = styled.div`
       .username {
         display: flex;
         align-items: center;
+        
+        .edit-button {
+          font-size: 1.125rem;
+          font-weight: 600;
+          margin-left: 1rem;
+          cursor: pointer;
+          color: ${palette.blue[6]};
+          &:hover {
+            color: ${palette.blue[2]};
+            text-decoration: underline;
+          }
+        }
 
         @media (max-width: 420px) {
           align-items: flex-start;
@@ -143,6 +155,7 @@ const HistoryBlock = styled.div`
   }
   
   .link {
+    padding-right: 0;
     font-size: 1.25rem;
     margin-bottom: 1.5rem;
     color: ${palette.gray[7]};
@@ -155,6 +168,17 @@ const HistoryBlock = styled.div`
   }
 `;
 
+const UsernameInput = styled.input`
+  border: 1px solid ${palette.gray[6]};
+  height: 2.125rem;
+  width: 320px;
+  font-size: 1.25rem;
+  
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+`;
+
 const UserProfilePage = ({user, onLogout}) => {
 
   console.log('UserProfilePage rendering...');
@@ -162,7 +186,9 @@ const UserProfilePage = ({user, onLogout}) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [profile, setProfile] = useState(null);
+  const [edit, setEdit] = useState(false);
   const email = useParams().email;
+  let username = '';
 
   useEffect(() => {
 
@@ -196,6 +222,56 @@ const UserProfilePage = ({user, onLogout}) => {
     return null;
   }
 
+  const onEdit = () => {
+
+    if (edit) {
+      const update = async () => {
+        try {
+          setLoading(true);
+          await updateUsername(user.id, {value: username});
+        } catch (e) {
+          await Swal.fire({
+            icon: 'warning',
+            title: '프로필을 수정하는데 실패했습니다.',
+          });
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      if (!username) {
+        Swal.fire({
+          icon: 'warning',
+          title: '이름을 입력해주세요.',
+        });
+        return;
+      }
+
+      if (username.length < 2 || username.length > 20) {
+        Swal.fire({
+          icon: 'warning',
+          title: '이름은 2자 이상 20자 이하로 입력해주세요.',
+        });
+        return;
+      }
+
+      // 수정 후 이름이 수정 전 이름과 같으면 그냥 Return
+      if (username === profile.username) {
+        return;
+      }
+
+      update()
+        .then(() => {
+          setProfile({
+            ...profile,
+            username,
+          });
+        });
+    }
+
+    setEdit(!edit);
+  }
+
   return (
     <>
       <Header user={user} onLogout={onLogout}/>
@@ -216,7 +292,18 @@ const UserProfilePage = ({user, onLogout}) => {
               </div>
               <div className='username'>
                 <h3>이름</h3>
-                {profile.username}
+                <div className='name'>
+                  {edit ? <UsernameInput type="text"
+                                         defaultValue={profile.username}
+                                         onChange={(e) => {
+                                           username = e.target.value;
+                                         }}/>
+                    : profile.username}
+                </div>
+                <div className='edit-button'
+                     onClick={onEdit}>
+                  {edit ? '저장' : '수정'}
+                </div>
               </div>
               <div className='total-recommend'>
                 <h3>받은 총 추천 수</h3> {profile.quizzes.totalVotesSum + profile.answers.totalVotesSum}

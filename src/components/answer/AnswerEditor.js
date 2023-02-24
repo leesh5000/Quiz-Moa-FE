@@ -58,6 +58,13 @@ const AnswerEditor = ({quillElement, quillInstance, user}) => {
       },
     });
 
+    // ctrl + v 시, html 태그가 아닌 텍스트만 붙여넣기
+    quillInstance.current.clipboard.addMatcher (Node.ELEMENT_NODE, function (node, delta) {
+      let plaintext = node.innerText
+      let Delta = Quill.import('delta')
+      return new Delta().insert(plaintext)
+    })
+
     if (!user) {
       quillInstance.current.disable();
     }

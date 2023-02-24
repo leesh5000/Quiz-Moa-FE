@@ -91,6 +91,13 @@ const Editor = ({onChangeField, quillElement, quillInstance, title, contents}) =
       }
     });
 
+    // ctrl + v 시, html 태그가 아닌 텍스트만 붙여넣기
+    quill.clipboard.addMatcher (Node.ELEMENT_NODE, function (node, delta) {
+      let plaintext = node.innerText
+      let Delta = Quill.import('delta')
+      return new Delta().insert(plaintext)
+    })
+
     // 이전 포스트의 내용이 있다면, 이전 내용을 불러오기
     if (contents !== '') {
       quill.root.innerHTML = contents;

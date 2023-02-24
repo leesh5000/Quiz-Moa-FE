@@ -23,3 +23,11 @@ export const getUserAnswers = (userId, {page, size, sort}) => {
       return response;
     })
 }
+
+export const updateUsername = (userId, {value}) => {
+  return client
+    .put(`/users/${userId}`, {username: value})
+    .then(response => {
+      return response;
+    });
+}
