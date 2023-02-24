@@ -32,6 +32,7 @@ const ProfileBlock = styled.div`
   border-radius: 6px;
   padding: 1.5rem;
   margin-top: 3rem;
+  background-color: ${palette.gray[0]};
 
   @media (max-width: 1200px) {
     margin: 1rem 1rem;
@@ -138,6 +139,7 @@ const HistoryBlock = styled.div`
   padding: 1.5rem;
   margin-top: 3rem;
   margin-bottom: 3rem;
+  background-color: ${palette.gray[0]};
   
   @media (max-width: 1200px) {
     margin: 1rem;
@@ -177,12 +179,13 @@ const ButtonBlock = styled.div`
   box-sizing: border-box;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.12);
   border-radius: 6px;
+  background-color: ${palette.gray[0]};
   
   .description {
     font-size: 1rem;
     font-weight: 600;
     letter-spacing: 1px;
-    color: ${palette.gray[6]};
+    color: ${palette.gray[7]};
     margin-top: 1.5rem;
   }
 

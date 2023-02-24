@@ -129,6 +129,7 @@ const AnswerWrapper = styled.div`
   margin-bottom: 2rem;
   box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.08);
   outline: 1px solid ${palette.gray[2]};
+  background-color: ${palette.gray[0]};
 
   @media (max-width: 1200px) {
     margin: 1rem;

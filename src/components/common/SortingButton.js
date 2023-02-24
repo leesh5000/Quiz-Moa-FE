@@ -22,7 +22,7 @@ const SortingButton = ({sortType, setSort, description, sort}) => {
   }
 
   const activeSortingButtonCss = {
-    color: palette.gray[8],
+    color: palette.gray[9],
     borderBottom: '2px solid #212529'
   }
 

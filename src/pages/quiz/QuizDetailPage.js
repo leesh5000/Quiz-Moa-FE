@@ -22,6 +22,7 @@ const QuizWrapper = styled.div`
   padding: 1rem;
   margin-top: 1rem;
   margin-bottom: 2rem;
+  background-color: ${palette.gray[0]};
 
   @media (max-width: 1200px) {
     margin: 0 1rem 1rem;

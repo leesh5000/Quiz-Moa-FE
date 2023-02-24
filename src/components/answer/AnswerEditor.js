@@ -4,6 +4,7 @@ import 'quill/dist/quill.bubble.css';
 import 'quill/dist/quill.snow.css';
 import styled from 'styled-components';
 import Responsive from "../common/Responsive";
+import palette from "../../lib/styles/palette";
 
 
 const EditorBlock = styled(Responsive)` /* 페이지 위아래 여백 지정 */
@@ -24,6 +25,7 @@ const QuillWrapper = styled.div`
 
   padding-top: 0;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.08);
+  background-color: ${palette.gray[0]};
 
   .ql-editor {
     min-height: 486px;
