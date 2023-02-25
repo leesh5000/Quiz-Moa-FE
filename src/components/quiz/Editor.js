@@ -41,6 +41,7 @@ const QuillWrapper = styled.div`
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08);
   
   .ql-editor {
+    background-color: ${palette.gray[0]};
     min-height: 812px;
     max-height: 812px;
     font-size: 1.125rem;
