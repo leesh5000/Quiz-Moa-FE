@@ -4,7 +4,8 @@ import getLoginUser from "./getLoginUser";
 export const useLoginUser = () => {
   const [user, setUser] = useState(null);
   useEffect(() => {
-    setUser(getLoginUser());
+    let loginUser = getLoginUser();
+    setUser(loginUser);
   }, []);
   return [user, setUser];
 }

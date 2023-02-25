@@ -2,7 +2,6 @@ import styled from "styled-components";
 import {useEffect, useState} from "react";
 import {getQuizzes} from "../../lib/api/quiz";
 import Responsive from "../../components/common/Responsive";
-import Button from "../../components/common/Button";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import Swal from "sweetalert2";
 import Header from "../../components/common/Header";
@@ -33,41 +32,7 @@ const QuizListBlock = styled(Responsive)`
   }
 `;
 
-const StyledButton = styled(Button)`
-  height: 2.25rem;
-  font-size: 1.125rem;
-  font-weight: bold;
-`;
-
-// const Footer = styled.div`
-//   display: flex;
-//   justify-content: space-between;
-//   height: 8rem;
-//
-//   @media (max-width: 1200px) {
-//     height: 4rem;
-//     margin-left: 1rem;
-//     margin-right: 1rem;
-//   }
-//
-//   .page {
-//     font-size: 1.125rem;
-//     font-weight: 600;
-//     color: ${palette.gray[7]};
-//
-//     .child {
-//       border-radius: 4px;
-//       outline: 1px solid ${palette.gray[4]};
-//       padding: 0.45rem;
-//       margin-left: 0.5rem;
-//       margin-right: 0.5rem;
-//     }
-//   }
-// `;
-
 const QuizListPage = () => {
-
-  console.log('QuizListPage Rendering...');
 
   const [quizzes, setQuizzes] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
@@ -94,6 +59,7 @@ const QuizListPage = () => {
           sort: sort
         });
         setQuizzes(response.content);
+        // 서버 스펙 상, Page는 0 부터 시작
         setTotalPages(response.totalPages);
 
       } catch (e) {
@@ -123,6 +89,7 @@ const QuizListPage = () => {
 
   const onLogout = () => {
     setUser(null);
+    localStorage.removeItem('username');
   }
 
   return (

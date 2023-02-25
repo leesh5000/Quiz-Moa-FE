@@ -4,11 +4,12 @@ import palette from "../styles/palette";
 
 const StyledNumber = styled(Link)`
   border-radius: 4px;
-  outline: 1px solid ${palette.gray[4]};
+  outline: 1.5px solid ${palette.gray[4]};
+  background-color: ${palette.gray[0]};
   padding: 0.45rem;
   margin-left: 0.5rem;
   margin-right: 0.5rem;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.12);
 `;
 
 const calculatePage = (totalPage, pageSize, currentPage) => {
@@ -41,7 +42,8 @@ const calculatePage = (totalPage, pageSize, currentPage) => {
         let nextPage = curPage + temp;
 
         // 마지막 페이지라면, 더 이상 진행하지 않고 종료한다.
-        if (nextPage === totalPage) {
+        // 서버 스펙 상, Page = 0 부터 시작하므로, 마지막 페이지는 totalPage + 1 이다.
+        if (nextPage === (totalPage + 1)) {
           break;
         }
         arr.push(nextPage);

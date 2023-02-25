@@ -15,3 +15,11 @@
     font-size: 1.125rem;
   }
 }
+
+.swal2-confirm {
+  margin-right: 1rem;
+}
+
+.swal2-cancel {
+  margin-left: 1rem;
+}

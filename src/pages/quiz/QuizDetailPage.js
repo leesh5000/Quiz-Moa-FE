@@ -22,6 +22,7 @@ const QuizWrapper = styled.div`
   padding: 1rem;
   margin-top: 1rem;
   margin-bottom: 2rem;
+  background-color: ${palette.gray[0]};
 
   @media (max-width: 1200px) {
     margin: 0 1rem 1rem;
@@ -222,8 +223,6 @@ const ButtonStyle = styled(Button)`
 `;
 
 const QuizDetailPage = () => {
-
-  console.log('QuizDetailPage rendering...');
 
   const quillElement = useRef(null);
   const quillInstance = useRef(null);
@@ -543,7 +542,7 @@ const QuizDetailPage = () => {
           value: value,
           voter: {
             id: user.id,
-            username: user.username,
+            username: localStorage.getItem('username') ? localStorage.getItem('username') : user.username,
             email: user.email
           }
         }
@@ -582,7 +581,8 @@ const QuizDetailPage = () => {
               </button>
               {onModal &&
                 <VoteModal setOnModal={() => setOnModal(false)}
-                           votes={quiz.votes}/>}
+                           votes={quiz.votes}
+                           user={user}/>}
               <img className='button'
                    onClick={() => onVote(-1)}
                    src={arrow}
@@ -595,7 +595,7 @@ const QuizDetailPage = () => {
           </QuizTitleBlock>
           <QuizInfoBlock>
             <div className='author'>
-              <Link to={`/users/${quiz.author.email}`}
+              <Link to={`/users/${quiz.author.id}`}
                     state={{id: quiz.author.id}}
               >
                 {quiz.author.username}
@@ -657,12 +657,12 @@ const QuizDetailPage = () => {
                       user={user}/>
         {answerEditId ?
           <ButtonBlock>
-            <ButtonStyle cyan onClick={onEditConfirm}>수정하기</ButtonStyle>
             <ButtonStyle cyan onClick={onEditCancel}>취소하기</ButtonStyle>
+            <ButtonStyle cyan onClick={onEditConfirm}>수정하기</ButtonStyle>
           </ButtonBlock> :
           <ButtonBlock>
-            <ButtonStyle cyan onClick={onPost}>제출하기</ButtonStyle>
             <ButtonStyle cyan onClick={onCancel}>돌아가기</ButtonStyle>
+            <ButtonStyle cyan onClick={onPost}>제출하기</ButtonStyle>
           </ButtonBlock>
         }
         <Spacer/>

@@ -115,8 +115,7 @@ const AnswerBodyBlock = styled.div`
 
   overflow-wrap: break-word;
   letter-spacing: 0.5px;
-  padding: 0.5rem 0.5rem 1.5rem;
-  margin-bottom: 2.5rem;
+  padding: 0.5rem 0.5rem;
   font-size: 1.025rem;
 
   @media (max-width: 780px) {
@@ -130,6 +129,7 @@ const AnswerWrapper = styled.div`
   margin-bottom: 2rem;
   box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.08);
   outline: 1px solid ${palette.gray[2]};
+  background-color: ${palette.gray[0]};
 
   @media (max-width: 1200px) {
     margin: 1rem;
@@ -191,7 +191,7 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
           value: value,
           voter: {
             id: user.id,
-            username: user.username,
+            username: localStorage.getItem('username') ? localStorage.getItem('username') : user.username,
             email: user.email
           }
         }
@@ -226,7 +226,7 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
             {onModal &&
               <VoteModal setOnModal={() => setOnModal(false)}
                          votes={votes}
-              />}
+                         user={user}/>}
             <img className='button'
                  onClick={() => onVote(-1)}
                  src={arrow}
@@ -235,7 +235,7 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
           </div>
           <div className="contents">
             <div className="author">
-              <Link to={`/users/${answer.author.email}`}
+              <Link to={`/users/${answer.author.id}`}
                     state={{id: answer.author.id}}
               >
                 {answer.author.username}
@@ -267,4 +267,4 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
   );
 }
 
-export default AnswerItem;
+export default React.memo(AnswerItem);

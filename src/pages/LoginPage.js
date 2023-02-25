@@ -65,8 +65,6 @@ const WhiteBox = styled.div`
 
 const LoginPage = () => {
 
-  console.log("LoginPage Rendering...");
-
   let error = undefined;
   const location = useLocation();
 

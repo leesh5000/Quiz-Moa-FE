@@ -73,7 +73,6 @@ const ButtonStyle = styled(Button)`
 const VoterStyle = styled.div`
 
   display: flex;
-  justify-content: space-between;
   align-items: center;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.125);
   border: 1px solid ${palette.gray[4]};
@@ -89,11 +88,16 @@ const VoterStyle = styled.div`
     background-color: ${palette.cyan[1]};
     cursor: pointer;
   }
+  
+  .me {
+    margin-left: 1rem;
+    color: ${palette.cyan[8]};
+    font-size: 1.25rem;
+    font-weight: 650;
+  }
 `;
 
-const VoteModal = ({setOnModal, votes}) => {
-
-  console.log('vote modal rendering...');
+const VoteModal = ({setOnModal, votes, user}) => {
 
   const ref = useRef();
   const navigate = useNavigate();
@@ -129,28 +133,32 @@ const VoteModal = ({setOnModal, votes}) => {
   }, [ref]);
 
   return (
-      <VoteModalWrapper ref={ref}>
-        <div className='header'>
-          <div className="title">투표 결과</div>
-          <ButtonStyle onClick={setOnModal}>닫기</ButtonStyle>
+    <VoteModalWrapper ref={ref}>
+      <div className='header'>
+        <div className="title">투표 결과</div>
+        <ButtonStyle onClick={setOnModal}>닫기</ButtonStyle>
+      </div>
+      <div className='body'>
+        <div className='info'>
+          투표 결과는 추천을 한 유저만 노출됩니다.
         </div>
-        <div className='body'>
-          <div className='info'>
-            투표 결과는 추천을 한 유저만 노출됩니다.
-          </div>
-          {votes.map((vote, index) =>
-            <VoterStyle key={index}
-                        onClick={() => {
-                          navigate(`/users/${vote.voter.email}`);
-                        }}
-            >
-              {/*투표는 추천을 한 유저만 보이도록 설정*/}
-              {vote.value > 0 && vote.voter.username}
-            </VoterStyle>
-          )}
-        </div>
-      </VoteModalWrapper>
-  )
+        {votes.map((vote, index) =>
+          <VoterStyle key={index}
+                      onClick={() => {
+                        navigate(`/users/${vote.voter.id}`);
+                      }}>
+            {/*투표는 추천을 한 유저만 보이도록 설정*/}
+            {vote.value > 0 && vote.voter.username}
+            {vote.voter.id === user.id &&
+              <div className='me'>
+                나
+              </div>
+            }
+          </VoterStyle>
+        )}
+      </div>
+    </VoteModalWrapper>
+  );
 };
 
 export default VoteModal;

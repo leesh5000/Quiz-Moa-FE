@@ -70,8 +70,6 @@ const Spacer = styled.div`
 
 const Header = ({user, onLogout}) => {
 
-  console.log('Header Rendering...');
-
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -82,12 +80,12 @@ const Header = ({user, onLogout}) => {
 
   const goProfile = () => {
     // 현재 URL이 내 정보 페이지라면, 아무것도 하지 않음
-    if (location.pathname === `/users/${user.email}`) {
+    if (location.pathname === `/users/${user.id}`) {
       return;
     }
 
     if (user) {
-      navigate(`/users/${user.email}`, {
+      navigate(`/users/${user.id}`, {
         state: {
           id: user.id
         }
@@ -102,7 +100,9 @@ const Header = ({user, onLogout}) => {
           <Link to="/" className="logo">QUIZ APP</Link>
           {user ? (
             <div className="right">
-              <UserBlock>{user.username}</UserBlock>
+              <UserBlock>{localStorage.getItem('username') ?
+                localStorage.getItem('username') : user.username
+              }</UserBlock>
               <StyledButton onClick={goProfile}>
                 내 정보
               </StyledButton>

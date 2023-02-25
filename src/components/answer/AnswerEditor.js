@@ -4,6 +4,7 @@ import 'quill/dist/quill.bubble.css';
 import 'quill/dist/quill.snow.css';
 import styled from 'styled-components';
 import Responsive from "../common/Responsive";
+import palette from "../../lib/styles/palette";
 
 
 const EditorBlock = styled(Responsive)` /* 페이지 위아래 여백 지정 */
@@ -24,6 +25,7 @@ const QuillWrapper = styled.div`
 
   padding-top: 0;
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.08);
+  background-color: ${palette.gray[0]};
 
   .ql-editor {
     min-height: 486px;
@@ -40,8 +42,6 @@ const QuillWrapper = styled.div`
 
 const AnswerEditor = ({quillElement, quillInstance, user}) => {
 
-  console.log("Editor Rendering...");
-
   useEffect(() => {
     quillInstance.current = new Quill(quillElement.current, {
       theme: 'snow',
@@ -57,6 +57,13 @@ const AnswerEditor = ({quillElement, quillInstance, user}) => {
         ],
       },
     });
+
+    // ctrl + v 시, html 태그가 아닌 텍스트만 붙여넣기
+    quillInstance.current.clipboard.addMatcher (Node.ELEMENT_NODE, function (node, delta) {
+      let plaintext = node.innerText
+      let Delta = Quill.import('delta')
+      return new Delta().insert(plaintext)
+    })
 
     if (!user) {
       quillInstance.current.disable();

@@ -8,6 +8,7 @@ const QuizItemBlock = styled.div`
   flex-direction: column;
   padding: 1rem;
   outline: 2px solid ${palette.gray[2]};
+  background-color: ${palette.gray[0]};
   border-radius: 8px;
   box-sizing: border-box;
   box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.08);
@@ -85,8 +86,6 @@ const InfoBlock = styled.div`
 `;
 
 const QuizItem = ({id, onClick, title, answerCount, votes, author, modifiedAt}) => {
-
-  console.log('QuizItem rendering...');
 
   return (
     <QuizItemBlock onClick={onClick}>

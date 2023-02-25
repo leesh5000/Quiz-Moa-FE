@@ -41,6 +41,7 @@ const QuillWrapper = styled.div`
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.08);
   
   .ql-editor {
+    background-color: ${palette.gray[0]};
     min-height: 812px;
     max-height: 812px;
     font-size: 1.125rem;
@@ -60,8 +61,6 @@ const QuillWrapper = styled.div`
 `;
 
 const Editor = ({onChangeField, quillElement, quillInstance, title, contents}) => {
-
-  console.log("Editor Rendering...");
 
   const onChangeTitle = e => {
     onChangeField({ key: 'title', value: e.target.value });
@@ -90,6 +89,13 @@ const Editor = ({onChangeField, quillElement, quillInstance, title, contents}) =
         onChangeField({key: 'body', value: quill.root.innerHTML});
       }
     });
+
+    // ctrl + v 시, html 태그가 아닌 텍스트만 붙여넣기
+    quill.clipboard.addMatcher (Node.ELEMENT_NODE, function (node, delta) {
+      let plaintext = node.innerText
+      let Delta = Quill.import('delta')
+      return new Delta().insert(plaintext)
+    })
 
     // 이전 포스트의 내용이 있다면, 이전 내용을 불러오기
     if (contents !== '') {
