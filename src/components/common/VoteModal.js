@@ -149,7 +149,7 @@ const VoteModal = ({setOnModal, votes, user}) => {
                       }}>
             {/*투표는 추천을 한 유저만 보이도록 설정*/}
             {vote.value > 0 && vote.voter.username}
-            {vote.voter.id === user.id &&
+            {user && vote.voter.id === user.id &&
               <div className='me'>
                 나
               </div>
