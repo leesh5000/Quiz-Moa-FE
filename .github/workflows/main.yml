@@ -1,4 +1,4 @@
-name: deploy react to s3
+name: Deploy React to S3
 
 on:
   push:
@@ -6,16 +6,46 @@ on:
       - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@main
-    - uses: jeanlescure/react-deploy-to-s3-action@main
-      with:
-        args: --acl public-read --follow-symlinks --delete
-      env:
-        NODE_ENV: production # optional: defaults to production
-        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ${{ secrets.AWS_REGION }}
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: cache node modules
+        uses: actions/cache@v3.2.6
+        with:
+          path: node_modules
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-build-
+            ${{ runner.OS }}-
+
+      - name: install dependencies
+        run: npm install
+
+      - name: create .env
+        run: |
+          echo "REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}" >> .env
+          echo "REACT_APP_GOOGLE_REDIRECT_URI=${{ secrets.REACT_APP_GOOGLE_REDIRECT_URI }}" >> .env
+          echo "NAVER_APP_GOOGLE_CLIENT_ID=${{ secrets.NAVER_APP_GOOGLE_CLIENT_ID }}" >> .env
+          echo "NAVER_APP_GOOGLE_REDIRECT_URI=${{ secrets.NAVER_APP_GOOGLE_REDIRECT_URI }}" >> .env
+          echo "KAKAO_APP_GOOGLE_CLIENT_ID=${{ secrets.KAKAO_APP_GOOGLE_CLIENT_ID }}" >> .env
+          echo "KAKAO_APP_GOOGLE_REDIRECT_URI=${{ secrets.KAKAO_APP_GOOGLE_REDIRECT_URI }}" >> .env
+          echo "QUIZ_API_HOST=${{ secrets.QUIZ_API_HOST }}" >> .env
+          cat .env
+
+      - name: react build
+        run: npm run build
+
+      - name: deploy to s3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        run: |
+          aws s3 cp \
+            --recursive \
+            --region $AWS_REGION \
+            build s3://$AWS_S3_BUCKET
