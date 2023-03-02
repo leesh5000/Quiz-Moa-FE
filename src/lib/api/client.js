@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 
 const client = axios.create();
 
-client.defaults.baseURL = 'http://localhost:8081/dev/api';
+client.defaults.baseURL = process.env.REACT_APP_QUIZ_API_HOST + '/api';
 
 export const setUpInterceptors = (navigate) => {
 
