@@ -26,17 +26,17 @@ jobs:
 
       - name: create .env
         run: |
-          echo "REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.REACT_APP_GOOGLE_CLIENT_ID }}" >> .env
-          echo "REACT_APP_GOOGLE_REDIRECT_URI=${{ secrets.REACT_APP_GOOGLE_REDIRECT_URI }}" >> .env
-          echo "NAVER_APP_GOOGLE_CLIENT_ID=${{ secrets.NAVER_APP_GOOGLE_CLIENT_ID }}" >> .env
-          echo "NAVER_APP_GOOGLE_REDIRECT_URI=${{ secrets.NAVER_APP_GOOGLE_REDIRECT_URI }}" >> .env
-          echo "KAKAO_APP_GOOGLE_CLIENT_ID=${{ secrets.KAKAO_APP_GOOGLE_CLIENT_ID }}" >> .env
-          echo "KAKAO_APP_GOOGLE_REDIRECT_URI=${{ secrets.KAKAO_APP_GOOGLE_REDIRECT_URI }}" >> .env
-          echo "QUIZ_API_HOST=${{ secrets.QUIZ_API_HOST }}" >> .env
+          echo "REACT_APP_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+          echo "REACT_APP_GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}" >> .env
+          echo "REACT_APP_NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> .env
+          echo "REACT_APP_NAVER_REDIRECT_URI=${{ secrets.NAVER_REDIRECT_URI }}" >> .env
+          echo "REACT_APP_KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
+          echo "REACT_APP_KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}" >> .env
+          echo "REACT_APP_QUIZ_API_HOST=${{ secrets.QUIZ_API_HOST }}" >> .env
           cat .env
 
       - name: react build
-        run: npm run build
+        run: CI=false npm run build
 
       - name: deploy to s3
         env:
