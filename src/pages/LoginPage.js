@@ -89,7 +89,7 @@ const LoginPage = () => {
     <LoginPageBlock>
       <WhiteBox>
         <div className="logo-area">
-          <Link to="/"><h2>QUIZ APP</h2></Link>
+          <Link to="/"><h2>Quiz Moa</h2></Link>
         </div>
         <div className="title">
           SNS 로그인 / 회원가입
