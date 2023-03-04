@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {SortType} from "../../global/SortType";
 
 function useSort(type) {

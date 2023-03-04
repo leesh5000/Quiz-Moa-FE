@@ -97,7 +97,7 @@ const Header = ({user, onLogout}) => {
     <>
       <HeaderBlock>
         <Wrapper>
-          <Link to="/" className="logo">QUIZ APP</Link>
+          <Link to="/" className="logo">Quiz Moa</Link>
           {user ? (
             <div className="right">
               <UserBlock>{localStorage.getItem('username') ?
