@@ -33,6 +33,7 @@ jobs:
           echo "REACT_APP_KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
           echo "REACT_APP_KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }}" >> .env
           echo "REACT_APP_QUIZ_API_HOST=${{ secrets.QUIZ_API_HOST }}" >> .env
+          echo "REACT_APP_BASE_REDIRECT_URI=${{ secrets.BASE_REDIRECT_URI }}" >> .env
           cat .env
 
       - name: react build
