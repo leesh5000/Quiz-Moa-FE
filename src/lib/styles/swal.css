@@ -3,16 +3,12 @@
 }
 
 .swal2-title {
-  font-size: 1.215rem;
+  font-size: 1rem;
 }
 
 @media (max-width: 720px) {
   .swal2-popup {
     width: 320px;
-  }
-
-  .swal2-title {
-    font-size: 1.125rem;
   }
 }
 
