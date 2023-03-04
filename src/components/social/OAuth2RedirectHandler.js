@@ -6,7 +6,7 @@ import Spinner from "../common/Spinner";
 const OAuth2RedirectHandler = () => {
 
   const [loading, setLoading] = useState(false);
-  const baseRedirectUri = "http://localhost:3000/oauth2/callback/";
+  const baseRedirectUri = process.env.REACT_APP_BASE_REDIRECT_URI;
 
   const string = window.location.href.split("?")[0];
   // * 으로 매핑된 Provider 정보 가져오기
