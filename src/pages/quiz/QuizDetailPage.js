@@ -51,7 +51,7 @@ const QuizTitleBlock = styled.div`
   
   .vote {
     display: flex;
-    justify-content: left;
+    justify-content: flex-start;
     flex-direction: column;
     align-items: center;
     
