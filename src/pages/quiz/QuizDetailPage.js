@@ -71,7 +71,6 @@ const QuizTitleBlock = styled.div`
       font-size: 1.725rem;
       font-weight: bold;
       background-color: transparent;
-      color: ${palette.gray[10]};
       &:hover {
         opacity: 0.3;
       }
