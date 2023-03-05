@@ -1,14 +1,13 @@
 import styled from "styled-components";
 import palette from "../../lib/styles/palette";
-import VoteModal from "../common/VoteModal";
 import React, {useState} from "react";
-import arrow from "../../images/arrow.png";
 import Responsive from "../common/Responsive";
 import Button from "../common/Button";
 import Swal from "sweetalert2";
 import {voteAnswer} from "../../lib/api/answer";
 import Spinner from "../common/Spinner";
 import {Link} from "react-router-dom";
+import Vote from "../common/Vote";
 
 const AnswerTitleBlock = styled.div`
   display: flex;
@@ -19,35 +18,13 @@ const AnswerTitleBlock = styled.div`
 
   .vote {
     width: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    flex-direction: column;
-    cursor: pointer;
-
-    .button {
-      cursor: pointer;
-      opacity: 0.35;
-
-      &:hover {
-        opacity: 1;
-      }
-    }
 
     .count-button {
-      border: none;
-      outline: none;
-      cursor: pointer;
       font-size: 1.25rem;
       font-weight: bold;
       background-color: transparent;
       padding-top: 0.25rem;
       padding-bottom: 0.25rem;
-      color: ${palette.gray[8]};
-
-      &:hover {
-        opacity: 0.3;
-      }
     }
   }
 
@@ -134,7 +111,7 @@ const AnswerWrapper = styled.div`
   }
 `;
 
-const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
+const AnswerItem = ({answer, user, onEdit, onDelete}) => {
 
   const [onModal, setOnModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -205,32 +182,12 @@ const AnswerItem = ({answer, user, onEdit, onDelete, isEditMode}) => {
     <Responsive>
       <AnswerWrapper>
         <AnswerTitleBlock>
-          <div className='vote'>
-            <img className='button'
-                 onClick={() => onVote(1)}
-                 src={arrow}
-                 style={{width: '22px', transform: 'rotate(180deg)'}}
-            />
-            <button className='count-button'
-                    onClick={(e) => {
-                      setOnModal(!onModal)
-                      // 이벤트 버블링 방지
-                      e.stopPropagation();
-                      return false;
-                    }}
-                    style={{color: onModal ? palette.gray[5] : palette.gray[10]}}>
-              {votes.reduce((sum, vote) => sum + vote.value, 0)}
-            </button>
-            {onModal &&
-              <VoteModal setOnModal={() => setOnModal(false)}
-                         votes={votes}
-                         user={user}/>}
-            <img className='button'
-                 onClick={() => onVote(-1)}
-                 src={arrow}
-                 style={{width: '22px', transform: 'rotate(360deg)'}}
-            />
-          </div>
+          <Vote user={user}
+                votes={votes}
+                onVote={onVote}
+                onModal={onModal}
+                setOnModal={setOnModal}
+          />
           <div className="contents">
             <div className="author">
               <Link to={`/users/${answer.author.id}`}

@@ -6,14 +6,13 @@ import Swal from "sweetalert2";
 import Spinner from "../../components/common/Spinner";
 import Responsive from "../../components/common/Responsive";
 import styled from "styled-components";
-import VoteModal from "../../components/common/VoteModal";
 import palette from "../../lib/styles/palette";
 import AnswerItem from "../../components/answer/AnswerItem";
-import arrow from "../../images/arrow.png";
 import AnswerEditor from "../../components/answer/AnswerEditor";
 import Button from "../../components/common/Button";
 import {createAnswer, deleteAnswer, editAnswer} from "../../lib/api/answer";
 import getLoginUser from "../../lib/utils/getLoginUser";
+import Vote from "../../components/common/Vote";
 
 const QuizWrapper = styled.div`
   box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.12);
@@ -47,36 +46,6 @@ const QuizTitleBlock = styled.div`
 
     text-overflow: ellipsis;
     overflow: hidden;
-  }
-  
-  .vote {
-    width: 28px;
-    display: flex;
-    justify-content: left;
-    flex-direction: column;
-    align-items: center;
-    
-    .button {
-      cursor: pointer;
-      opacity: 0.35;
-      &:hover {
-        opacity: 1;
-      }
-    }
-    
-    .count-button {
-      border: none;
-      outline: none;
-      cursor: pointer;
-      font-size: 1.725rem;
-      font-weight: bold;
-      background-color: transparent;
-      &:hover {
-        opacity: 0.3;
-      }
-      padding-top: 0.25rem;
-      padding-bottom: 0.25rem;
-    }
   }
 `;
 
@@ -555,38 +524,13 @@ const QuizDetailPage = () => {
       <Responsive>
         <QuizWrapper>
           <QuizTitleBlock>
-            <div className='vote'>
-              <img className='button'
-                   onClick={() => onVote(1)}
-                   src={arrow}
-                   style={{
-                     width: '26px',
-                     transform: 'rotate(180deg)',
-                     opacity: (user && quiz.votes.filter(vote => vote.voter.id === user.id && vote.value > 0).length > 0) ? 1 : {}
-              }}/>
-              <button className='count-button'
-                      onClick={(e) => {
-                        setOnModal(!onModal)
-                        // 이벤트 버블링 방지
-                        e.stopPropagation();
-                        return false;
-                      }}
-                      style={{color: onModal ? palette.gray[5] : palette.gray[10]}}>
-                {quiz.votes.reduce((sum, vote) => sum + vote.value, 0)}
-              </button>
-              {onModal &&
-                <VoteModal setOnModal={() => setOnModal(false)}
-                           votes={quiz.votes}
-                           user={user}/>}
-              <img className='button'
-                   onClick={() => onVote(-1)}
-                   src={arrow}
-                   style={{
-                     width: '26px',
-                     transform: 'rotate(360deg)',
-                     opacity: (user && quiz.votes.filter(vote => vote.voter.id === user.id && vote.value < 0).length > 0) ? 1 : {}
-              }}/>
-            </div>
+            <Vote user={user}
+                  votes={quiz.votes}
+                  onVote={onVote}
+                  seLoading={setLoading}
+                  onModal={onModal}
+                  setOnModal={setOnModal}
+            />
             <div className='title'>
               {quiz.title}
             </div>
@@ -602,7 +546,13 @@ const QuizDetailPage = () => {
             <div className='spacer'>
               •
             </div>
-            <div className='date'>
+            <div className='date'
+                 style={{
+                   '&:hover': {
+                     color: palette.cyan[6]
+                   }
+                 }}
+            >
               {new Date(quiz.modifiedAt).toLocaleString().slice(0, -3)}
             </div>
             {quiz.author.id === (user && user.id) &&
