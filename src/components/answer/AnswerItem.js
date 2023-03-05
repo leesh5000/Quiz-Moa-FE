@@ -17,11 +17,7 @@ const AnswerTitleBlock = styled.div`
   margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid ${palette.gray[3]};
-
-  @media (max-width: 780px) {
-    padding-left: 0.5rem;
-  }
-
+  
   .vote {
     height: 4rem;
     display: flex;
@@ -60,6 +56,7 @@ const AnswerTitleBlock = styled.div`
     display: flex;
     justify-content: left;
     align-items: center;
+    color: ${palette.gray[6]};
 
     @media (max-width: 780px) {
       margin: 0.5rem;
@@ -68,7 +65,6 @@ const AnswerTitleBlock = styled.div`
     .author {
       font-size: 1rem;
       letter-spacing: 0.5px;
-      color: ${palette.gray[7]};
       &:hover {
         color: ${palette.cyan[5]};
         text-decoration: underline;
@@ -106,7 +102,7 @@ const AnswerTitleBlock = styled.div`
     }
 
     button {
-      margin-right: 1.125rem;
+      margin-left: 1rem;
     }
   }
 `;

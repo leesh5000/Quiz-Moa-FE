@@ -39,11 +39,6 @@ const QuizTitleBlock = styled.div`
   display: flex;
   justify-content: left;
   align-items: center;
-
-  @media (max-width: 1200px) {
-    margin-top: 0;
-    padding-left: 1rem;
-  }
   
   .title {
     margin-left: 1.5rem;
@@ -75,6 +70,7 @@ const QuizTitleBlock = styled.div`
       font-size: 1.725rem;
       font-weight: bold;
       background-color: transparent;
+      color: ${palette.gray[10]};
       &:hover {
         opacity: 0.3;
       }
@@ -87,16 +83,11 @@ const QuizTitleBlock = styled.div`
 const QuizInfoBlock = styled.div`
   height: 3rem;
   margin-top: 1rem;
-
-  @media (max-width: 1200px) {
-    margin-top: 0;
-    padding-left: 1rem;
-  }
   
   display: flex;
   justify-content: left;
   align-items: center;
-  font-size: 1.05rem;
+  font-size: 1rem;
   color: ${palette.gray[6]};
   border-bottom: 1px solid ${palette.gray[4]};
   letter-spacing: 0.5px;
@@ -139,7 +130,7 @@ const QuizInfoBlock = styled.div`
     }
     
     button {
-      margin-right: 1.125rem;
+      margin-left: 1rem;
     }
   }
 `;
@@ -188,7 +179,7 @@ const EditorTitle = styled.div`
   color: ${palette.gray[7]};
 
   @media (max-width: 1024px) {
-    padding-left: 0.5rem;
+    padding-left: 1rem;
     padding-bottom: 0.5rem;
   }
 `;

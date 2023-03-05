@@ -110,6 +110,10 @@ const ProfileBlock = styled.div`
             color: ${palette.blue[2]};
             text-decoration: underline;
           }
+
+          @media (max-width: 420px) {
+            margin: 0;
+          }
         }
 
         @media (max-width: 420px) {
