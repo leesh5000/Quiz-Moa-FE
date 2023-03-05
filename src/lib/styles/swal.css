@@ -12,6 +12,10 @@
   }
 }
 
+#swal2-title {
+  font-size: 1.125rem;
+}
+
 .swal2-confirm {
   margin-right: 1rem;
 }
