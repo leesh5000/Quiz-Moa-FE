@@ -19,7 +19,7 @@ const AnswerTitleBlock = styled.div`
   
   .vote {
     display: flex;
-    justify-content: flex-start;
+    justify-content: left;
     flex-direction: column;
     cursor: pointer;
 
