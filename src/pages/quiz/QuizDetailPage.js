@@ -37,7 +37,7 @@ const QuizTitleBlock = styled.div`
   
   letter-spacing: 0.5px;
   display: flex;
-  justify-content: left;
+  justify-content: flex-start;
   align-items: center;
   
   .title {

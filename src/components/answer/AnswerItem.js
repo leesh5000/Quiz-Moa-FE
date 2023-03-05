@@ -12,7 +12,7 @@ import {Link} from "react-router-dom";
 
 const AnswerTitleBlock = styled.div`
   display: flex;
-  justify-content: left;
+  justify-content: flex-start;
   align-items: center;
   padding-bottom: 1rem;
   border-bottom: 1px solid ${palette.gray[3]};
