@@ -21,7 +21,7 @@ const AnswerTitleBlock = styled.div`
   .vote {
     height: 4rem;
     display: flex;
-    justify-content: center;
+    justify-content: left;
     flex-direction: column;
     align-items: center;
     cursor: pointer;
