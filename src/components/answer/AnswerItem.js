@@ -16,7 +16,7 @@ const AnswerTitleBlock = styled.div`
   align-items: center;
   padding-bottom: 1rem;
   border-bottom: 1px solid ${palette.gray[3]};
-  
+
   .vote {
     width: 24px;
     display: flex;
@@ -28,6 +28,7 @@ const AnswerTitleBlock = styled.div`
     .button {
       cursor: pointer;
       opacity: 0.35;
+
       &:hover {
         opacity: 1;
       }
@@ -43,6 +44,7 @@ const AnswerTitleBlock = styled.div`
       padding-top: 0.25rem;
       padding-bottom: 0.25rem;
       color: ${palette.gray[8]};
+
       &:hover {
         opacity: 0.3;
       }
@@ -58,12 +60,13 @@ const AnswerTitleBlock = styled.div`
     color: ${palette.gray[6]};
 
     @media (max-width: 780px) {
-      margin: 0.5rem;
+      margin: 0.5rem 0.5rem 0.5rem 1rem;
     }
-    
+
     .author {
       font-size: 1rem;
       letter-spacing: 0.5px;
+
       &:hover {
         color: ${palette.cyan[5]};
         text-decoration: underline;
