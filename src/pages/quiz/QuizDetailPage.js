@@ -559,7 +559,11 @@ const QuizDetailPage = () => {
               <img className='button'
                    onClick={() => onVote(1)}
                    src={arrow}
-                   style={{width: '26px', transform: 'rotate(180deg)'}}/>
+                   style={{
+                     width: '26px',
+                     transform: 'rotate(180deg)',
+                     opacity: (user && quiz.votes.filter(vote => vote.voter.id === user.id && vote.value > 0).length > 0) ? 1 : {}
+              }}/>
               <button className='count-button'
                       onClick={(e) => {
                         setOnModal(!onModal)
@@ -577,8 +581,11 @@ const QuizDetailPage = () => {
               <img className='button'
                    onClick={() => onVote(-1)}
                    src={arrow}
-                   style={{width: '26px', transform: 'rotate(360deg)'}}
-              />
+                   style={{
+                     width: '26px',
+                     transform: 'rotate(360deg)',
+                     opacity: (user && quiz.votes.filter(vote => vote.voter.id === user.id && vote.value < 0).length > 0) ? 1 : {}
+              }}/>
             </div>
             <div className='title'>
               {quiz.title}
