@@ -14,16 +14,13 @@ const AnswerTitleBlock = styled.div`
   display: flex;
   justify-content: left;
   align-items: center;
-  margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid ${palette.gray[3]};
   
   .vote {
-    height: 4rem;
     display: flex;
-    justify-content: left;
+    justify-content: flex-start;
     flex-direction: column;
-    align-items: center;
     cursor: pointer;
 
     .button {
