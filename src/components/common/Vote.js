@@ -14,11 +14,6 @@ const VoteBlock = styled.div`
 
     .button {
       cursor: pointer;
-      opacity: nonVoteOpacity;
-
-      //&:hover {
-      //  opacity: 1;
-      //}
     }
 
     .count-button {
