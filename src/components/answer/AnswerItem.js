@@ -18,6 +18,7 @@ const AnswerTitleBlock = styled.div`
   border-bottom: 1px solid ${palette.gray[3]};
   
   .vote {
+    width: 24px;
     display: flex;
     align-items: center;
     justify-content: left;

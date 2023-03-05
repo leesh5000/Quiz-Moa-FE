@@ -50,6 +50,7 @@ const QuizTitleBlock = styled.div`
   }
   
   .vote {
+    width: 28px;
     display: flex;
     justify-content: left;
     flex-direction: column;
