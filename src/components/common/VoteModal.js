@@ -91,6 +91,7 @@ const VoterStyle = styled.div`
   
   .me {
     margin-left: 1rem;
+    margin-right: 1rem;
     color: ${palette.cyan[8]};
     font-size: 1.25rem;
     font-weight: 650;
