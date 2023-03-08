@@ -119,13 +119,13 @@ const QuizContentsBlock = styled.div`
   }
 
   p {
-    margin: 0;
+    margin: 0 0 4px;
   }
 
   li {
     margin-bottom: 10px;
   }
-  
+
 `;
 
 const AnswerBlock = styled.div`

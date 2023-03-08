@@ -97,6 +97,10 @@ const AnswerBodyBlock = styled.div`
     margin-right: 0.5rem;
   }
 
+  p {
+    margin: 0 0 4px;
+  }
+
   li {
     margin-bottom: 10px;
   }
