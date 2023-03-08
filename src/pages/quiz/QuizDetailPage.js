@@ -121,6 +121,11 @@ const QuizContentsBlock = styled.div`
   p {
     margin: 0;
   }
+
+  li {
+    margin-bottom: 10px;
+  }
+  
 `;
 
 const AnswerBlock = styled.div`

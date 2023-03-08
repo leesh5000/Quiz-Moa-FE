@@ -96,6 +96,10 @@ const AnswerBodyBlock = styled.div`
   @media (max-width: 780px) {
     margin-right: 0.5rem;
   }
+
+  li {
+    margin-bottom: 10px;
+  }
 `;
 
 const AnswerWrapper = styled.div`
