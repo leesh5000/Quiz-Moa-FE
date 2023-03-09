@@ -50,15 +50,16 @@ const WhiteBox = styled.div`
 
   .img-area {
 
-    width: 300px;
+    width: 280px;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
     margin: 0 auto 1rem;
 
     img {
-      width: 72px;
+      width: 100%;
       object-fit: cover;
+      margin-bottom: 1rem;
     }
   }
 `;
