@@ -90,7 +90,7 @@ const AnswerBodyBlock = styled.div`
 
   overflow-wrap: break-word;
   letter-spacing: 0.5px;
-  padding: 0.5rem 0.5rem;
+  padding: 1rem 0.5rem;
   font-size: 1.025rem;
 
   @media (max-width: 780px) {
