@@ -5,12 +5,12 @@ import calculatePage from "../../lib/utils/calculatePage";
 import {getCurrentPage} from "../../lib/utils/getCurrentPage";
 import Button from "./Button";
 import Swal from "sweetalert2";
-import {useNavigate, useSearchParams} from "react-router-dom";
+import {Link, useNavigate, useSearchParams} from "react-router-dom";
 
 const FooterStyle = styled.div`
   display: flex;
   justify-content: space-between;
-  height: 8rem;
+  height: 4rem;
 
   @media (max-width: 1200px) {
     height: 4rem;
@@ -37,6 +37,15 @@ const StyledButton = styled(Button)`
   height: 2.25rem;
   font-size: 1.125rem;
   font-weight: bold;
+`;
+
+const PrivacyBlock = styled(Link)`
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: ${palette.gray[7]};
+  display: flex;
+  justify-content: center;
+  height: 4rem;
 `;
 
 const Footer = ({user, totalPages, pageSize}) => {
@@ -69,6 +78,9 @@ const Footer = ({user, totalPages, pageSize}) => {
             </StyledButton>
           </div>
         </FooterStyle>
+        <PrivacyBlock to='/privacy'>
+          개인정보 처리방침
+        </PrivacyBlock>
       </Responsive>
     </>
   );
