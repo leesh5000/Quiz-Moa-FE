@@ -4,7 +4,7 @@
 
 - [프로젝트 소개 페이지 링크](https://leesh5000.notion.site/Quiz-Moa-2df85502f59b4d019b98ed0e08f42919)
 - [백엔드 저장소 링크](https://github.com/leesh5000/Quiz-Moa-BE)
-- [프로젝트 주소](https://quiz-moa.com)
+- [서비스 주소](https://quiz-moa.com)
 
 ## 사용 기술
 
